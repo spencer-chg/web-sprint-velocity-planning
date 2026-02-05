@@ -318,19 +318,38 @@ st.markdown("""
         border: none !important;
     }
 
+    /* Stepper buttons - clean minimal style */
     .stNumberInput button {
         background: #faf9f6 !important;
-        color: #7a7a7a !important;
+        color: #8a8a8a !important;
         border: none !important;
-        border-left: 1px solid #e5e5e0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        min-width: 32px !important;
+    }
+
+    /* Add subtle left border only */
+    .stNumberInput button:first-of-type {
+        border-left: 1px solid #e8e8e3 !important;
+    }
+
+    .stNumberInput button:last-of-type {
+        border-left: 1px solid #e8e8e3 !important;
     }
 
     .stNumberInput button:hover {
         background: #f0efec !important;
+        color: #5a5a5a !important;
     }
 
     .stNumberInput button svg {
-        fill: #7a7a7a !important;
+        fill: #8a8a8a !important;
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    .stNumberInput button:hover svg {
+        fill: #5a5a5a !important;
     }
 
     /* Override red focus - sage green */
@@ -938,19 +957,27 @@ def render_forecast():
             </div>
             ''', unsafe_allow_html=True)
 
+            # Spacing after team card
+            st.markdown('<div style="height: 12px;"></div>', unsafe_allow_html=True)
+
             for dev in devs:
-                st.markdown(f"**{dev['name']}**")
-                c1, c2 = st.columns(2)
-                with c1:
-                    pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
-                    st.session_state.pto_data[dev["id"]] = pto
-                with c2:
-                    others = [t for t in TEAMS if t["id"] != team["id"]]
-                    mv = st.selectbox("Move to", [""] + [t["name"] for t in others], key=f"mv_{dev['id']}", label_visibility="collapsed")
-                    if mv:
-                        new_team = next(t["id"] for t in others if t["name"] == mv)
-                        update_team_assignment(dev["id"], new_team)
-                        st.rerun()
+                others = [t for t in TEAMS if t["id"] != team["id"]]
+                other_names = [t["name"] for t in others]
+
+                # Clean row with name and inputs
+                with st.container():
+                    c1, c2, c3 = st.columns([2, 1.2, 1.2])
+                    with c1:
+                        st.markdown(f'<div style="padding: 8px 0; font-weight: 500; color: #3d3d3d;">{dev["name"]}</div>', unsafe_allow_html=True)
+                    with c2:
+                        pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+                        st.session_state.pto_data[dev["id"]] = pto
+                    with c3:
+                        mv = st.selectbox("Move", ["—"] + other_names, key=f"mv_{dev['id']}", label_visibility="collapsed")
+                        if mv != "—":
+                            new_team = next(t["id"] for t in others if t["name"] == mv)
+                            update_team_assignment(dev["id"], new_team)
+                            st.rerun()
 
     if calc:
         buf = st.session_state.planning_buffer
