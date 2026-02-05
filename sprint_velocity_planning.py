@@ -195,9 +195,10 @@ st.markdown("""
         border-left: 3px solid #4a5d4a;
     }
 
-    .team-card.orange { border-left-color: #a08060; }
+    /* All teams use same sage green accent */
+    .team-card.orange { border-left-color: #4a5d4a; }
     .team-card.green { border-left-color: #4a5d4a; }
-    .team-card.cyan { border-left-color: #4a6a6a; }
+    .team-card.cyan { border-left-color: #4a5d4a; }
 
     /* Team header */
     .team-header {
@@ -214,9 +215,10 @@ st.markdown("""
         margin: 0;
     }
 
-    .team-name.orange { color: #806040 !important; }
+    /* All team names use same color */
+    .team-name.orange { color: #3d4d3d !important; }
     .team-name.green { color: #3d4d3d !important; }
-    .team-name.cyan { color: #3d5555 !important; }
+    .team-name.cyan { color: #3d4d3d !important; }
 
     .team-meta {
         font-size: 0.75rem;
@@ -438,6 +440,13 @@ st.markdown("""
         border: none !important;
     }
 
+    /* Date input focus state - sage green highlight */
+    .stDateInput [data-baseweb="input"]:focus-within,
+    .stDateInput > div > div:focus-within {
+        border-color: #4a5d4a !important;
+        box-shadow: 0 0 0 1px #4a5d4a !important;
+    }
+
     .stDateInput svg {
         fill: #7a7a7a !important;
     }
@@ -451,6 +460,13 @@ st.markdown("""
 
     [data-baseweb="calendar"] * {
         color: #4a4a4a !important;
+    }
+
+    /* Calendar selected day - sage green */
+    [data-baseweb="calendar"] [aria-selected="true"],
+    [data-baseweb="calendar"] div[aria-selected="true"] {
+        background: #4a5d4a !important;
+        color: #fff !important;
     }
 
     /* ======== TEXT INPUTS ======== */
@@ -645,7 +661,7 @@ st.markdown("""
         padding: 0 8px;
     }
 
-    /* ======== REDUCE VERTICAL SPACING ======== */
+    /* ======== REDUCE VERTICAL SPACING - AGGRESSIVE ======== */
     /* Tighten up spacing between elements */
     .stMarkdown {
         margin-bottom: 0 !important;
@@ -653,38 +669,52 @@ st.markdown("""
 
     /* Reduce gap after horizontal rules */
     hr {
-        margin: 12px 0 !important;
+        margin: 8px 0 !important;
     }
 
     /* Reduce vertical block spacing */
     [data-testid="stVerticalBlock"] > div {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
+        gap: 0.25rem !important;
+    }
+
+    [data-testid="stVerticalBlock"] {
+        gap: 0.25rem !important;
     }
 
     /* Reduce spacing in tab content */
     .stTabs [data-baseweb="tab-panel"] {
-        padding-top: 16px !important;
+        padding-top: 12px !important;
     }
 
     /* Reduce gaps between form elements */
     .stSelectbox, .stNumberInput, .stTextInput, .stDateInput {
-        margin-bottom: 8px !important;
+        margin-bottom: 4px !important;
     }
 
     /* Reduce element container gaps */
     [data-testid="element-container"] {
-        margin-bottom: 4px !important;
+        margin-bottom: 2px !important;
     }
 
     /* Tighter horizontal layout spacing */
     [data-testid="stHorizontalBlock"] {
-        gap: 8px !important;
+        gap: 6px !important;
     }
 
     /* Reduce spacing after columns */
     [data-testid="stColumn"] > div {
-        gap: 4px !important;
+        gap: 2px !important;
+    }
+
+    /* Remove extra padding from form containers */
+    .stForm {
+        padding: 0 !important;
+    }
+
+    [data-testid="stForm"] > div {
+        gap: 0.5rem !important;
     }
 
     /* ======== PLOTLY CHARTS ======== */
