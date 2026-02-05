@@ -399,7 +399,7 @@ def render_dev_row(dev):
             st.session_state.pto[dev_id] = max(0, pto - 0.5)
             st.rerun()
     with c3:
-        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:10px; height:40px; line-height:40px; text-align:center; font-weight:600; font-size:0.9rem;'>{pto:.1f}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:10px; height:40px; line-height:38px; text-align:center; font-weight:600; font-size:0.9rem; margin-top:-3px;'>{pto:.1f}</div>", unsafe_allow_html=True)
     with c4:
         if st.button("＋", key=f"p_{dev_id}"):
             st.session_state.pto[dev_id] = min(10, pto + 0.5)
@@ -547,7 +547,7 @@ def page_add_sprint():
                             st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
                             st.rerun()
                     with c2:
-                        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:10px; height:40px; line-height:40px; text-align:center; font-weight:600; font-size:0.9rem;'>{pts:.1f}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:10px; height:40px; line-height:38px; text-align:center; font-weight:600; font-size:0.9rem; margin-top:-3px;'>{pts:.1f}</div>", unsafe_allow_html=True)
                     with c3:
                         if st.button("＋", key=f"spp_{dev_id}"):
                             st.session_state.sprint_pts[dev_id] = pts + 0.5
