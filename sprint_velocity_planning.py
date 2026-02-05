@@ -345,11 +345,9 @@ def page_forecast():
     team_assignments = get_team_assignments()
 
     # Buffer selector + Calculate button - side by side, centered
-    _, lbl, c1, c2, _ = st.columns([1, 0.5, 1, 0.8, 1])
-    with lbl:
-        st.markdown("<div style='padding-top:8px; font-size:0.85rem; color:#666;'>Buffer</div>", unsafe_allow_html=True)
+    _, c1, c2, _ = st.columns([1, 1.2, 0.8, 1])
     with c1:
-        buf_opts = {"85%": 0.85, "70%": 0.70, "100%": 1.0}
+        buf_opts = {"Buffer - 85%": 0.85, "Buffer - 70%": 0.70, "Buffer - 100%": 1.0}
         sel = st.selectbox("Buffer", list(buf_opts.keys()), label_visibility="collapsed")
         st.session_state.buffer = buf_opts[sel]
     with c2:
