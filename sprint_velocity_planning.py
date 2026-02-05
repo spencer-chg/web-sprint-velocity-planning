@@ -352,9 +352,13 @@ def page_forecast():
     st.markdown("<div style='margin-top:-10px'></div>", unsafe_allow_html=True)
     _, c1, c2, _ = st.columns([1, 1, 1, 1])
     with c1:
-        buf_opts = {"Buffer - 85%": 0.85, "Buffer - 70%": 0.70, "Buffer - 100%": 1.0}
-        sel = st.selectbox("Buffer", list(buf_opts.keys()), label_visibility="collapsed")
-        st.session_state.buffer = buf_opts[sel]
+        buf_val = st.select_slider(
+            "Buffer",
+            options=["70%", "85%", "100%"],
+            value="85%",
+            label_visibility="collapsed"
+        )
+        st.session_state.buffer = {"70%": 0.70, "85%": 0.85, "100%": 1.0}[buf_val]
     with c2:
         calc_btn = st.button("Calculate", type="primary", use_container_width=True)
 
