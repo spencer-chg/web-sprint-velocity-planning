@@ -123,19 +123,22 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     max-width: 36px !important;
 }
 
-/* Number input: no margin, centered */
-[data-testid="column"] .stNumberInput {
+/* Text input for value: centered, fixed width */
+[data-testid="column"] .stTextInput {
     width: 100% !important;
 }
-[data-testid="column"] .stNumberInput > div {
+[data-testid="column"] .stTextInput > div {
     width: 100% !important;
     display: flex !important;
     justify-content: center !important;
 }
-[data-testid="column"] .stNumberInput [data-baseweb="input"] {
-    margin: 0 !important;
+[data-testid="column"] .stTextInput input {
+    text-align: center !important;
+    font-weight: 600 !important;
     width: 70px !important;
     min-width: 70px !important;
+    max-width: 70px !important;
+    margin: 0 auto !important;
 }
 
 /* Selectbox */
@@ -358,15 +361,21 @@ def render_dev_row(dev):
     with cols[1]:
         if st.button("－", key=f"m_{dev_id}"):
             st.session_state.pto[dev_id] = max(0, pto - 0.5)
+            st.rerun()
 
     with cols[2]:
-        val = st.number_input("", min_value=0.0, max_value=10.0, value=pto, step=0.5,
-                              key=f"input_{dev_id}", label_visibility="collapsed", format="%.1f")
-        st.session_state.pto[dev_id] = val
+        val_str = st.text_input("", value=f"{pto:.1f}", key=f"input_{dev_id}", label_visibility="collapsed")
+        try:
+            parsed = float(val_str)
+            if 0 <= parsed <= 10:
+                st.session_state.pto[dev_id] = parsed
+        except:
+            pass
 
     with cols[3]:
         if st.button("＋", key=f"p_{dev_id}"):
             st.session_state.pto[dev_id] = min(10, pto + 0.5)
+            st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
@@ -510,9 +519,13 @@ def page_add_sprint():
                             st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
                             st.rerun()
                     with c2:
-                        new_pts = st.number_input("Pts", min_value=0.0, value=pts, step=0.5,
-                                                   key=f"spv_{dev_id}", label_visibility="collapsed", format="%.1f")
-                        st.session_state.sprint_pts[dev_id] = new_pts
+                        val_str = st.text_input("", value=f"{pts:.1f}", key=f"spv_{dev_id}", label_visibility="collapsed")
+                        try:
+                            parsed = float(val_str)
+                            if parsed >= 0:
+                                st.session_state.sprint_pts[dev_id] = parsed
+                        except:
+                            pass
                     with c3:
                         if st.button("＋", key=f"spp_{dev_id}"):
                             st.session_state.sprint_pts[dev_id] = pts + 0.5
