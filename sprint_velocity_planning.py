@@ -279,15 +279,13 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* ======== NUMBER INPUTS - CREAM BACKGROUND, NOT BLACK ======== */
-    /* The entire number input container */
+    /* ======== NUMBER INPUTS - CREAM BACKGROUND ======== */
     .stNumberInput > div > div {
         background: #faf9f6 !important;
-        border: 1px solid #e0e0db !important;
+        border: 1px solid #e5e5e0 !important;
         border-radius: 8px !important;
     }
 
-    /* The input field itself */
     .stNumberInput input {
         background: #faf9f6 !important;
         color: #4a4a4a !important;
@@ -295,30 +293,29 @@ st.markdown("""
         font-size: 0.9rem !important;
     }
 
-    /* The step buttons (- and +) */
     .stNumberInput button {
         background: #faf9f6 !important;
-        color: #6a6a6a !important;
+        color: #7a7a7a !important;
         border: none !important;
+        border-left: 1px solid #e5e5e0 !important;
     }
 
     .stNumberInput button:hover {
         background: #f0efec !important;
-        color: #4a4a4a !important;
+        color: #5a5a5a !important;
     }
 
-    /* Step button SVG icons */
     .stNumberInput button svg {
-        fill: #6a6a6a !important;
-        stroke: #6a6a6a !important;
+        fill: #7a7a7a !important;
+        stroke: #7a7a7a !important;
     }
 
-    /* ======== SELECT BOXES / DROPDOWNS - CREAM BACKGROUND ======== */
+    /* ======== SELECT BOXES / DROPDOWNS ======== */
     .stSelectbox > div > div,
     .stSelectbox [data-baseweb="select"],
     .stSelectbox [data-baseweb="select"] > div {
         background: #faf9f6 !important;
-        border: 1px solid #e0e0db !important;
+        border: 1px solid #e5e5e0 !important;
         border-radius: 8px !important;
         color: #4a4a4a !important;
     }
@@ -328,43 +325,84 @@ st.markdown("""
         box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
-    /* Dropdown arrow */
     .stSelectbox svg {
-        fill: #6a6a6a !important;
+        fill: #7a7a7a !important;
     }
 
-    /* Dropdown menu */
-    [data-baseweb="popover"] {
+    /* ======== DROPDOWN MENUS - LIGHT BACKGROUND ======== */
+    [data-baseweb="popover"],
+    [data-baseweb="popover"] > div,
+    [data-baseweb="menu"],
+    [data-baseweb="menu"] ul,
+    ul[role="listbox"],
+    div[role="listbox"] {
         background: #faf9f6 !important;
-        border: 1px solid #e0e0db !important;
+        background-color: #faf9f6 !important;
+        border: 1px solid #e5e5e0 !important;
+        border-radius: 8px !important;
     }
 
-    [data-baseweb="menu"] {
+    [data-baseweb="menu"] li,
+    ul[role="listbox"] li,
+    div[role="listbox"] div[role="option"],
+    [data-baseweb="menu"] [role="option"] {
         background: #faf9f6 !important;
-    }
-
-    [data-baseweb="menu"] li {
-        background: #faf9f6 !important;
+        background-color: #faf9f6 !important;
         color: #4a4a4a !important;
     }
 
-    [data-baseweb="menu"] li:hover {
+    [data-baseweb="menu"] li:hover,
+    ul[role="listbox"] li:hover,
+    div[role="listbox"] div[role="option"]:hover,
+    [data-baseweb="menu"] [role="option"]:hover,
+    [data-highlighted="true"] {
         background: #f0efec !important;
+        background-color: #f0efec !important;
+    }
+
+    /* ======== DATE INPUTS - FULL STYLING ======== */
+    .stDateInput > div > div,
+    .stDateInput [data-baseweb="input"],
+    .stDateInput [data-baseweb="base-input"] {
+        background: #faf9f6 !important;
+        background-color: #faf9f6 !important;
+        border: 1px solid #e5e5e0 !important;
+        border-radius: 8px !important;
+    }
+
+    .stDateInput input {
+        background: #faf9f6 !important;
+        background-color: #faf9f6 !important;
+        color: #4a4a4a !important;
+        border: none !important;
+    }
+
+    .stDateInput svg {
+        fill: #7a7a7a !important;
+    }
+
+    /* Date picker calendar popup */
+    [data-baseweb="calendar"],
+    [data-baseweb="datepicker"] {
+        background: #faf9f6 !important;
+        border: 1px solid #e5e5e0 !important;
+    }
+
+    [data-baseweb="calendar"] * {
+        color: #4a4a4a !important;
     }
 
     /* ======== TEXT INPUTS ======== */
-    .stTextInput > div > div > input,
-    .stDateInput > div > div > input {
+    .stTextInput > div > div > input {
         background: #faf9f6 !important;
-        border: 1px solid #e0e0db !important;
+        border: 1px solid #e5e5e0 !important;
         border-radius: 8px !important;
         color: #4a4a4a !important;
         font-size: 0.95rem !important;
         padding: 10px 14px !important;
     }
 
-    .stTextInput > div > div > input:focus,
-    .stDateInput > div > div > input:focus {
+    .stTextInput > div > div > input:focus {
         border-color: #4a5d4a !important;
         box-shadow: 0 0 0 1px #4a5d4a !important;
     }
@@ -489,14 +527,56 @@ st.markdown("""
         color: #555 !important;
     }
 
-    /* Data tables */
+    /* ======== DATA TABLES - SOFT STYLING ======== */
     .stDataFrame {
-        border-radius: 6px;
+        border-radius: 8px;
         overflow: hidden;
     }
 
     [data-testid="stDataFrame"] {
-        background: #fff;
+        background: #faf9f6 !important;
+    }
+
+    /* Table header */
+    [data-testid="stDataFrame"] thead th,
+    [data-testid="stDataFrame"] [role="columnheader"] {
+        background: #f0efec !important;
+        color: #5a5a5a !important;
+        font-weight: 500 !important;
+        border-bottom: 1px solid #e5e5e0 !important;
+    }
+
+    /* Table cells */
+    [data-testid="stDataFrame"] tbody td,
+    [data-testid="stDataFrame"] [role="gridcell"] {
+        background: #faf9f6 !important;
+        color: #4a4a4a !important;
+        border-bottom: 1px solid #f0efec !important;
+    }
+
+    /* Table rows hover */
+    [data-testid="stDataFrame"] tbody tr:hover td {
+        background: #f5f4f1 !important;
+    }
+
+    /* Glide data grid (Streamlit's table component) */
+    .dvn-scroller {
+        background: #faf9f6 !important;
+    }
+
+    [data-testid="glideDataEditor"],
+    [data-testid="stDataFrameGlideDataEditor"] {
+        background: #faf9f6 !important;
+    }
+
+    /* Override any dark backgrounds in the grid */
+    .dvn-scroller *,
+    [data-testid="glideDataEditor"] * {
+        background-color: inherit;
+    }
+
+    canvas + div {
+        background: #faf9f6 !important;
     }
 
     /* Column gap fix */
@@ -504,9 +584,29 @@ st.markdown("""
         padding: 0 8px;
     }
 
-    /* Plotly chart backgrounds */
+    /* ======== PLOTLY CHARTS ======== */
     .js-plotly-plot .plotly .main-svg {
         background: transparent !important;
+    }
+
+    /* Make chart text readable */
+    .js-plotly-plot .plotly text {
+        fill: #5a5a5a !important;
+    }
+
+    .js-plotly-plot .plotly .gtitle,
+    .js-plotly-plot .plotly .xtitle,
+    .js-plotly-plot .plotly .ytitle {
+        fill: #5a5a5a !important;
+    }
+
+    .js-plotly-plot .plotly .xtick text,
+    .js-plotly-plot .plotly .ytick text {
+        fill: #6a6a6a !important;
+    }
+
+    .js-plotly-plot .plotly .legend text {
+        fill: #5a5a5a !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -858,11 +958,11 @@ def render_team_analytics():
     fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 2"], mode="lines+markers", name="Team 2", line=dict(color="#5d6b5d", width=2), marker=dict(size=5)))
     fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Storyblok"], mode="lines+markers", name="Storyblok", line=dict(color="#5d7a7a", width=2), marker=dict(size=5)))
     fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#2d2d2d", size=11),
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#5a5a5a", size=11),
         height=280, margin=dict(t=20, b=40, l=40, r=20),
-        xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10)),
-        yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title="Points", tickfont=dict(size=10)),
-        legend=dict(orientation="h", y=1.15, x=0.5, xanchor="center", bgcolor="rgba(0,0,0,0)", font=dict(size=11)),
+        xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10, color="#6a6a6a"), tickangle=-45),
+        yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title="Points", tickfont=dict(size=10, color="#6a6a6a"), titlefont=dict(color="#6a6a6a")),
+        legend=dict(orientation="h", y=1.15, x=0.5, xanchor="center", bgcolor="rgba(0,0,0,0)", font=dict(size=11, color="#5a5a5a")),
         hovermode="x unified"
     )
     st.plotly_chart(fig, use_container_width=True)
@@ -925,10 +1025,10 @@ def render_individual():
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Velocity"], mode="lines+markers", line=dict(color="#5d6b5d", width=2), marker=dict(size=6), fill="tozeroy", fillcolor="rgba(93,107,93,0.1)"))
         fig.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#2d2d2d", size=11),
+            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#5a5a5a", size=11),
             height=220, margin=dict(t=10, b=40, l=40, r=20), showlegend=False,
-            xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10)),
-            yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title="pts/day", tickfont=dict(size=10))
+            xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10, color="#6a6a6a"), tickangle=-45),
+            yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title="pts/day", tickfont=dict(size=10, color="#6a6a6a"), titlefont=dict(color="#6a6a6a"))
         )
         st.plotly_chart(fig, use_container_width=True)
 
