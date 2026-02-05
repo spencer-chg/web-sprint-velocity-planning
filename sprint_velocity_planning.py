@@ -105,8 +105,34 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 .metric .value { font-size: 1.5rem; font-weight: 700; color: #6b7c6b; }
 
 /* Form inputs */
-.stTextInput input, .stNumberInput input, .stDateInput input { background: white !important; border: 1px solid #e5e5e0 !important; border-radius: 8px !important; }
-.stNumberInput button { background: #f5f5f0 !important; }
+.stTextInput input, .stDateInput input { background: white !important; border: 1px solid #e5e5e0 !important; border-radius: 8px !important; }
+
+/* Number input - sage green buttons */
+.stNumberInput input {
+    background: #f5f5f0 !important;
+    border: none !important;
+    text-align: center !important;
+    font-weight: 600 !important;
+}
+.stNumberInput [data-baseweb="input"] {
+    background: #f5f5f0 !important;
+    border: none !important;
+    border-radius: 8px !important;
+}
+.stNumberInput button {
+    background: #6b7c6b !important;
+    color: white !important;
+    border: none !important;
+}
+.stNumberInput button:hover {
+    background: #5a6a5a !important;
+}
+.stNumberInput button:first-of-type {
+    border-radius: 8px 0 0 8px !important;
+}
+.stNumberInput button:last-of-type {
+    border-radius: 0 8px 8px 0 !important;
+}
 
 /* Hide default hr styling issues */
 hr { border: none; height: 1px; background: #e5e5e0; margin: 20px 0; }
@@ -244,31 +270,29 @@ if "buffer" not in st.session_state: st.session_state.buffer = 0.85
 
 # ============== COMPONENTS ==============
 def render_dev_row(dev, team_id):
-    """Compact developer row: [Name] [−] [val] [+] [⋮]"""
+    """Developer row: [Name] [number_input] [⋮]"""
     dev_id = dev["id"]
     first = dev["name"].split()[0]
-    pto = st.session_state.pto.get(dev_id, 0.0)
-    val = int(pto) if pto == int(pto) else pto
 
-    cols = st.columns([3, 1, 1, 1, 1.5])
+    cols = st.columns([3, 2, 1.5])
 
     with cols[0]:
         st.markdown(f"**{first}**")
 
     with cols[1]:
-        if st.button("－", key=f"m_{dev_id}"):
-            st.session_state.pto[dev_id] = max(0, pto - 0.5)
-            st.rerun()
+        # Number input with +/- buttons, no rerun needed
+        val = st.number_input(
+            "pto",
+            min_value=0.0,
+            max_value=10.0,
+            value=st.session_state.pto.get(dev_id, 0.0),
+            step=0.5,
+            key=f"pto_{dev_id}",
+            label_visibility="collapsed"
+        )
+        st.session_state.pto[dev_id] = val  # Update state without rerun
 
     with cols[2]:
-        st.markdown(f"<div style='text-align:center;font-weight:600;height:36px;line-height:36px'>{val}</div>", unsafe_allow_html=True)
-
-    with cols[3]:
-        if st.button("＋", key=f"p_{dev_id}"):
-            st.session_state.pto[dev_id] = min(10, pto + 0.5)
-            st.rerun()
-
-    with cols[4]:
         other = [t for t in TEAMS if t["id"] != team_id]
         sel = st.selectbox("", ["⋮"] + [t["name"] for t in other], key=f"mv_{dev_id}", label_visibility="collapsed")
         if sel != "⋮":
