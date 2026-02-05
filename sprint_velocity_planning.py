@@ -62,9 +62,20 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 .move-link { font-size: 0.75rem; color: #999; margin-left: 12px; cursor: pointer; }
 .move-link:hover { color: #6b7c6b; }
 
-/* Buttons - override Streamlit */
-.stButton > button { background: #6b7c6b !important; color: white !important; border: none !important; border-radius: 10px !important; font-weight: 600 !important; }
-.stButton > button:hover { background: #5a6a5a !important; }
+/* ALL buttons sage green */
+.stButton > button,
+.stButton > button:focus,
+.stButton > button:active,
+.stButton > button[kind="secondary"],
+.stButton > button[kind="primary"] {
+    background: #6b7c6b !important;
+    background-color: #6b7c6b !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+}
+.stButton > button:hover { background: #5a6a5a !important; background-color: #5a6a5a !important; }
 
 /* Selectbox */
 .stSelectbox > div > div { background: white !important; border: 1px solid #e5e5e0 !important; border-radius: 10px !important; }
@@ -222,36 +233,34 @@ if "buffer" not in st.session_state: st.session_state.buffer = 0.85
 def render_dev_row(dev, team_id, team_assignments):
     """Render a single developer row with PTO controls"""
     dev_id = dev["id"]
-    name = dev["name"].split()[0]  # First name only
+    name = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
 
-    # Build the row using columns
-    cols = st.columns([3, 1, 1, 1, 2])
+    # Simple inline layout
+    c1, c2 = st.columns([2, 3])
 
-    with cols[0]:
+    with c1:
         st.markdown(f"**{name}**")
 
-    with cols[1]:
-        if st.button("−", key=f"m_{dev_id}", use_container_width=True):
-            st.session_state.pto[dev_id] = max(0, pto - 0.5)
-            st.rerun()
-
-    with cols[2]:
-        st.markdown(f"<div style='text-align:center; padding:8px; background:#f5f5f0; border-radius:6px; font-weight:600;'>{pto:.1f}</div>", unsafe_allow_html=True)
-
-    with cols[3]:
-        if st.button("+", key=f"p_{dev_id}", use_container_width=True):
-            st.session_state.pto[dev_id] = min(10, pto + 0.5)
-            st.rerun()
-
-    with cols[4]:
-        other = [t for t in TEAMS if t["id"] != team_id]
-        opts = ["Move to..."] + [t["name"] for t in other]
-        sel = st.selectbox("move", opts, key=f"mv_{dev_id}", label_visibility="collapsed")
-        if sel != "Move to...":
-            new_id = next(t["id"] for t in other if t["name"] == sel)
-            save_team_assignment(dev_id, new_id)
-            st.rerun()
+    with c2:
+        b1, b2, b3, b4 = st.columns([1, 1, 1, 2])
+        with b1:
+            if st.button("−", key=f"m_{dev_id}"):
+                st.session_state.pto[dev_id] = max(0, pto - 0.5)
+                st.rerun()
+        with b2:
+            st.markdown(f"<div style='text-align:center; font-weight:600; padding:6px 0;'>{pto:.1f}</div>", unsafe_allow_html=True)
+        with b3:
+            if st.button("+", key=f"p_{dev_id}"):
+                st.session_state.pto[dev_id] = min(10, pto + 0.5)
+                st.rerun()
+        with b4:
+            other = [t for t in TEAMS if t["id"] != team_id]
+            opts = ["Move"] + [t["name"] for t in other]
+            sel = st.selectbox("", opts, key=f"mv_{dev_id}", label_visibility="collapsed")
+            if sel != "Move":
+                save_team_assignment(dev_id, next(t["id"] for t in other if t["name"] == sel))
+                st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
