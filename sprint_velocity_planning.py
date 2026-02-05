@@ -426,47 +426,88 @@ def page_forecast():
 def page_add_sprint():
     team_assignments = load_team_assignments()
 
-    with st.form("add"):
-        c1, c2, c3 = st.columns(3)
-        with c1: name = st.text_input("Sprint Name")
-        with c2: start = st.date_input("Start")
-        with c3: end = st.date_input("End", value=date.today() + timedelta(days=13))
+    # Initialize session state for sprint form
+    if "sprint_pts" not in st.session_state:
+        st.session_state.sprint_pts = {d["id"]: 0.0 for d in DEVELOPERS}
+    if "sprint_pto" not in st.session_state:
+        st.session_state.sprint_pto = {d["id"]: 0.0 for d in DEVELOPERS}
 
-        hols = get_holidays(start, end) if start and end else []
-        if hols: st.info(f"Holidays: {', '.join(h['name'] for h in hols)}")
+    # Sprint info card
+    st.markdown("<div class='team-card'>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        name = st.text_input("Sprint Name")
+    with c2:
+        start = st.date_input("Start")
+    with c3:
+        end = st.date_input("End", value=date.today() + timedelta(days=13))
+    st.markdown("</div>", unsafe_allow_html=True)
 
-        st.markdown("---")
-        st.markdown("<h4 style='text-align:center; color:#4a4a4a; font-weight:600; margin-bottom:16px;'>Developer Points</h4>", unsafe_allow_html=True)
+    hols = get_holidays(start, end) if start and end else []
+    if hols:
+        st.info(f"Holidays: {', '.join(h['name'] for h in hols)}")
 
+    st.markdown("---")
+    st.markdown("<h4 style='text-align:center; color:#4a4a4a; font-weight:600; margin-bottom:16px;'>Developer Points</h4>", unsafe_allow_html=True)
+
+    # Developer rows - 2 columns
+    for i in range(0, len(DEVELOPERS), 2):
+        row_cols = st.columns(2)
+        for j, col in enumerate(row_cols):
+            if i + j < len(DEVELOPERS):
+                dev = DEVELOPERS[i + j]
+                dev_id = dev["id"]
+                with col:
+                    st.markdown(f"**{dev['name']}**")
+
+                    # Pts row: [−] [value] [+] | Team dropdown
+                    c1, c2, c3, c4, c5 = st.columns([1, 2, 1, 0.3, 3])
+                    pts = st.session_state.sprint_pts.get(dev_id, 0.0)
+
+                    with c1:
+                        if st.button("－", key=f"spm_{dev_id}"):
+                            st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
+                            st.rerun()
+                    with c2:
+                        new_pts = st.number_input("Pts", min_value=0.0, value=pts, step=0.5,
+                                                   key=f"spv_{dev_id}", label_visibility="collapsed", format="%.1f")
+                        st.session_state.sprint_pts[dev_id] = new_pts
+                    with c3:
+                        if st.button("＋", key=f"spp_{dev_id}"):
+                            st.session_state.sprint_pts[dev_id] = pts + 0.5
+                            st.rerun()
+                    with c5:
+                        dt = team_assignments.get(dev_id, "team1")
+                        di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
+                        st.selectbox("Team", [t["name"] for t in TEAMS], di, key=f"tm_{dev_id}", label_visibility="collapsed")
+
+    st.markdown("---")
+
+    # Save button
+    if st.button("Save Sprint", type="primary", use_container_width=True):
         assigns = []
-        for i in range(0, len(DEVELOPERS), 2):
-            cols = st.columns(2)
-            for j, col in enumerate(cols):
-                if i + j < len(DEVELOPERS):
-                    dev = DEVELOPERS[i + j]
-                    with col:
-                        st.markdown(f"**{dev['name']}**")
-                        c1, c2, c3 = st.columns(3)
-                        with c1: pts = st.number_input("Pts", 0.0, step=0.5, key=f"sp_{dev['id']}")
-                        with c2: pto = st.number_input("PTO", 0.0, 10.0, step=0.5, key=f"pto_{dev['id']}")
-                        with c3:
-                            dt = team_assignments.get(dev["id"], "team1")
-                            di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
-                            tm = st.selectbox("Team", [t["name"] for t in TEAMS], di, key=f"tm_{dev['id']}")
-                        if pts > 0:
-                            tid = next(t["id"] for t in TEAMS if t["name"] == tm)
-                            assigns.append({"engineerId": dev["id"], "teamId": tid, "storyPoints": pts, "totalPtoDays": pto})
+        for dev in DEVELOPERS:
+            pts = st.session_state.sprint_pts.get(dev["id"], 0)
+            pto = st.session_state.sprint_pto.get(dev["id"], 0)
+            tm_name = st.session_state.get(f"tm_{dev['id']}", TEAMS[0]["name"])
+            tid = next((t["id"] for t in TEAMS if t["name"] == tm_name), "team1")
+            if pts > 0:
+                assigns.append({"engineerId": dev["id"], "teamId": tid, "storyPoints": pts, "totalPtoDays": pto})
 
-        if st.form_submit_button("Save Sprint", type="primary", use_container_width=True):
-            if not name: st.error("Enter sprint name")
-            elif not assigns: st.error("Enter points for at least one dev")
-            else:
-                bd = sum(1 for d in range((end - start).days + 1) if (start + timedelta(days=d)).weekday() < 5)
-                sprint = {"sprintId": f"{start.year}-S{start.month:02d}-{start.day:02d}", "sprintName": name,
-                          "startDate": start.isoformat(), "endDate": end.isoformat(), "sprintDays": bd, "assignments": assigns}
-                if save_sprint(sprint):
-                    st.success(f"'{name}' saved!")
-                    st.balloons()
+        if not name:
+            st.error("Enter sprint name")
+        elif not assigns:
+            st.error("Enter points for at least one dev")
+        else:
+            bd = sum(1 for d in range((end - start).days + 1) if (start + timedelta(days=d)).weekday() < 5)
+            sprint = {"sprintId": f"{start.year}-S{start.month:02d}-{start.day:02d}", "sprintName": name,
+                      "startDate": start.isoformat(), "endDate": end.isoformat(), "sprintDays": bd, "assignments": assigns}
+            if save_sprint(sprint):
+                st.success(f"'{name}' saved!")
+                # Reset form
+                st.session_state.sprint_pts = {d["id"]: 0.0 for d in DEVELOPERS}
+                st.session_state.sprint_pto = {d["id"]: 0.0 for d in DEVELOPERS}
+                st.balloons()
 
 def page_analytics():
     sprints = load_sprints()
