@@ -129,7 +129,7 @@ button[kind="primary"] {
     padding: 0 !important;
     margin: 0 !important;
 }
-/* Markdown containers - strip all spacing for alignment */
+/* Markdown containers - match button height for alignment */
 [data-testid="column"] [data-testid="stMarkdown"] {
     padding: 0 !important;
     margin: 0 !important;
@@ -137,21 +137,35 @@ button[kind="primary"] {
     align-items: center !important;
     justify-content: center !important;
     width: 100% !important;
+    height: 40px !important;
 }
 [data-testid="column"] [data-testid="stMarkdown"] > div {
     padding: 0 !important;
     margin: 0 !important;
     width: 100% !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 [data-testid="column"] [data-testid="stMarkdown"] p {
     padding: 0 !important;
     margin: 0 !important;
+    width: 100% !important;
 }
 
-/* Buttons: fixed size, no extra space */
-.stButton {
+/* Buttons: fixed size, match value box height */
+[data-testid="column"] .stButton {
     padding: 0 !important;
     margin: 0 !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+[data-testid="column"] .stButton > div {
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
 }
 .stButton > button {
     margin: 0 !important;
@@ -399,7 +413,7 @@ def render_dev_row(dev):
             st.session_state.pto[dev_id] = max(0, pto - 0.5)
             st.rerun()
     with c3:
-        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:10px; height:40px; line-height:38px; text-align:center; font-weight:600; font-size:0.9rem; margin-top:-3px;'>{pto:.1f}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:10px; height:40px; line-height:40px; text-align:center; font-weight:600; font-size:0.9rem;'>{pto:.1f}</div>", unsafe_allow_html=True)
     with c4:
         if st.button("＋", key=f"p_{dev_id}"):
             st.session_state.pto[dev_id] = min(10, pto + 0.5)
@@ -422,13 +436,11 @@ def page_forecast():
 
     st.markdown("---")
 
-    # Team columns
-    cols = st.columns(3)
+    # Team cards row (all aligned at top)
+    card_cols = st.columns(3)
     for i, team in enumerate(TEAMS):
-        with cols[i]:
+        with card_cols[i]:
             devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
-
-            # Team card header
             st.markdown(f"""
             <div class="team-card">
                 <h3>{team['name']}</h3>
@@ -436,7 +448,11 @@ def page_forecast():
             </div>
             """, unsafe_allow_html=True)
 
-            # Developer rows
+    # Developer rows (below cards)
+    dev_cols = st.columns(3)
+    for i, team in enumerate(TEAMS):
+        with dev_cols[i]:
+            devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
             if devs:
                 for dev in devs:
                     render_dev_row(dev)
@@ -547,7 +563,7 @@ def page_add_sprint():
                             st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
                             st.rerun()
                     with c2:
-                        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:10px; height:40px; line-height:38px; text-align:center; font-weight:600; font-size:0.9rem; margin-top:-3px;'>{pts:.1f}</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:10px; height:40px; line-height:40px; text-align:center; font-weight:600; font-size:0.9rem;'>{pts:.1f}</div>", unsafe_allow_html=True)
                     with c3:
                         if st.button("＋", key=f"spp_{dev_id}"):
                             st.session_state.sprint_pts[dev_id] = pts + 0.5
