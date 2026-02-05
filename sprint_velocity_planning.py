@@ -77,8 +77,15 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 }
 .stButton > button:hover { background: #5a6a5a !important; background-color: #5a6a5a !important; }
 
-/* Selectbox */
-.stSelectbox > div > div { background: white !important; border: 1px solid #e5e5e0 !important; border-radius: 10px !important; }
+/* Selectbox - three dot menu style */
+.stSelectbox > div > div {
+    background: #f5f5f0 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    min-height: 32px !important;
+}
+.stSelectbox svg { opacity: 0 !important; width: 0 !important; }
+.stSelectbox [data-baseweb="select"] > div { padding: 4px 10px !important; }
 
 /* Forecast card */
 .forecast-card { background: white; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
@@ -230,37 +237,37 @@ if "forecast" not in st.session_state: st.session_state.forecast = None
 if "buffer" not in st.session_state: st.session_state.buffer = 0.85
 
 # ============== COMPONENTS ==============
-def render_dev_row(dev, team_id, team_assignments):
-    """Render a single developer row with PTO controls"""
+def render_dev_row(dev, team_id):
+    """Compact developer row: [Name] [−] [val] [+] [⋮]"""
     dev_id = dev["id"]
-    name = dev["name"].split()[0]
+    first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
+    val = int(pto) if pto == int(pto) else pto
 
-    # Simple inline layout
-    c1, c2 = st.columns([2, 3])
+    cols = st.columns([4, 1.2, 1.5, 1.2, 1.2])
 
-    with c1:
-        st.markdown(f"**{name}**")
+    with cols[0]:
+        st.markdown(f"**{first}**")
 
-    with c2:
-        b1, b2, b3, b4 = st.columns([1, 1, 1, 2])
-        with b1:
-            if st.button("−", key=f"m_{dev_id}"):
-                st.session_state.pto[dev_id] = max(0, pto - 0.5)
-                st.rerun()
-        with b2:
-            st.markdown(f"<div style='text-align:center; font-weight:600; padding:6px 0;'>{pto:.1f}</div>", unsafe_allow_html=True)
-        with b3:
-            if st.button("+", key=f"p_{dev_id}"):
-                st.session_state.pto[dev_id] = min(10, pto + 0.5)
-                st.rerun()
-        with b4:
-            other = [t for t in TEAMS if t["id"] != team_id]
-            opts = ["Move"] + [t["name"] for t in other]
-            sel = st.selectbox("", opts, key=f"mv_{dev_id}", label_visibility="collapsed")
-            if sel != "Move":
-                save_team_assignment(dev_id, next(t["id"] for t in other if t["name"] == sel))
-                st.rerun()
+    with cols[1]:
+        if st.button("−", key=f"m_{dev_id}"):
+            st.session_state.pto[dev_id] = max(0, pto - 0.5)
+            st.rerun()
+
+    with cols[2]:
+        st.markdown(f"<div style='text-align:center;font-weight:600;padding:6px 0'>{val}</div>", unsafe_allow_html=True)
+
+    with cols[3]:
+        if st.button("+", key=f"p_{dev_id}"):
+            st.session_state.pto[dev_id] = min(10, pto + 0.5)
+            st.rerun()
+
+    with cols[4]:
+        other = [t for t in TEAMS if t["id"] != team_id]
+        sel = st.selectbox("", ["⋮"] + [t["name"] for t in other], key=f"mv_{dev_id}", label_visibility="collapsed")
+        if sel != "⋮":
+            save_team_assignment(dev_id, next(t["id"] for t in other if t["name"] == sel))
+            st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
@@ -296,7 +303,7 @@ def page_forecast():
             # Developer rows
             if devs:
                 for dev in devs:
-                    render_dev_row(dev, team["id"], team_assignments)
+                    render_dev_row(dev, team["id"])
             else:
                 st.caption("No developers")
 
