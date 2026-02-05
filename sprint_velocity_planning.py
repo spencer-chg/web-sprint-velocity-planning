@@ -432,8 +432,7 @@ def page_add_sprint():
     if "sprint_pto" not in st.session_state:
         st.session_state.sprint_pto = {d["id"]: 0.0 for d in DEVELOPERS}
 
-    # Sprint info card
-    st.markdown("<div class='team-card'>", unsafe_allow_html=True)
+    # Sprint info
     c1, c2, c3 = st.columns(3)
     with c1:
         name = st.text_input("Sprint Name")
@@ -441,7 +440,6 @@ def page_add_sprint():
         start = st.date_input("Start")
     with c3:
         end = st.date_input("End", value=date.today() + timedelta(days=13))
-    st.markdown("</div>", unsafe_allow_html=True)
 
     hols = get_holidays(start, end) if start and end else []
     if hols:
@@ -480,6 +478,9 @@ def page_add_sprint():
                         dt = team_assignments.get(dev_id, "team1")
                         di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
                         st.selectbox("Team", [t["name"] for t in TEAMS], di, key=f"tm_{dev_id}", label_visibility="collapsed")
+
+        # Add spacing between developer rows
+        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
 
     st.markdown("---")
 
