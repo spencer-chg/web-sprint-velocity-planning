@@ -53,17 +53,14 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
 .stTabs [aria-selected="true"] { color: var(--sage) !important; border-bottom: 2px solid var(--sage) !important; }
 .stTabs [data-baseweb="tab-highlight"] { display: none !important; }
 
-/* === CARDS === */
-.team-card {
-    background: white;
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+/* === TEAM HEADER === */
+.team-header {
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    padding: 8px 0 12px;
 }
-.team-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin: 0 0 4px; }
-.team-card h3 a { display: none !important; }
-.team-card p { font-size: 0.7rem; color: #aaa; margin: 0; letter-spacing: 0.01em; }
 
 .forecast-card {
     background: white;
@@ -359,17 +356,11 @@ def page_forecast():
 
     st.markdown("---")
 
-    # Team cards row - 2 columns with spacer
+    # Team headers - 2 columns with spacer
     card_cols = st.columns([1, 0.15, 1])
     for i, team in enumerate(TEAMS):
-        with card_cols[i * 2]:  # 0 and 2 (skip spacer at 1)
-            devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
-            st.markdown(f"""
-            <div class="team-card">
-                <h3>{team['name']}</h3>
-                <p>{team['pm']} · {len(devs)} devs</p>
-            </div>
-            """, unsafe_allow_html=True)
+        with card_cols[i * 2]:
+            st.markdown(f"<div class='team-header'>{team['name']}</div>", unsafe_allow_html=True)
 
     # Developer rows - 2 columns with spacer
     dev_cols = st.columns([1, 0.15, 1])
