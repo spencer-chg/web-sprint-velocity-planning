@@ -342,7 +342,6 @@ st.markdown("""
     }
 
     /* ======== SELECT BOXES / DROPDOWNS ======== */
-    /* Remove outer container borders */
     .stSelectbox > div {
         border: none !important;
         box-shadow: none !important;
@@ -357,22 +356,26 @@ st.markdown("""
         border: 1px solid #e5e5e0 !important;
         border-radius: 6px !important;
         box-shadow: none !important;
+        min-height: 38px !important;
     }
 
     .stSelectbox [data-baseweb="select"] > div {
         background: #faf9f6 !important;
-        color: #4a4a4a !important;
+        color: #5a5a5a !important;
         border: none !important;
+        font-size: 0.85rem !important;
+        padding: 6px 10px !important;
     }
 
-    /* Override red focus - sage green */
     .stSelectbox [data-baseweb="select"]:focus-within {
-        border-color: #4a5d4a !important;
-        box-shadow: 0 0 0 1px #4a5d4a !important;
+        border-color: #6b7c6b !important;
+        box-shadow: 0 0 0 1px #6b7c6b !important;
     }
 
     .stSelectbox svg {
-        fill: #7a7a7a !important;
+        fill: #8a8a8a !important;
+        width: 16px !important;
+        height: 16px !important;
     }
 
     /* ======== DROPDOWN MENUS - AGGRESSIVE LIGHT BACKGROUND ======== */
@@ -974,18 +977,19 @@ def render_forecast():
         if devs:
             for dev in devs:
                 st.markdown(f"**{dev['name']}**")
-                c1, c2 = st.columns([5, 1])
-                with c1:
-                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
-                    st.session_state.pto_data[dev["id"]] = pto
-                with c2:
-                    other_teams = [t for t in TEAMS if t["id"] != team["id"]]
-                    with st.popover("•••"):
-                        st.write(f"Move to:")
-                        for t in other_teams:
-                            if st.button(t["name"], key=f"mv_{dev['id']}_{t['id']}"):
-                                update_team_assignment(dev["id"], t["id"])
-                                st.rerun()
+                pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}")
+                st.session_state.pto_data[dev["id"]] = pto
+
+                # Move dropdown - compact, below PTO
+                other_teams = [t for t in TEAMS if t["id"] != team["id"]]
+                move_options = ["Move to..."] + [t["name"] for t in other_teams]
+                mv = st.selectbox("Move", move_options, key=f"mv_{dev['id']}", label_visibility="collapsed")
+                if mv != "Move to...":
+                    new_team_id = next(t["id"] for t in other_teams if t["name"] == mv)
+                    update_team_assignment(dev["id"], new_team_id)
+                    st.rerun()
+
+                st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
         else:
             st.markdown("*No developers*")
 
