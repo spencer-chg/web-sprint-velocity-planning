@@ -928,56 +928,58 @@ def render_forecast():
     team_assignments = load_team_assignments()
     sprints = load_sprints()
 
+    # Buffer selection and Calculate button - same height
     col1, col2 = st.columns([3, 1])
     with col1:
         buffer_opts = {"85% (Standard)": 0.85, "70% (Conservative)": 0.70, "100% (Aggressive)": 1.00}
-        sel = st.selectbox("Planning Buffer", list(buffer_opts.keys()), index=0, label_visibility="collapsed")
+        sel = st.selectbox("Planning Buffer", list(buffer_opts.keys()), index=0)
         st.session_state.planning_buffer = buffer_opts[sel]
     with col2:
+        st.markdown("<div style='height:27px;'></div>", unsafe_allow_html=True)
         calc = st.button("Calculate", type="primary", use_container_width=True)
 
     st.markdown("---")
 
-    # Team columns
-    cols = st.columns(3)
-    for idx, team in enumerate(TEAMS):
-        with cols[idx]:
-            color = team["color"]
-            devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
+    # Developer list - full width for proper inputs
+    for team in TEAMS:
+        devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
+        if not devs:
+            continue
 
-            st.markdown(f'''
-            <div class="team-card {color}">
-                <div class="team-header">
-                    <div>
-                        <div class="team-name {color}">{team['name']}</div>
-                        <div class="team-meta">{team['pmName']}</div>
-                    </div>
-                    <span class="team-badge">{len(devs)} devs</span>
+        # Team header
+        st.markdown(f'''
+        <div class="team-card">
+            <div class="team-header">
+                <div>
+                    <div class="team-name">{team['displayName']}</div>
+                    <div class="team-meta">{team['pmName']}</div>
                 </div>
+                <span class="team-badge">{len(devs)} devs</span>
             </div>
-            ''', unsafe_allow_html=True)
+        </div>
+        ''', unsafe_allow_html=True)
 
-            # Spacing after team card
-            st.markdown('<div style="height: 12px;"></div>', unsafe_allow_html=True)
+        # Developers in 2-column grid
+        for i in range(0, len(devs), 2):
+            cols = st.columns(2)
+            for j, col in enumerate(cols):
+                if i + j < len(devs):
+                    dev = devs[i + j]
+                    others = [t for t in TEAMS if t["id"] != team["id"]]
+                    with col:
+                        st.markdown(f"**{dev['name']}**")
+                        c1, c2 = st.columns(2)
+                        with c1:
+                            pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}")
+                            st.session_state.pto_data[dev["id"]] = pto
+                        with c2:
+                            mv = st.selectbox("Move to", ["—"] + [t["name"] for t in others], key=f"mv_{dev['id']}")
+                            if mv != "—":
+                                new_team = next(t["id"] for t in others if t["name"] == mv)
+                                update_team_assignment(dev["id"], new_team)
+                                st.rerun()
 
-            for dev in devs:
-                others = [t for t in TEAMS if t["id"] != team["id"]]
-                other_names = [t["name"] for t in others]
-
-                # Clean row with name and inputs
-                with st.container():
-                    c1, c2, c3 = st.columns([2, 1.2, 1.2])
-                    with c1:
-                        st.markdown(f'<div style="padding: 8px 0; font-weight: 500; color: #3d3d3d;">{dev["name"]}</div>', unsafe_allow_html=True)
-                    with c2:
-                        pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
-                        st.session_state.pto_data[dev["id"]] = pto
-                    with c3:
-                        mv = st.selectbox("Move", ["—"] + other_names, key=f"mv_{dev['id']}", label_visibility="collapsed")
-                        if mv != "—":
-                            new_team = next(t["id"] for t in others if t["name"] == mv)
-                            update_team_assignment(dev["id"], new_team)
-                            st.rerun()
+        st.markdown("<div style='height:12px;'></div>", unsafe_allow_html=True)
 
     if calc:
         buf = st.session_state.planning_buffer
