@@ -106,28 +106,14 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     color: #6b7c6b !important;
 }
 
-/* Move menu popup */
-.move-menu-title {
-    color: #999;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    margin: 0 0 4px 4px;
-    padding: 12px 0 0 0;
-}
-
-/* Style move menu buttons as menu items */
-.move-menu-title + div .stButton > button,
-.move-menu-title ~ div .stButton > button {
+/* Move menu buttons - white style */
+button[kind="secondary"] {
     background: white !important;
     color: #4a4a4a !important;
     border: 1px solid #e5e5e0 !important;
-    font-weight: 500 !important;
-    margin-bottom: 6px !important;
 }
-.move-menu-title + div .stButton > button:hover,
-.move-menu-title ~ div .stButton > button:hover {
-    background: #f5f5f0 !important;
+button[kind="secondary"]:hover {
+    background: #f8f8f5 !important;
     border-color: #6b7c6b !important;
     color: #6b7c6b !important;
 }
@@ -340,16 +326,19 @@ def render_dev_row(dev, team_id):
     # Show move menu when toggled
     if st.session_state.get(menu_key, False):
         other = [t for t in TEAMS if t["id"] != team_id]
-        menu_cols = st.columns([3, 5])
-        with menu_cols[1]:
-            st.markdown('<div class="move-menu">', unsafe_allow_html=True)
-            st.markdown('<p class="move-menu-title">MOVE TO</p>', unsafe_allow_html=True)
+        st.markdown(f"""
+        <div style='background:white;border-radius:12px;padding:14px 16px 10px;
+                    box-shadow:0 4px 20px rgba(0,0,0,0.12);margin:8px 0 16px;max-width:280px;margin-left:auto;'>
+            <p style='color:#999;font-size:0.65rem;font-weight:600;letter-spacing:0.05em;margin:0 0 10px 2px;'>MOVE TO</p>
+        </div>
+        """, unsafe_allow_html=True)
+        cols_menu = st.columns([1, 2])
+        with cols_menu[1]:
             for t in other:
-                if st.button(t["name"], key=f"mv_{dev_id}_{t['id']}", use_container_width=True):
+                if st.button(f"  {t['name']}  ", key=f"mv_{dev_id}_{t['id']}", use_container_width=True, type="secondary"):
                     save_team_assignment(dev_id, t["id"])
                     st.session_state[menu_key] = False
                     st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
 
 # ============== PAGES ==============
 def page_forecast():
