@@ -504,26 +504,22 @@ def page_add_sprint():
                     st.markdown(f"**{dev['name']}**")
 
                     # Pts row: [−] [value] [+] | Team dropdown
-                    c1, c2, c3, c4, c5 = st.columns([1, 1, 1, 0.3, 3], gap="small")
                     pts = st.session_state.sprint_pts.get(dev_id, 0.0)
 
-                    with c1:
-                        if st.button("－", key=f"spm_{dev_id}"):
-                            st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
-                            st.rerun()
-                    with c2:
-                        val_str = st.text_input("", value=f"{pts:.1f}", key=f"spv_{dev_id}", label_visibility="collapsed")
-                        try:
-                            parsed = float(val_str)
-                            if parsed >= 0:
-                                st.session_state.sprint_pts[dev_id] = parsed
-                        except:
-                            pass
-                    with c3:
-                        if st.button("＋", key=f"spp_{dev_id}"):
-                            st.session_state.sprint_pts[dev_id] = pts + 0.5
-                            st.rerun()
-                    with c5:
+                    left, right = st.columns([3, 2])
+                    with left:
+                        btn_cols = st.columns([1, 1, 1])
+                        with btn_cols[0]:
+                            if st.button("－", key=f"spm_{dev_id}", use_container_width=True):
+                                st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
+                                st.rerun()
+                        with btn_cols[1]:
+                            st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:8px; padding:8px 0; text-align:center; font-weight:600;'>{pts:.1f}</div>", unsafe_allow_html=True)
+                        with btn_cols[2]:
+                            if st.button("＋", key=f"spp_{dev_id}", use_container_width=True):
+                                st.session_state.sprint_pts[dev_id] = pts + 0.5
+                                st.rerun()
+                    with right:
                         dt = team_assignments.get(dev_id, "team1")
                         di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
                         st.selectbox("Team", [t["name"] for t in TEAMS], di, key=f"tm_{dev_id}", label_visibility="collapsed")
