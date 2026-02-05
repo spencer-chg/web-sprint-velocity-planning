@@ -252,58 +252,75 @@ st.markdown("""
         color: #2d2d2d !important;
     }
 
-    /* Buttons - dark sage with cream/white text (high contrast, accessible) */
+    /* Buttons - dark sage with WHITE text (high contrast, accessible) */
     .stButton > button {
         background: #4a5d4a !important;
-        color: #fffef8 !important;
+        color: #ffffff !important;
         border: none !important;
         border-radius: 8px !important;
         padding: 12px 24px !important;
-        font-weight: 500 !important;
+        font-weight: 600 !important;
         font-size: 0.9rem !important;
         transition: background 0.2s !important;
     }
 
     .stButton > button:hover {
         background: #3d4d3d !important;
-        color: #fffef8 !important;
+        color: #ffffff !important;
     }
 
     .stButton > button:active, .stButton > button:focus {
         background: #3d4d3d !important;
-        color: #fffef8 !important;
+        color: #ffffff !important;
         box-shadow: none !important;
     }
 
-    /* Form inputs - subtle borders like Pointing Poker */
-    .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
-    .stDateInput > div > div > input {
-        background: #fff !important;
+    .stButton > button * {
+        color: #ffffff !important;
+    }
+
+    /* ======== NUMBER INPUTS - CREAM BACKGROUND, NOT BLACK ======== */
+    /* The entire number input container */
+    .stNumberInput > div > div {
+        background: #faf9f6 !important;
         border: 1px solid #e0e0db !important;
         border-radius: 8px !important;
-        color: #3d3d3d !important;
-        font-size: 0.95rem !important;
-        padding: 10px 14px !important;
     }
 
-    .stTextInput > div > div > input:focus,
-    .stNumberInput > div > div > input:focus {
-        border-color: #4a5d4a !important;
-        box-shadow: 0 0 0 1px #4a5d4a !important;
+    /* The input field itself */
+    .stNumberInput input {
+        background: #faf9f6 !important;
+        color: #4a4a4a !important;
+        border: none !important;
+        font-size: 0.9rem !important;
     }
 
-    /* Select boxes */
-    .stSelectbox > div > div {
-        background: #fff !important;
-        border-radius: 8px !important;
+    /* The step buttons (- and +) */
+    .stNumberInput button {
+        background: #faf9f6 !important;
+        color: #6a6a6a !important;
+        border: none !important;
     }
 
+    .stNumberInput button:hover {
+        background: #f0efec !important;
+        color: #4a4a4a !important;
+    }
+
+    /* Step button SVG icons */
+    .stNumberInput button svg {
+        fill: #6a6a6a !important;
+        stroke: #6a6a6a !important;
+    }
+
+    /* ======== SELECT BOXES / DROPDOWNS - CREAM BACKGROUND ======== */
+    .stSelectbox > div > div,
+    .stSelectbox [data-baseweb="select"],
     .stSelectbox [data-baseweb="select"] > div {
-        background: #fff !important;
+        background: #faf9f6 !important;
         border: 1px solid #e0e0db !important;
         border-radius: 8px !important;
-        color: #3d3d3d !important;
+        color: #4a4a4a !important;
     }
 
     .stSelectbox [data-baseweb="select"] > div:focus-within {
@@ -311,9 +328,45 @@ st.markdown("""
         box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
-    /* Number input container */
-    .stNumberInput > div {
-        background: transparent !important;
+    /* Dropdown arrow */
+    .stSelectbox svg {
+        fill: #6a6a6a !important;
+    }
+
+    /* Dropdown menu */
+    [data-baseweb="popover"] {
+        background: #faf9f6 !important;
+        border: 1px solid #e0e0db !important;
+    }
+
+    [data-baseweb="menu"] {
+        background: #faf9f6 !important;
+    }
+
+    [data-baseweb="menu"] li {
+        background: #faf9f6 !important;
+        color: #4a4a4a !important;
+    }
+
+    [data-baseweb="menu"] li:hover {
+        background: #f0efec !important;
+    }
+
+    /* ======== TEXT INPUTS ======== */
+    .stTextInput > div > div > input,
+    .stDateInput > div > div > input {
+        background: #faf9f6 !important;
+        border: 1px solid #e0e0db !important;
+        border-radius: 8px !important;
+        color: #4a4a4a !important;
+        font-size: 0.95rem !important;
+        padding: 10px 14px !important;
+    }
+
+    .stTextInput > div > div > input:focus,
+    .stDateInput > div > div > input:focus {
+        border-color: #4a5d4a !important;
+        box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
     /* Metric cards */
