@@ -351,7 +351,7 @@ def page_forecast():
     # Buffer selector + Calculate button - centered, compact
     _, c1, gap, c2, _ = st.columns([1, 1, 0.2, 0.8, 1])
     with c1:
-        st.markdown("<div style='margin-top:6px'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='margin-top:12px'></div>", unsafe_allow_html=True)
         buf_val = st.select_slider(
             "Buffer",
             options=["70%", "85%", "100%"],
