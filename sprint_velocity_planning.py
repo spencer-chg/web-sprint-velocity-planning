@@ -450,10 +450,11 @@ def page_forecast():
 
     st.markdown("---")
 
-    # Team cards row (all aligned at top)
-    card_cols = st.columns(3)
+    # Team cards row (all aligned at top) - match dev row spacing
+    card_cols = st.columns([1, 0.1, 1, 0.1, 1])
+    team_col_indices = [0, 2, 4]
     for i, team in enumerate(TEAMS):
-        with card_cols[i]:
+        with card_cols[team_col_indices[i]]:
             devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
             st.markdown(f"""
             <div class="team-card">
@@ -462,16 +463,17 @@ def page_forecast():
             </div>
             """, unsafe_allow_html=True)
 
-    # Developer rows (below cards)
-    dev_cols = st.columns(3)
+    # Developer rows (below cards) - add gap between columns
+    dev_cols = st.columns([1, 0.1, 1, 0.1, 1])
+    team_col_indices = [0, 2, 4]  # Skip the spacer columns
     for i, team in enumerate(TEAMS):
-        with dev_cols[i]:
+        with dev_cols[team_col_indices[i]]:
             devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
             if devs:
                 for dev in devs:
                     render_dev_row(dev)
             else:
-                st.caption("No developers")
+                st.markdown("<p style='color:#999; font-size:0.85rem; text-align:center; margin-top:8px;'>No developers</p>", unsafe_allow_html=True)
 
     # Team management section
     st.markdown("---")
@@ -558,14 +560,15 @@ def page_add_sprint():
     st.markdown("---")
     st.markdown("<h4 style='text-align:center; color:#4a4a4a; font-weight:600; margin-bottom:16px;'>Developer Points</h4>", unsafe_allow_html=True)
 
-    # Developer rows - 2 columns
+    # Developer rows - 2 columns with gap
     for i in range(0, len(DEVELOPERS), 2):
-        row_cols = st.columns(2)
-        for j, col in enumerate(row_cols):
+        row_cols = st.columns([1, 0.1, 1])
+        col_indices = [0, 2]  # Skip spacer column
+        for j, col_idx in enumerate(col_indices):
             if i + j < len(DEVELOPERS):
                 dev = DEVELOPERS[i + j]
                 dev_id = dev["id"]
-                with col:
+                with row_cols[col_idx]:
                     st.markdown(f"**{dev['name']}**")
 
                     # Pts row: [−] [value] [+] | Team dropdown
