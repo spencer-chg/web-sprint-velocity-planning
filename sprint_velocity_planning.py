@@ -93,29 +93,33 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     border-radius: 8px !important;
 }
 
-/* Three-dot button - minimal style */
-[data-testid="column"]:last-child .stButton > button {
+/* Expander for move menu */
+[data-testid="column"]:last-child .stExpander {
+    border: none !important;
+}
+[data-testid="column"]:last-child .stExpander summary {
     background: transparent !important;
+    border: none !important;
+    padding: 4px 8px !important;
+    font-size: 1.2rem !important;
     color: #999 !important;
-    font-size: 1.3rem !important;
-    letter-spacing: 1px !important;
-    padding: 0 8px !important;
 }
-[data-testid="column"]:last-child .stButton > button:hover {
+[data-testid="column"]:last-child .stExpander summary:hover {
     background: #e8e8e3 !important;
-    color: #6b7c6b !important;
+    border-radius: 8px !important;
 }
-
-/* Move menu buttons - white style */
-button[kind="secondary"] {
+[data-testid="column"]:last-child .stExpander summary span {
+    font-size: 1.2rem !important;
+}
+[data-testid="column"]:last-child .stExpander [data-testid="stExpanderDetails"] {
     background: white !important;
-    color: #4a4a4a !important;
-    border: 1px solid #e5e5e0 !important;
-}
-button[kind="secondary"]:hover {
-    background: #f8f8f5 !important;
-    border-color: #6b7c6b !important;
-    color: #6b7c6b !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important;
+    padding: 12px !important;
+    position: absolute !important;
+    right: 0 !important;
+    min-width: 160px !important;
+    z-index: 100 !important;
 }
 
 /* Forecast card */
@@ -320,24 +324,12 @@ def render_dev_row(dev, team_id):
             st.session_state.pto[dev_id] = min(10, pto + 0.5)
 
     with cols[4]:
-        if st.button("⋮", key=f"dots_{dev_id}"):
-            st.session_state[menu_key] = not st.session_state.get(menu_key, False)
-
-    # Show move menu when toggled
-    if st.session_state.get(menu_key, False):
         other = [t for t in TEAMS if t["id"] != team_id]
-        st.markdown(f"""
-        <div style='background:white;border-radius:12px;padding:14px 16px 10px;
-                    box-shadow:0 4px 20px rgba(0,0,0,0.12);margin:8px 0 16px;max-width:280px;margin-left:auto;'>
-            <p style='color:#999;font-size:0.65rem;font-weight:600;letter-spacing:0.05em;margin:0 0 10px 2px;'>MOVE TO</p>
-        </div>
-        """, unsafe_allow_html=True)
-        cols_menu = st.columns([1, 2])
-        with cols_menu[1]:
+        with st.expander("⋮", expanded=False):
+            st.caption("Move to")
             for t in other:
-                if st.button(f"  {t['name']}  ", key=f"mv_{dev_id}_{t['id']}", use_container_width=True, type="secondary"):
+                if st.button(t["name"], key=f"mv_{dev_id}_{t['id']}"):
                     save_team_assignment(dev_id, t["id"])
-                    st.session_state[menu_key] = False
                     st.rerun()
 
 # ============== PAGES ==============
