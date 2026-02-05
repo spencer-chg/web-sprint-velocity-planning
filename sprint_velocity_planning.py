@@ -857,7 +857,9 @@ def load_team_assignments():
 
 def update_team_assignment(engineer_id, team_id):
     try:
-        supabase.table("team_assignments").upsert({
+        # Delete existing assignment first, then insert new one
+        supabase.table("team_assignments").delete().eq("engineer_id", engineer_id).execute()
+        supabase.table("team_assignments").insert({
             "engineer_id": engineer_id,
             "team_id": team_id
         }).execute()
@@ -928,58 +930,55 @@ def render_forecast():
     team_assignments = load_team_assignments()
     sprints = load_sprints()
 
-    # Buffer selection and Calculate button - same height
+    # Build editable dataframe for PTO
+    team_names = {t["id"]: t["name"] for t in TEAMS}
+    df_data = []
+    for dev in DEVELOPERS:
+        current_team = team_assignments.get(dev["id"], "team1")
+        df_data.append({
+            "id": dev["id"],
+            "Developer": dev["name"],
+            "Team": team_names.get(current_team, "Team 1"),
+            "PTO Days": st.session_state.pto_data.get(dev["id"], 0.0)
+        })
+
+    df = pd.DataFrame(df_data)
+
+    # Controls row
     col1, col2 = st.columns([3, 1])
     with col1:
         buffer_opts = {"85% (Standard)": 0.85, "70% (Conservative)": 0.70, "100% (Aggressive)": 1.00}
-        sel = st.selectbox("Planning Buffer", list(buffer_opts.keys()), index=0)
+        sel = st.selectbox("Planning Buffer", list(buffer_opts.keys()), index=0, label_visibility="collapsed")
         st.session_state.planning_buffer = buffer_opts[sel]
     with col2:
-        st.markdown("<div style='height:27px;'></div>", unsafe_allow_html=True)
         calc = st.button("Calculate", type="primary", use_container_width=True)
 
     st.markdown("---")
 
-    # Developer list - full width for proper inputs
-    for team in TEAMS:
-        devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
-        if not devs:
-            continue
+    # Editable table for PTO
+    edited_df = st.data_editor(
+        df,
+        column_config={
+            "id": None,  # Hide ID column
+            "Developer": st.column_config.TextColumn("Developer", disabled=True, width="medium"),
+            "Team": st.column_config.SelectboxColumn("Team", options=[t["name"] for t in TEAMS], width="small"),
+            "PTO Days": st.column_config.NumberColumn("PTO Days", min_value=0.0, max_value=10.0, step=0.5, width="small")
+        },
+        hide_index=True,
+        use_container_width=True,
+        key="forecast_editor"
+    )
 
-        # Team header
-        st.markdown(f'''
-        <div class="team-card">
-            <div class="team-header">
-                <div>
-                    <div class="team-name">{team['displayName']}</div>
-                    <div class="team-meta">{team['pmName']}</div>
-                </div>
-                <span class="team-badge">{len(devs)} devs</span>
-            </div>
-        </div>
-        ''', unsafe_allow_html=True)
+    # Sync edits back to session state and database
+    for _, row in edited_df.iterrows():
+        dev_id = row["id"]
+        st.session_state.pto_data[dev_id] = row["PTO Days"]
 
-        # Developers in 2-column grid
-        for i in range(0, len(devs), 2):
-            cols = st.columns(2)
-            for j, col in enumerate(cols):
-                if i + j < len(devs):
-                    dev = devs[i + j]
-                    others = [t for t in TEAMS if t["id"] != team["id"]]
-                    with col:
-                        st.markdown(f"**{dev['name']}**")
-                        c1, c2 = st.columns(2)
-                        with c1:
-                            pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}")
-                            st.session_state.pto_data[dev["id"]] = pto
-                        with c2:
-                            mv = st.selectbox("Move to", ["—"] + [t["name"] for t in others], key=f"mv_{dev['id']}")
-                            if mv != "—":
-                                new_team = next(t["id"] for t in others if t["name"] == mv)
-                                update_team_assignment(dev["id"], new_team)
-                                st.rerun()
-
-        st.markdown("<div style='height:12px;'></div>", unsafe_allow_html=True)
+        # Check if team changed
+        new_team_name = row["Team"]
+        new_team_id = next((t["id"] for t in TEAMS if t["name"] == new_team_name), None)
+        if new_team_id and team_assignments.get(dev_id) != new_team_id:
+            update_team_assignment(dev_id, new_team_id)
 
     if calc:
         buf = st.session_state.planning_buffer
