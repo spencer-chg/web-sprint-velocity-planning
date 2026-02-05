@@ -293,30 +293,52 @@ st.markdown("""
     }
 
     /* ======== NUMBER INPUTS ======== */
-    /* Input field - cream background */
+    /* Input wrapper */
     .stNumberInput [data-baseweb="input"] {
         background-color: #faf9f6 !important;
         border: 1px solid #e0e0db !important;
-        border-radius: 8px !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
     }
 
+    /* Text field */
     .stNumberInput input {
         background-color: #faf9f6 !important;
         color: #4a4a4a !important;
+        font-weight: 500 !important;
+        text-align: center !important;
     }
 
-    /* +/- buttons - sage green */
+    /* +/- buttons - BIG and PRESSABLE */
     .stNumberInput [data-baseweb="input"] button {
         background-color: #6b7c6b !important;
         border: none !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        padding: 12px !important;
+        transition: background-color 0.15s ease !important;
+    }
+
+    .stNumberInput [data-baseweb="input"] button:first-of-type {
+        border-radius: 10px 0 0 10px !important;
+    }
+
+    .stNumberInput [data-baseweb="input"] button:last-of-type {
+        border-radius: 0 10px 10px 0 !important;
     }
 
     .stNumberInput [data-baseweb="input"] button:hover {
-        background-color: #5a6b5a !important;
+        background-color: #5a6a5a !important;
+    }
+
+    .stNumberInput [data-baseweb="input"] button:active {
+        background-color: #4a5a4a !important;
     }
 
     .stNumberInput [data-baseweb="input"] button svg {
         fill: white !important;
+        width: 20px !important;
+        height: 20px !important;
     }
 
     /* ======== SELECT BOXES / DROPDOWNS ======== */
@@ -951,14 +973,20 @@ def render_forecast():
 
         if devs:
             for dev in devs:
-                st.markdown(f"**{dev['name']}**")
-                pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}")
-                st.session_state.pto_data[dev["id"]] = pto
-                other_teams = [t for t in TEAMS if t["id"] != team["id"]]
-                mv = st.selectbox("Move to", ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}")
-                if mv != "—":
-                    update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
-                    st.rerun()
+                c1, c2, c3 = st.columns([3, 4, 1])
+                with c1:
+                    st.markdown(f"<div style='padding:10px 0; font-weight:500; font-size:0.85rem;'>{dev['name']}</div>", unsafe_allow_html=True)
+                with c2:
+                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+                    st.session_state.pto_data[dev["id"]] = pto
+                with c3:
+                    other_teams = [t for t in TEAMS if t["id"] != team["id"]]
+                    with st.popover("⋮"):
+                        st.markdown(f"**Move {dev['name']}**")
+                        for t in other_teams:
+                            if st.button(t["name"], key=f"mv_{dev['id']}_{t['id']}", use_container_width=True):
+                                update_team_assignment(dev["id"], t["id"])
+                                st.rerun()
         else:
             st.markdown("*No developers*")
 
