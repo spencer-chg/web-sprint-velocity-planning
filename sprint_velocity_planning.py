@@ -62,7 +62,7 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 .move-link { font-size: 0.75rem; color: #999; margin-left: 12px; cursor: pointer; }
 .move-link:hover { color: #6b7c6b; }
 
-/* ALL buttons sage green */
+/* ALL buttons sage green + vertical align */
 .stButton > button,
 .stButton > button:focus,
 .stButton > button:active,
@@ -74,8 +74,17 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     border: none !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
+    padding: 0 !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    line-height: 36px !important;
 }
 .stButton > button:hover { background: #5a6a5a !important; background-color: #5a6a5a !important; }
+
+/* Align all column content */
+[data-testid="column"] { display: flex; align-items: center; justify-content: center; }
+[data-testid="column"] > div { width: 100%; }
+[data-testid="column"] .stButton { display: flex; justify-content: center; }
 
 /* Selectbox default */
 .stSelectbox > div > div {
@@ -252,7 +261,7 @@ def render_dev_row(dev, team_id):
             st.rerun()
 
     with cols[2]:
-        st.markdown(f"<div style='text-align:center;font-weight:600;padding:6px 0'>{val}</div>", unsafe_allow_html=True)
+        st.markdown(f"<div style='text-align:center;font-weight:600;height:36px;line-height:36px'>{val}</div>", unsafe_allow_html=True)
 
     with cols[3]:
         if st.button("＋", key=f"p_{dev_id}"):
