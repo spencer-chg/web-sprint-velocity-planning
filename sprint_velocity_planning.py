@@ -166,7 +166,10 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
     letter-spacing: -0.01em;
 }
 
-/* === EXPANDER === */
+/* === EXPANDER - hide broken arrow text === */
+[data-testid="stExpander"] summary > span:first-child { font-size: 0 !important; }
+[data-testid="stExpander"] summary > span:first-child::after { content: "▸ "; font-size: 0.9rem !important; }
+[data-testid="stExpander"][open] summary > span:first-child::after { content: "▾ "; }
 .streamlit-expanderHeader { font-size: 0.9rem !important; font-weight: 500 !important; color: var(--text-muted) !important; }
 .streamlit-expanderContent { padding-top: 12px !important; }
 
