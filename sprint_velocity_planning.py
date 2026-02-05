@@ -344,12 +344,13 @@ def page_forecast():
     # Use cached data - no DB calls on +/- clicks
     team_assignments = get_team_assignments()
 
-    # Buffer selector + Calculate button - centered and compact
-    _, center, _ = st.columns([1, 2, 1])
-    with center:
-        buf_opts = {"85% (Standard)": 0.85, "70% (Conservative)": 0.70, "100% (Aggressive)": 1.0}
-        sel = st.selectbox("Planning Buffer", list(buf_opts.keys()), label_visibility="collapsed")
+    # Buffer selector + Calculate button - side by side, centered
+    _, c1, c2, _ = st.columns([1, 1.5, 0.8, 1])
+    with c1:
+        buf_opts = {"85%": 0.85, "70%": 0.70, "100%": 1.0}
+        sel = st.selectbox("Buffer", list(buf_opts.keys()), label_visibility="collapsed")
         st.session_state.buffer = buf_opts[sel]
+    with c2:
         calc_btn = st.button("Calculate", type="primary", use_container_width=True)
 
     st.markdown("---")
