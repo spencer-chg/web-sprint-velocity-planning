@@ -270,29 +270,31 @@ if "buffer" not in st.session_state: st.session_state.buffer = 0.85
 
 # ============== COMPONENTS ==============
 def render_dev_row(dev, team_id):
-    """Developer row: [Name] [number_input] [⋮]"""
+    """Developer row: [Name] [−] [input] [+] [⋮]"""
     dev_id = dev["id"]
     first = dev["name"].split()[0]
+    pto = st.session_state.pto.get(dev_id, 0.0)
 
-    cols = st.columns([3, 2, 1.5])
+    cols = st.columns([3, 1, 1.5, 1, 1.5])
 
     with cols[0]:
         st.markdown(f"**{first}**")
 
     with cols[1]:
-        # Number input with +/- buttons, no rerun needed
-        val = st.number_input(
-            "pto",
-            min_value=0.0,
-            max_value=10.0,
-            value=st.session_state.pto.get(dev_id, 0.0),
-            step=0.5,
-            key=f"pto_{dev_id}",
-            label_visibility="collapsed"
-        )
-        st.session_state.pto[dev_id] = val  # Update state without rerun
+        if st.button("－", key=f"m_{dev_id}"):
+            st.session_state.pto[dev_id] = max(0, pto - 0.5)
 
     with cols[2]:
+        # Editable input
+        val = st.number_input("", min_value=0.0, max_value=10.0, value=pto, step=0.5,
+                              key=f"input_{dev_id}", label_visibility="collapsed", format="%.1f")
+        st.session_state.pto[dev_id] = val
+
+    with cols[3]:
+        if st.button("＋", key=f"p_{dev_id}"):
+            st.session_state.pto[dev_id] = min(10, pto + 0.5)
+
+    with cols[4]:
         other = [t for t in TEAMS if t["id"] != team_id]
         sel = st.selectbox("", ["⋮"] + [t["name"] for t in other], key=f"mv_{dev_id}", label_visibility="collapsed")
         if sel != "⋮":
