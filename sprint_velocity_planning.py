@@ -93,46 +93,24 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
     background: var(--sage) !important;
     color: white !important;
     border: none !important;
-    border-radius: 12px !important;
+    border-radius: 10px !important;
     font-weight: 600 !important;
-    font-size: 1.1rem !important;
-    height: 42px !important;
-    width: 42px !important;
-    min-width: 42px !important;
-    max-width: 42px !important;
-    padding: 0 !important;
-    margin: 0 auto !important;
+    font-size: 0.9rem !important;
+    padding: 10px 20px !important;
     transition: all 0.15s ease !important;
     box-shadow: 0 2px 4px rgba(107,124,107,0.2) !important;
 }
 .stButton button:hover {
     background: var(--sage-dark) !important;
-    transform: translateY(-1px) !important;
     box-shadow: 0 4px 8px rgba(107,124,107,0.25) !important;
 }
-.stButton button:active { transform: translateY(0) !important; }
-.stButton { display: flex !important; justify-content: center !important; }
 
-/* Primary buttons (Calculate, Save) - full width */
-button[kind="primary"] {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 48px !important;
-    font-size: 0.95rem !important;
-    letter-spacing: 0.01em !important;
-}
-
-/* Disabled button = value display */
-.stButton button:disabled {
-    background: white !important;
-    color: var(--text) !important;
-    border: 1px solid #e5e5e0 !important;
-    opacity: 1 !important;
-    cursor: default !important;
-    box-shadow: none !important;
+/* Number inputs */
+.stNumberInput input {
+    text-align: center !important;
+    font-weight: 600 !important;
     font-size: 0.95rem !important;
 }
-.stButton button:disabled:hover { transform: none !important; }
 
 /* === FORM INPUTS === */
 .stTextInput input, .stDateInput input {
@@ -349,29 +327,22 @@ def get_sprints(force_refresh=False):
 
 # ============== COMPONENTS ==============
 def render_dev_row(dev):
-    """Clean developer row: [Name] [−] [value] [+]"""
+    """Developer row: [Name] [number input with +/-]"""
     dev_id = dev["id"]
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
 
-    c1, c2 = st.columns([2, 3])
-
+    c1, c2 = st.columns([2, 1])
     with c1:
         st.markdown(f"**{first}**")
     with c2:
-        # All three in one row using buttons so they align
-        b1, b2, b3 = st.columns(3)
-        with b1:
-            if st.button("－", key=f"m_{dev_id}"):
-                st.session_state.pto[dev_id] = max(0, pto - 0.5)
-                st.rerun()
-        with b2:
-            # Value as a disabled-looking button for perfect alignment
-            st.button(f"{pto:.1f}", key=f"v_{dev_id}", disabled=True)
-        with b3:
-            if st.button("＋", key=f"p_{dev_id}"):
-                st.session_state.pto[dev_id] = min(10, pto + 0.5)
-                st.rerun()
+        new_val = st.number_input(
+            "PTO", value=pto, min_value=0.0, max_value=10.0, step=0.5,
+            key=f"pto_{dev_id}", label_visibility="collapsed"
+        )
+        if new_val != pto:
+            st.session_state.pto[dev_id] = new_val
+            st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
@@ -512,22 +483,16 @@ def page_add_sprint():
                 with row_cols[col_idx]:
                     st.markdown(f"**{dev['name']}**")
 
-                    # Pts row: [−] [value] [+] | Team dropdown
                     pts = st.session_state.sprint_pts.get(dev_id, 0.0)
-
-                    left, right = st.columns([3, 2])
+                    left, right = st.columns([1, 1])
                     with left:
-                        b1, b2, b3 = st.columns(3)
-                        with b1:
-                            if st.button("－", key=f"spm_{dev_id}"):
-                                st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
-                                st.rerun()
-                        with b2:
-                            st.button(f"{pts:.1f}", key=f"spv_{dev_id}", disabled=True)
-                        with b3:
-                            if st.button("＋", key=f"spp_{dev_id}"):
-                                st.session_state.sprint_pts[dev_id] = pts + 0.5
-                                st.rerun()
+                        new_pts = st.number_input(
+                            "Points", value=pts, min_value=0.0, step=0.5,
+                            key=f"sp_{dev_id}", label_visibility="collapsed"
+                        )
+                        if new_pts != pts:
+                            st.session_state.sprint_pts[dev_id] = new_pts
+                            st.rerun()
                     with right:
                         dt = team_assignments.get(dev_id, "team1")
                         di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
