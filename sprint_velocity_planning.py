@@ -118,26 +118,33 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     display: none !important;
 }
 
-/* Dropdown menu - FORCE wider */
-[data-baseweb="popover"] {
-    min-width: 180px !important;
-    width: auto !important;
-}
-[data-baseweb="menu"],
-[data-baseweb="listbox"],
-[role="listbox"] {
-    min-width: 180px !important;
+/* Dropdown menu - FORCE wider with max specificity */
+div[data-baseweb="popover"] {
+    min-width: 200px !important;
     width: max-content !important;
+    max-width: 300px !important;
+}
+ul[role="listbox"],
+div[data-baseweb="menu"],
+div[data-baseweb="listbox"] {
+    min-width: 200px !important;
+    width: max-content !important;
+    max-width: 300px !important;
     border-radius: 12px !important;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
     background: white !important;
-    padding: 6px 0 !important;
+    padding: 8px 0 !important;
+    overflow: visible !important;
 }
-[data-baseweb="menu"] li,
-[role="option"] {
-    padding: 12px 16px !important;
+ul[role="listbox"] li,
+li[role="option"],
+div[role="option"] {
+    padding: 12px 20px !important;
     font-size: 0.9rem !important;
     white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+    min-width: 150px !important;
 }
 
 /* Forecast card */
@@ -322,7 +329,7 @@ def render_dev_row(dev, team_id):
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
 
-    cols = st.columns([3, 1, 2, 1, 1.5])
+    cols = st.columns([2.5, 1, 2, 1, 2])
 
     with cols[0]:
         st.markdown(f"**{first}**")
