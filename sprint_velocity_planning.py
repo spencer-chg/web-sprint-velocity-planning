@@ -56,13 +56,11 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
 /* === CARDS === */
 .team-card {
     background: white;
-    border-radius: 16px;
-    padding: 18px 20px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
-.team-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04); }
 .team-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin: 0 0 4px; }
 .team-card h3 a { display: none !important; }
 .team-card p { font-size: 0.7rem; color: #aaa; margin: 0; letter-spacing: 0.01em; }
