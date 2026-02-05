@@ -136,6 +136,34 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 
 /* Hide default hr styling issues */
 hr { border: none; height: 1px; background: #e5e5e0; margin: 20px 0; }
+
+/* Expander styling */
+.stExpander {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e5e0 !important;
+    margin-top: 16px;
+}
+.stExpander [data-testid="stExpanderToggleIcon"] {
+    color: #6b7c6b;
+}
+.stExpander summary {
+    font-weight: 500;
+    color: #4a4a4a;
+    padding: 12px 16px;
+}
+.stExpander summary:hover {
+    color: #6b7c6b;
+}
+.stExpander [data-testid="stExpanderDetails"] {
+    padding: 0 16px 16px;
+}
+
+/* Hide any icon font text that fails to render */
+.stExpander summary span[class*="material"],
+.stExpander summary [class*="icon"] {
+    font-size: 0;
+}
 </style>
 """, unsafe_allow_html=True)
 
