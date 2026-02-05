@@ -253,8 +253,13 @@ st.markdown("""
     }
 
     /* Buttons - dark sage with WHITE text (high contrast, accessible) */
-    .stButton > button {
+    .stButton > button,
+    .stFormSubmitButton > button,
+    [data-testid="stFormSubmitButton"] > button,
+    button[kind="primary"],
+    button[kind="primaryFormSubmit"] {
         background: #4a5d4a !important;
+        background-color: #4a5d4a !important;
         color: #ffffff !important;
         border: none !important;
         border-radius: 8px !important;
@@ -264,30 +269,41 @@ st.markdown("""
         transition: background 0.2s !important;
     }
 
-    .stButton > button:hover {
+    .stButton > button:hover,
+    .stFormSubmitButton > button:hover,
+    [data-testid="stFormSubmitButton"] > button:hover {
         background: #3d4d3d !important;
+        background-color: #3d4d3d !important;
         color: #ffffff !important;
     }
 
-    .stButton > button:active, .stButton > button:focus {
+    .stButton > button:active, .stButton > button:focus,
+    .stFormSubmitButton > button:active, .stFormSubmitButton > button:focus {
         background: #3d4d3d !important;
+        background-color: #3d4d3d !important;
         color: #ffffff !important;
         box-shadow: none !important;
     }
 
-    .stButton > button * {
+    .stButton > button *,
+    .stFormSubmitButton > button * {
         color: #ffffff !important;
     }
 
     /* ======== NUMBER INPUTS - CREAM BACKGROUND ======== */
-    .stNumberInput > div > div {
+    .stNumberInput > div,
+    .stNumberInput > div > div,
+    .stNumberInput [data-baseweb="input"] {
         background: #faf9f6 !important;
+        background-color: #faf9f6 !important;
         border: 1px solid #e5e5e0 !important;
         border-radius: 8px !important;
+        box-shadow: none !important;
     }
 
     .stNumberInput input {
         background: #faf9f6 !important;
+        background-color: #faf9f6 !important;
         color: #4a4a4a !important;
         border: none !important;
         font-size: 0.9rem !important;
@@ -295,6 +311,7 @@ st.markdown("""
 
     .stNumberInput button {
         background: #faf9f6 !important;
+        background-color: #faf9f6 !important;
         color: #7a7a7a !important;
         border: none !important;
         border-left: 1px solid #e5e5e0 !important;
@@ -302,12 +319,20 @@ st.markdown("""
 
     .stNumberInput button:hover {
         background: #f0efec !important;
+        background-color: #f0efec !important;
         color: #5a5a5a !important;
     }
 
     .stNumberInput button svg {
         fill: #7a7a7a !important;
         stroke: #7a7a7a !important;
+    }
+
+    /* Remove any dark focus/active states on number inputs */
+    .stNumberInput *:focus,
+    .stNumberInput *:active {
+        box-shadow: none !important;
+        outline: none !important;
     }
 
     /* ======== SELECT BOXES / DROPDOWNS ======== */
@@ -959,10 +984,10 @@ def render_team_analytics():
     fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Storyblok"], mode="lines+markers", name="Storyblok", line=dict(color="#5d7a7a", width=2), marker=dict(size=5)))
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#5a5a5a", size=11),
-        height=280, margin=dict(t=20, b=60, l=50, r=20),
+        height=300, margin=dict(t=40, b=60, l=50, r=20),
         xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10, color="#6a6a6a"), tickangle=-45),
         yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title=dict(text="Points", font=dict(color="#6a6a6a")), tickfont=dict(size=10, color="#6a6a6a")),
-        legend=dict(orientation="h", y=1.15, x=0.5, xanchor="center", bgcolor="rgba(0,0,0,0)", font=dict(size=11, color="#5a5a5a")),
+        legend=dict(orientation="h", y=1.25, x=0.5, xanchor="center", bgcolor="rgba(0,0,0,0)", font=dict(size=11, color="#5a5a5a")),
         hovermode="x unified"
     )
     st.plotly_chart(fig, width='stretch')
@@ -974,7 +999,7 @@ def render_team_analytics():
             "T2": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team2"),
             "SB": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "storyblok")}
            for s in sprints[:10]]
-    st.dataframe(pd.DataFrame(tbl), width='stretch', hide_index=True)
+    st.dataframe(pd.DataFrame(tbl), use_container_width=True, hide_index=True)
 
 def render_individual():
     sprints = load_sprints()
@@ -1035,7 +1060,7 @@ def render_individual():
         st.markdown("---")
         tbl = [{"Sprint": d["sprintName"], "Date": d["startDate"][:10], "Pts": d["storyPoints"], "PTO": d["totalPtoDays"],
                 "Vel": f"{d['storyPoints']/(d['sprintDays']-d['totalPtoDays']):.2f}" if d["sprintDays"]-d["totalPtoDays"]>0 else "0"} for d in data[:15]]
-        st.dataframe(pd.DataFrame(tbl), width='stretch', hide_index=True)
+        st.dataframe(pd.DataFrame(tbl), use_container_width=True, hide_index=True)
 
 # ============== MAIN ==============
 def main():
