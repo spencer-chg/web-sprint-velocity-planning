@@ -271,6 +271,8 @@ def save_team_assignment(eng_id, team_id):
     try:
         supabase.table("team_assignments").delete().eq("engineer_id", eng_id).execute()
         supabase.table("team_assignments").insert({"engineer_id": eng_id, "team_id": team_id}).execute()
+        # Invalidate cache so next load gets fresh data
+        st.session_state.team_assignments = None
     except: pass
 
 # ============== UTILS ==============
@@ -330,6 +332,20 @@ def calc_velocity(assignments, lookback=10):
 if "pto" not in st.session_state: st.session_state.pto = {}
 if "forecast" not in st.session_state: st.session_state.forecast = None
 if "buffer" not in st.session_state: st.session_state.buffer = 0.85
+if "team_assignments" not in st.session_state: st.session_state.team_assignments = None
+if "sprints_cache" not in st.session_state: st.session_state.sprints_cache = None
+
+def get_team_assignments(force_refresh=False):
+    """Get team assignments from cache or DB"""
+    if force_refresh or st.session_state.team_assignments is None:
+        st.session_state.team_assignments = load_team_assignments()
+    return st.session_state.team_assignments
+
+def get_sprints(force_refresh=False):
+    """Get sprints from cache or DB"""
+    if force_refresh or st.session_state.sprints_cache is None:
+        st.session_state.sprints_cache = load_sprints()
+    return st.session_state.sprints_cache
 
 # ============== COMPONENTS ==============
 def render_dev_row(dev):
@@ -359,8 +375,8 @@ def render_dev_row(dev):
 
 # ============== PAGES ==============
 def page_forecast():
-    team_assignments = load_team_assignments()
-    sprints = load_sprints()
+    # Use cached data - no DB calls on +/- clicks
+    team_assignments = get_team_assignments()
 
     # Buffer selector + Calculate button
     c1, c2 = st.columns([3, 1])
@@ -420,8 +436,10 @@ def page_forecast():
                 save_team_assignment(dev["id"], new_id)
                 st.rerun()
 
-    # Calculate
+    # Calculate - only load sprints from DB when button is clicked
     if calc_btn:
+        sprints = get_sprints(force_refresh=True)  # Fresh data on Calculate
+        team_assignments = get_team_assignments(force_refresh=True)
         buf = st.session_state.buffer
         results = {}
         for team in TEAMS:
@@ -458,7 +476,8 @@ def page_forecast():
                     st.markdown(f"<div style='display:flex; justify-content:space-between; padding:6px 8px; margin-top:4px; background:#f5f5f0; border-radius:6px; font-size:0.8rem;'><span>{a['name']}</span><strong>{a['buf']:.1f}</strong></div>", unsafe_allow_html=True)
 
 def page_add_sprint():
-    team_assignments = load_team_assignments()
+    # Use cached data - no DB calls on +/- clicks
+    team_assignments = get_team_assignments()
 
     # Initialize session state for sprint form
     if "sprint_pts" not in st.session_state:
@@ -540,19 +559,20 @@ def page_add_sprint():
                       "startDate": start.isoformat(), "endDate": end.isoformat(), "sprintDays": bd, "assignments": assigns}
             if save_sprint(sprint):
                 st.success(f"'{name}' saved!")
-                # Reset form
+                # Invalidate cache and reset form
+                st.session_state.sprints_cache = None
                 st.session_state.sprint_pts = {d["id"]: 0.0 for d in DEVELOPERS}
                 st.session_state.sprint_pto = {d["id"]: 0.0 for d in DEVELOPERS}
                 st.balloons()
 
 def page_analytics():
-    sprints = load_sprints()
+    sprints = get_sprints()
     if not sprints:
         st.info("No sprint data yet.")
         return
 
-    # Load current team assignments to remap legacy Storyblok data
-    team_assignments = load_team_assignments()
+    # Use cached team assignments to remap legacy Storyblok data
+    team_assignments = get_team_assignments()
 
     def get_effective_team(assignment):
         """Map old storyblok assignments to current team based on developer's current assignment"""
@@ -598,7 +618,7 @@ def page_analytics():
     st.dataframe(pd.DataFrame(tbl), use_container_width=True, hide_index=True)
 
 def page_individual():
-    sprints = load_sprints()
+    sprints = get_sprints()
     if not sprints:
         st.info("No sprint data yet.")
         return
