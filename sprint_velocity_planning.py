@@ -93,6 +93,27 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     border-radius: 8px !important;
 }
 
+/* Popover three-dot button */
+.stPopover > button {
+    background: transparent !important;
+    border: none !important;
+    color: #999 !important;
+    font-size: 1.2rem !important;
+    padding: 4px 8px !important;
+    min-height: auto !important;
+    height: auto !important;
+    line-height: 1 !important;
+}
+.stPopover > button:hover {
+    background: #e5e5e0 !important;
+    color: #6b7c6b !important;
+}
+
+/* Popover content */
+[data-baseweb="popover"] {
+    min-width: 150px !important;
+}
+
 /* Forecast card */
 .forecast-card { background: white; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
 .forecast-card .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: #999; }
@@ -296,13 +317,12 @@ def render_dev_row(dev, team_id):
 
     with cols[4]:
         other = [t for t in TEAMS if t["id"] != team_id]
-        # Short labels: T1, T2, SB
-        labels = {"team1": "T1", "team2": "T2", "storyblok": "SB"}
-        sel = st.selectbox("", ["→"] + [labels[t["id"]] for t in other], key=f"mv_{dev_id}", label_visibility="collapsed")
-        if sel != "→":
-            new_id = next(t["id"] for t in other if labels[t["id"]] == sel)
-            save_team_assignment(dev_id, new_id)
-            st.rerun()
+        with st.popover("⋮"):
+            st.markdown("**Move to...**")
+            for t in other:
+                if st.button(t["name"], key=f"mv_{dev_id}_{t['id']}", use_container_width=True):
+                    save_team_assignment(dev_id, t["id"])
+                    st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
