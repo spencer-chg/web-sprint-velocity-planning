@@ -16,7 +16,7 @@ import os
 st.set_page_config(
     page_title="Sprint Velocity Planning",
     page_icon="✦",
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="collapsed"
 )
 
@@ -30,283 +30,266 @@ def get_supabase():
 
 supabase = get_supabase()
 
-# ============== CUSTOM CSS - POINTING POKER STYLE ==============
+# ============== CUSTOM CSS ==============
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Base styling - warm cream background */
-    .main, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {
+    /* Root overrides */
+    :root {
+        --primary-color: #5d6b5d;
+        --background-color: #f5f5f0;
+        --text-color: #2d2d2d;
+    }
+
+    /* Base styling */
+    html, body, .main, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-testid="stToolbar"] {
         background: #f5f5f0 !important;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
-    [data-testid="stSidebar"] {
-        background: #eeeee8 !important;
+    .stApp > header {
+        background: transparent !important;
     }
 
-    /* Hide default elements */
-    #MainMenu, footer, header {visibility: hidden;}
-    .stDeployButton {display: none;}
+    /* Hide Streamlit elements */
+    #MainMenu, footer, header, .stDeployButton, [data-testid="stDecoration"] {
+        display: none !important;
+        visibility: hidden !important;
+    }
 
-    /* Typography */
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'Inter', sans-serif !important;
-        font-weight: 600 !important;
+    /* Main container - constrain width */
+    .block-container {
+        max-width: 900px !important;
+        padding: 2rem 1rem 4rem 1rem !important;
+    }
+
+    /* Typography - force dark text */
+    * {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    }
+
+    h1, h2, h3, h4, h5, h6, p, span, div, label, .stMarkdown, .stText {
         color: #2d2d2d !important;
     }
 
-    p, span, div, label {
-        color: #4a4a4a;
+    /* Muted text */
+    .text-muted {
+        color: #6b6b6b !important;
     }
 
-    /* Header styling */
+    /* Header */
     .app-header {
         text-align: center;
-        padding: 48px 0 32px 0;
+        padding: 24px 0 20px 0;
+        margin-bottom: 8px;
     }
 
     .app-title {
-        font-size: 2rem;
+        font-size: 1.75rem;
         font-weight: 600;
-        color: #2d2d2d;
-        letter-spacing: 0.02em;
+        color: #2d2d2d !important;
+        letter-spacing: 0.01em;
         margin: 0;
     }
 
     .app-subtitle {
-        color: #7a7a7a;
-        font-size: 0.9rem;
-        font-weight: 400;
-        margin-top: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        font-size: 0.75rem;
-    }
-
-    /* Section headers with small caps */
-    .section-label {
+        color: #888 !important;
         font-size: 0.7rem;
-        font-weight: 600;
+        font-weight: 500;
+        margin-top: 6px;
         text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: #8a8a8a;
-        margin-bottom: 16px;
+        letter-spacing: 0.15em;
     }
 
-    .section-title {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #2d2d2d;
-        margin: 0 0 8px 0;
-    }
-
-    /* Cards - clean, minimal */
-    .card {
-        background: #ffffff;
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 16px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        border: 1px solid #e8e8e4;
-    }
-
-    .card-muted {
-        background: #fafaf8;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 12px;
-        border: 1px solid #eaeae6;
-    }
-
-    /* Team colors - muted palette */
-    .team-orange { border-left: 3px solid #c4956a; }
-    .team-green { border-left: 3px solid #6b7c6b; }
-    .team-cyan { border-left: 3px solid #6b8a8a; }
-
-    .color-orange { color: #c4956a; }
-    .color-green { color: #6b7c6b; }
-    .color-cyan { color: #6b8a8a; }
-
-    /* Metric cards */
-    .metric-card {
-        background: #ffffff;
-        border-radius: 12px;
-        padding: 24px;
-        text-align: center;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        border: 1px solid #e8e8e4;
-    }
-
-    .metric-value {
-        font-size: 2.5rem;
-        font-weight: 700;
-        line-height: 1.2;
-        margin: 8px 0;
-        color: #2d2d2d;
-    }
-
-    .metric-label {
+    /* Section labels */
+    .section-label {
         font-size: 0.65rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.12em;
-        color: #9a9a9a;
-    }
-
-    .metric-sublabel {
-        font-size: 0.8rem;
-        color: #7a7a7a;
-        font-weight: 400;
-    }
-
-    /* Forecast cards */
-    .forecast-card {
-        background: #ffffff;
-        border-radius: 16px;
-        padding: 28px;
-        text-align: center;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-        border: 1px solid #e8e8e4;
-    }
-
-    .forecast-team-name {
-        font-size: 0.7rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
+        color: #888 !important;
         margin-bottom: 4px;
     }
 
-    .forecast-raw {
-        color: #9a9a9a;
-        font-size: 0.8rem;
-        margin-bottom: 12px;
-    }
-
-    .forecast-value {
-        font-size: 3.5rem;
-        font-weight: 700;
-        line-height: 1;
-        margin-bottom: 8px;
-    }
-
-    .forecast-buffer {
-        color: #9a9a9a;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    /* Breakdown items */
-    .breakdown-item {
-        background: #fafaf8;
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-top: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border: 1px solid #f0f0ec;
-    }
-
-    .breakdown-name {
-        font-weight: 500;
-        color: #3a3a3a;
-        font-size: 0.9rem;
-    }
-
-    .breakdown-meta {
-        color: #9a9a9a;
-        font-size: 0.7rem;
-        margin-top: 2px;
-    }
-
-    .breakdown-value {
-        font-weight: 700;
+    .section-title {
         font-size: 1.1rem;
-        color: #2d2d2d;
+        font-weight: 600;
+        color: #2d2d2d !important;
+        margin: 0 0 16px 0;
     }
 
-    /* Tabs - minimal style */
+    /* Tabs - minimal underline style */
+    .stTabs {
+        margin-bottom: 24px;
+    }
+
     .stTabs [data-baseweb="tab-list"] {
         gap: 0;
-        background: transparent;
-        border-bottom: 1px solid #e8e8e4;
+        background: transparent !important;
+        border-bottom: 1px solid #ddd;
         justify-content: center;
+        padding: 0;
     }
 
     .stTabs [data-baseweb="tab"] {
-        background: transparent;
-        border-radius: 0;
-        padding: 16px 32px;
-        font-weight: 500;
-        font-size: 0.85rem;
-        color: #8a8a8a;
-        border: none;
-        border-bottom: 2px solid transparent;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 12px 24px !important;
+        font-weight: 500 !important;
+        font-size: 0.85rem !important;
+        color: #888 !important;
+        border-bottom: 2px solid transparent !important;
         margin-bottom: -1px;
     }
 
     .stTabs [aria-selected="true"] {
+        color: #5d6b5d !important;
+        border-bottom: 2px solid #5d6b5d !important;
         background: transparent !important;
-        color: #6b7c6b !important;
-        border-bottom: 2px solid #6b7c6b !important;
+    }
+
+    .stTabs [data-baseweb="tab"]:hover {
+        color: #5d6b5d !important;
+        background: transparent !important;
     }
 
     .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {
-        display: none;
+        display: none !important;
     }
 
-    /* Buttons - sage green */
-    .stButton > button {
-        background: #6b7c6b;
-        color: white;
-        border: none;
+    /* Cards */
+    .card {
+        background: #fff;
         border-radius: 8px;
-        padding: 12px 28px;
+        padding: 16px;
+        margin-bottom: 12px;
+        border: 1px solid #e5e5e0;
+    }
+
+    /* Team cards with left border */
+    .team-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin-bottom: 12px;
+        border: 1px solid #e5e5e0;
+        border-left: 3px solid #5d6b5d;
+    }
+
+    .team-card.orange { border-left-color: #b8956b; }
+    .team-card.green { border-left-color: #5d6b5d; }
+    .team-card.cyan { border-left-color: #5d7a7a; }
+
+    /* Team header */
+    .team-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+
+    .team-name {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #2d2d2d !important;
+        margin: 0;
+    }
+
+    .team-name.orange { color: #b8956b !important; }
+    .team-name.green { color: #5d6b5d !important; }
+    .team-name.cyan { color: #5d7a7a !important; }
+
+    .team-meta {
+        font-size: 0.75rem;
+        color: #888 !important;
+        margin-top: 2px;
+    }
+
+    .team-badge {
+        font-size: 0.65rem;
         font-weight: 500;
-        font-size: 0.9rem;
-        letter-spacing: 0.02em;
-        transition: all 0.2s ease;
+        color: #888 !important;
+        background: #f0f0eb;
+        padding: 3px 8px;
+        border-radius: 10px;
+    }
+
+    /* Developer rows */
+    .dev-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0eb;
+    }
+
+    .dev-row:last-child {
+        border-bottom: none;
+    }
+
+    .dev-name {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #2d2d2d !important;
+    }
+
+    /* Buttons */
+    .stButton > button {
+        background: #5d6b5d !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 6px !important;
+        padding: 10px 20px !important;
+        font-weight: 500 !important;
+        font-size: 0.85rem !important;
+        transition: background 0.2s !important;
     }
 
     .stButton > button:hover {
-        background: #5a6b5a;
-        transform: translateY(-1px);
+        background: #4d5b4d !important;
+        color: #fff !important;
     }
 
-    /* Form inputs - clean style */
+    .stButton > button:active, .stButton > button:focus {
+        background: #4d5b4d !important;
+        color: #fff !important;
+        box-shadow: none !important;
+    }
+
+    /* Form inputs */
     .stTextInput > div > div > input,
     .stNumberInput > div > div > input,
-    .stSelectbox > div > div,
     .stDateInput > div > div > input {
-        background: #ffffff !important;
-        border: 1px solid #e0e0dc !important;
-        border-radius: 8px !important;
+        background: #fff !important;
+        border: 1px solid #ddd !important;
+        border-radius: 6px !important;
         color: #2d2d2d !important;
         font-size: 0.9rem !important;
+        padding: 8px 12px !important;
     }
 
     .stTextInput > div > div > input:focus,
     .stNumberInput > div > div > input:focus {
-        border-color: #6b7c6b !important;
-        box-shadow: 0 0 0 1px #6b7c6b !important;
+        border-color: #5d6b5d !important;
+        box-shadow: 0 0 0 1px #5d6b5d !important;
     }
 
     /* Select boxes */
     .stSelectbox > div > div {
-        background: #ffffff !important;
+        background: #fff !important;
+        border-radius: 6px !important;
     }
 
-    [data-baseweb="select"] > div {
-        background: #ffffff !important;
-        border-color: #e0e0dc !important;
+    .stSelectbox [data-baseweb="select"] > div {
+        background: #fff !important;
+        border: 1px solid #ddd !important;
+        border-radius: 6px !important;
     }
 
-    /* Number input */
-    .stNumberInput > div {
-        background: transparent !important;
+    .stSelectbox [data-baseweb="select"] > div:focus-within {
+        border-color: #5d6b5d !important;
+        box-shadow: 0 0 0 1px #5d6b5d !important;
     }
 
     /* Labels */
@@ -317,81 +300,153 @@ st.markdown("""
         font-size: 0.7rem !important;
         font-weight: 600 !important;
         text-transform: uppercase !important;
-        letter-spacing: 0.1em !important;
-        color: #8a8a8a !important;
+        letter-spacing: 0.08em !important;
+        color: #888 !important;
+    }
+
+    /* Number input container */
+    .stNumberInput > div {
+        background: transparent !important;
+    }
+
+    /* Metric cards */
+    .metric-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        border: 1px solid #e5e5e0;
+    }
+
+    .metric-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2d2d2d !important;
+        line-height: 1.2;
+        margin: 4px 0;
+    }
+
+    .metric-value.orange { color: #b8956b !important; }
+    .metric-value.green { color: #5d6b5d !important; }
+    .metric-value.cyan { color: #5d7a7a !important; }
+
+    .metric-label {
+        font-size: 0.6rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #888 !important;
+    }
+
+    .metric-sub {
+        font-size: 0.75rem;
+        color: #888 !important;
+    }
+
+    /* Forecast cards */
+    .forecast-card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        border: 1px solid #e5e5e0;
+        margin-bottom: 12px;
+    }
+
+    .forecast-team {
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 4px;
+    }
+
+    .forecast-raw {
+        font-size: 0.8rem;
+        color: #888 !important;
+        margin-bottom: 8px;
+    }
+
+    .forecast-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        line-height: 1;
+        margin-bottom: 4px;
+    }
+
+    .forecast-buffer {
+        font-size: 0.7rem;
+        color: #888 !important;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Breakdown items */
+    .breakdown-item {
+        background: #fafaf8;
+        border-radius: 6px;
+        padding: 10px 12px;
+        margin-top: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .breakdown-name {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: #2d2d2d !important;
+    }
+
+    .breakdown-meta {
+        font-size: 0.7rem;
+        color: #888 !important;
+        margin-top: 1px;
+    }
+
+    .breakdown-value {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #2d2d2d !important;
     }
 
     /* Divider */
     hr {
         border: none;
         height: 1px;
-        background: #e8e8e4;
-        margin: 32px 0;
+        background: #e5e5e0;
+        margin: 20px 0;
     }
 
-    /* Info boxes */
+    /* Info/alert boxes */
     .stAlert {
         background: #fafaf8 !important;
-        border: 1px solid #e8e8e4 !important;
-        border-radius: 8px !important;
-        color: #5a5a5a !important;
+        border: 1px solid #e5e5e0 !important;
+        border-radius: 6px !important;
     }
 
-    /* Data table */
+    .stAlert > div {
+        color: #555 !important;
+    }
+
+    /* Data tables */
     .stDataFrame {
-        border: 1px solid #e8e8e4;
-        border-radius: 8px;
+        border-radius: 6px;
+        overflow: hidden;
     }
 
-    [data-testid="stDataFrame"] > div {
-        background: #ffffff;
-        border-radius: 8px;
+    [data-testid="stDataFrame"] {
+        background: #fff;
     }
 
-    /* Developer input card */
-    .dev-card {
-        background: #ffffff;
-        border-radius: 10px;
-        padding: 16px;
-        margin-bottom: 12px;
-        border: 1px solid #e8e8e4;
+    /* Column gap fix */
+    [data-testid="column"] {
+        padding: 0 8px;
     }
 
-    .dev-name {
-        font-weight: 600;
-        color: #2d2d2d;
-        font-size: 0.95rem;
-        margin-bottom: 12px;
-    }
-
-    /* Team header card */
-    .team-header {
-        background: #ffffff;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 16px;
-        border: 1px solid #e8e8e4;
-    }
-
-    .team-name {
-        font-size: 1rem;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .team-meta {
-        color: #9a9a9a;
-        font-size: 0.8rem;
-        margin-top: 4px;
-    }
-
-    .team-badge {
-        background: #f5f5f0;
-        padding: 4px 12px;
-        border-radius: 20px;
-        color: #7a7a7a;
-        font-size: 0.7rem;
-        font-weight: 500;
+    /* Plotly chart backgrounds */
+    .js-plotly-plot .plotly .main-svg {
+        background: transparent !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -414,7 +469,7 @@ TEAMS = [
     {"id": "storyblok", "name": "Storyblok", "displayName": "Storyblok Team", "pmName": "Storyblok", "color": "cyan"},
 ]
 
-TEAM_COLORS = {"orange": "#c4956a", "green": "#6b7c6b", "cyan": "#6b8a8a"}
+TEAM_COLORS = {"orange": "#b8956b", "green": "#5d6b5d", "cyan": "#5d7a7a"}
 
 HOLIDAYS = [
     {"name": "New Year's Day", "month": 1, "day": 1, "type": "full-day"},
@@ -431,7 +486,6 @@ HOLIDAYS = [
 
 # ============== DATABASE FUNCTIONS ==============
 def load_sprints():
-    """Load all sprints from Supabase"""
     try:
         result = supabase.table("sprints").select("*").order("start_date", desc=True).execute()
         sprints = []
@@ -456,7 +510,6 @@ def load_sprints():
         return []
 
 def save_sprint(sprint_data):
-    """Save a new sprint to Supabase"""
     try:
         supabase.table("sprints").insert({
             "sprint_id": sprint_data["sprintId"],
@@ -480,20 +533,21 @@ def save_sprint(sprint_data):
         return False
 
 def load_team_assignments():
-    """Load current team assignments from Supabase"""
     try:
         result = supabase.table("team_assignments").select("*").execute()
-        return {row["engineer_id"]: row["team_id"] for row in result.data}
+        if result.data:
+            return {row["engineer_id"]: row["team_id"] for row in result.data}
     except:
-        return {
-            "fredrik-svensson": "team1", "fernando-fernandez": "team1",
-            "matthew-callison": "team1", "cody-worthen": "team1",
-            "stephen-corry": "team2", "tom-sharrock": "team2",
-            "brady-hession": "team2", "jaime-virrueta": "team2"
-        }
+        pass
+    # Default assignments
+    return {
+        "fredrik-svensson": "team1", "fernando-fernandez": "team1",
+        "matthew-callison": "team1", "cody-worthen": "team1",
+        "stephen-corry": "team2", "tom-sharrock": "team2",
+        "brady-hession": "team2", "jaime-virrueta": "team2"
+    }
 
 def update_team_assignment(engineer_id, team_id):
-    """Update a developer's team assignment"""
     try:
         supabase.table("team_assignments").upsert({
             "engineer_id": engineer_id,
@@ -563,35 +617,32 @@ if "planning_buffer" not in st.session_state: st.session_state.planning_buffer =
 
 # ============== VIEWS ==============
 def render_forecast():
-    st.markdown('<p class="section-label">Planning</p>', unsafe_allow_html=True)
-    st.markdown('<h2 class="section-title">Sprint Forecast</h2>', unsafe_allow_html=True)
-
     team_assignments = load_team_assignments()
     sprints = load_sprints()
 
-    col1, col2, col3 = st.columns([2, 6, 2])
+    col1, col2 = st.columns([3, 1])
     with col1:
-        buffer_opts = {"70% (Conservative)": 0.70, "85% (Standard)": 0.85, "100% (Aggressive)": 1.00}
-        sel = st.selectbox("Planning Buffer", list(buffer_opts.keys()), index=1)
+        buffer_opts = {"85% (Standard)": 0.85, "70% (Conservative)": 0.70, "100% (Aggressive)": 1.00}
+        sel = st.selectbox("Planning Buffer", list(buffer_opts.keys()), index=0, label_visibility="collapsed")
         st.session_state.planning_buffer = buffer_opts[sel]
-    with col3:
-        calc = st.button("Calculate Forecast", type="primary", use_container_width=True)
+    with col2:
+        calc = st.button("Calculate", type="primary", use_container_width=True)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown('<p class="section-label">Team Assignments & PTO</p>', unsafe_allow_html=True)
+    st.markdown("---")
 
-    cols = st.columns(len(TEAMS))
+    # Team columns
+    cols = st.columns(3)
     for idx, team in enumerate(TEAMS):
         with cols[idx]:
-            color = TEAM_COLORS.get(team["color"], "#c4956a")
+            color = team["color"]
             devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
 
             st.markdown(f'''
-            <div class="team-header team-{team['color']}">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="team-card {color}">
+                <div class="team-header">
                     <div>
-                        <h4 class="team-name color-{team['color']}">{team['name']}</h4>
-                        <p class="team-meta">{team['pmName']}</p>
+                        <div class="team-name {color}">{team['name']}</div>
+                        <div class="team-meta">{team['pmName']}</div>
                     </div>
                     <span class="team-badge">{len(devs)} devs</span>
                 </div>
@@ -600,9 +651,9 @@ def render_forecast():
 
             for dev in devs:
                 st.markdown(f"**{dev['name']}**")
-                c1, c2 = st.columns([3, 1])
+                c1, c2 = st.columns([2, 1])
                 with c1:
-                    pto = st.number_input("PTO days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
                     st.session_state.pto_data[dev["id"]] = pto
                 with c2:
                     others = [t for t in TEAMS if t["id"] != team["id"]]
@@ -630,19 +681,18 @@ def render_forecast():
         st.session_state.forecast = {"buffer": buf, "teams": results}
 
     if st.session_state.forecast:
-        st.markdown("<hr>", unsafe_allow_html=True)
-        st.markdown('<p class="section-label">Results</p>', unsafe_allow_html=True)
-        st.markdown('<h3 class="section-title">Forecast</h3>', unsafe_allow_html=True)
+        st.markdown("---")
+        st.markdown('<p class="section-label">Forecast Results</p>', unsafe_allow_html=True)
 
         f = st.session_state.forecast
-        cols = st.columns(len(TEAMS))
+        cols = st.columns(3)
         for idx, team in enumerate(TEAMS):
             r = f["teams"].get(team["id"], {})
-            color = TEAM_COLORS.get(r.get("color", "orange"), "#c4956a")
+            color = TEAM_COLORS.get(r.get("color", "green"), "#5d6b5d")
             with cols[idx]:
                 st.markdown(f'''
                 <div class="forecast-card">
-                    <div class="forecast-team-name color-{team['color']}">{r.get('name', team['name'])}</div>
+                    <div class="forecast-team" style="color:{color};">{r.get('name', team['name'])}</div>
                     <div class="forecast-raw">Raw: {r.get('raw', 0):.1f} pts</div>
                     <div class="forecast-value" style="color:{color};">{r.get('buf', 0):.1f}</div>
                     <div class="forecast-buffer">{int(f['buffer']*100)}% buffer</div>
@@ -661,9 +711,6 @@ def render_forecast():
                     ''', unsafe_allow_html=True)
 
 def render_add_sprint():
-    st.markdown('<p class="section-label">Data Entry</p>', unsafe_allow_html=True)
-    st.markdown('<h2 class="section-title">Add Sprint Data</h2>', unsafe_allow_html=True)
-
     team_assignments = load_team_assignments()
 
     with st.form("add_sprint"):
@@ -674,10 +721,10 @@ def render_add_sprint():
 
         if start and end:
             hols = get_holidays_in_range(start, end)
-            if hols: st.info(f"Holidays in this sprint: {', '.join(h['name'] for h in hols)}")
+            if hols: st.info(f"Holidays: {', '.join(h['name'] for h in hols)}")
 
-        st.markdown("<hr>", unsafe_allow_html=True)
-        st.markdown('<p class="section-label">Developer Contributions</p>', unsafe_allow_html=True)
+        st.markdown("---")
+        st.markdown('<p class="section-label">Developer Points</p>', unsafe_allow_html=True)
 
         assigns = []
         for i in range(0, len(DEVELOPERS), 2):
@@ -686,10 +733,10 @@ def render_add_sprint():
                 if i + j < len(DEVELOPERS):
                     dev = DEVELOPERS[i + j]
                     with col:
-                        st.markdown(f'<div class="dev-name">{dev["name"]}</div>', unsafe_allow_html=True)
+                        st.markdown(f"**{dev['name']}**")
                         c1, c2, c3 = st.columns(3)
-                        with c1: pts = st.number_input("Points", 0.0, step=0.5, key=f"sp_{dev['id']}")
-                        with c2: pto = st.number_input("PTO Days", 0.0, 10.0, step=0.5, key=f"pto_a_{dev['id']}")
+                        with c1: pts = st.number_input("Pts", 0.0, step=0.5, key=f"sp_{dev['id']}")
+                        with c2: pto = st.number_input("PTO", 0.0, 10.0, step=0.5, key=f"pto_a_{dev['id']}")
                         with c3:
                             teams = [t["name"] for t in TEAMS]
                             dt = team_assignments.get(dev["id"], "team1")
@@ -698,11 +745,10 @@ def render_add_sprint():
                         if pts > 0:
                             tid = next(t["id"] for t in TEAMS if t["name"] == tm)
                             assigns.append({"engineerId": dev["id"], "teamId": tid, "storyPoints": pts, "totalPtoDays": pto})
-                        st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
 
         if st.form_submit_button("Save Sprint", type="primary", use_container_width=True):
-            if not name: st.error("Please enter a sprint name")
-            elif not assigns: st.error("Please enter points for at least one developer")
+            if not name: st.error("Enter sprint name")
+            elif not assigns: st.error("Enter points for at least one developer")
             else:
                 bd = sum(1 for d in range((end - start).days + 1) if (start + timedelta(days=d)).weekday() < 5)
                 sprint = {
@@ -714,58 +760,31 @@ def render_add_sprint():
                     "assignments": assigns
                 }
                 if save_sprint(sprint):
-                    st.success(f"Sprint '{name}' saved successfully!")
+                    st.success(f"'{name}' saved!")
                     st.balloons()
 
 def render_team_analytics():
-    st.markdown('<p class="section-label">Analytics</p>', unsafe_allow_html=True)
-    st.markdown('<h2 class="section-title">Team Performance</h2>', unsafe_allow_html=True)
-
     sprints = load_sprints()
     if not sprints:
-        st.info("No sprint data yet. Add your first sprint to see analytics.")
+        st.info("No sprint data yet. Add your first sprint!")
         return
 
     recent = sprints[:6]
     def avg(tid): return sum(sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == tid) for s in recent) / len(recent) if recent else 0
 
-    c1, c2, c3, c4 = st.columns(4)
+    cols = st.columns(4)
     overall = sum(sum(a["storyPoints"] for a in s.get("assignments", [])) for s in recent) / len(recent) if recent else 0
 
-    with c1:
-        st.markdown(f'''
-        <div class="metric-card">
-            <div class="metric-label">Overall Average</div>
-            <div class="metric-value">{overall:.1f}</div>
-            <div class="metric-sublabel">points per sprint</div>
-        </div>
-        ''', unsafe_allow_html=True)
-    with c2:
-        st.markdown(f'''
-        <div class="metric-card team-orange">
-            <div class="metric-label">Team 1</div>
-            <div class="metric-value color-orange">{avg("team1"):.1f}</div>
-            <div class="metric-sublabel">points per sprint</div>
-        </div>
-        ''', unsafe_allow_html=True)
-    with c3:
-        st.markdown(f'''
-        <div class="metric-card team-green">
-            <div class="metric-label">Team 2</div>
-            <div class="metric-value color-green">{avg("team2"):.1f}</div>
-            <div class="metric-sublabel">points per sprint</div>
-        </div>
-        ''', unsafe_allow_html=True)
-    with c4:
-        st.markdown(f'''
-        <div class="metric-card team-cyan">
-            <div class="metric-label">Storyblok</div>
-            <div class="metric-value color-cyan">{avg("storyblok"):.1f}</div>
-            <div class="metric-sublabel">points per sprint</div>
-        </div>
-        ''', unsafe_allow_html=True)
+    with cols[0]:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Overall</div><div class="metric-value">{overall:.1f}</div><div class="metric-sub">pts/sprint</div></div>', unsafe_allow_html=True)
+    with cols[1]:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Team 1</div><div class="metric-value orange">{avg("team1"):.1f}</div><div class="metric-sub">pts/sprint</div></div>', unsafe_allow_html=True)
+    with cols[2]:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Team 2</div><div class="metric-value green">{avg("team2"):.1f}</div><div class="metric-sub">pts/sprint</div></div>', unsafe_allow_html=True)
+    with cols[3]:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Storyblok</div><div class="metric-value cyan">{avg("storyblok"):.1f}</div><div class="metric-sub">pts/sprint</div></div>', unsafe_allow_html=True)
 
-    st.markdown("<div style='height:32px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
 
     data = [{"Sprint": s["sprintName"],
              "Team 1": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team1"),
@@ -775,58 +794,44 @@ def render_team_analytics():
     df = pd.DataFrame(data)
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 1"], mode="lines+markers", name="Team 1",
-                             line=dict(color="#c4956a", width=2), marker=dict(size=6)))
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 2"], mode="lines+markers", name="Team 2",
-                             line=dict(color="#6b7c6b", width=2), marker=dict(size=6)))
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Storyblok"], mode="lines+markers", name="Storyblok",
-                             line=dict(color="#6b8a8a", width=2), marker=dict(size=6)))
+    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 1"], mode="lines+markers", name="Team 1", line=dict(color="#b8956b", width=2), marker=dict(size=5)))
+    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 2"], mode="lines+markers", name="Team 2", line=dict(color="#5d6b5d", width=2), marker=dict(size=5)))
+    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Storyblok"], mode="lines+markers", name="Storyblok", line=dict(color="#5d7a7a", width=2), marker=dict(size=5)))
     fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="#fafaf8",
-        font_color="#4a4a4a",
-        height=320,
-        xaxis=dict(gridcolor="#e8e8e4", linecolor="#e8e8e4"),
-        yaxis=dict(gridcolor="#e8e8e4", linecolor="#e8e8e4", title="Story Points"),
-        legend=dict(orientation="h", y=1.1, x=0.5, xanchor="center", bgcolor="rgba(0,0,0,0)"),
-        hovermode="x unified",
-        margin=dict(t=40, b=40)
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#2d2d2d", size=11),
+        height=280, margin=dict(t=20, b=40, l=40, r=20),
+        xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10)),
+        yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title="Points", tickfont=dict(size=10)),
+        legend=dict(orientation="h", y=1.15, x=0.5, xanchor="center", bgcolor="rgba(0,0,0,0)", font=dict(size=11)),
+        hovermode="x unified"
     )
     st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown('<p class="section-label">History</p>', unsafe_allow_html=True)
-    st.markdown('<h3 class="section-title">Recent Sprints</h3>', unsafe_allow_html=True)
-
-    tbl = [{"Sprint": s["sprintName"],
-            "Period": f"{s['startDate']} → {s['endDate']}",
-            "Team 1": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team1"),
-            "Team 2": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team2"),
-            "Storyblok": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "storyblok")}
+    st.markdown("---")
+    st.markdown('<p class="section-label">Recent Sprints</p>', unsafe_allow_html=True)
+    tbl = [{"Sprint": s["sprintName"], "Period": f"{s['startDate']} → {s['endDate']}",
+            "T1": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team1"),
+            "T2": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team2"),
+            "SB": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "storyblok")}
            for s in sprints[:10]]
     st.dataframe(pd.DataFrame(tbl), use_container_width=True, hide_index=True)
 
 def render_individual():
-    st.markdown('<p class="section-label">Analytics</p>', unsafe_allow_html=True)
-    st.markdown('<h2 class="section-title">Individual Performance</h2>', unsafe_allow_html=True)
-
     sprints = load_sprints()
     if not sprints:
         st.info("No sprint data yet.")
         return
 
-    sel = st.selectbox("Select Developer", ["Choose a developer..."] + [d["name"] for d in DEVELOPERS])
-    if sel == "Choose a developer...":
-        st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
-        st.markdown("Select a developer above to view their performance metrics.")
+    sel = st.selectbox("Select Developer", ["Choose..."] + [d["name"] for d in DEVELOPERS])
+    if sel == "Choose...":
+        st.markdown("Select a developer to view their metrics.")
         return
 
     dev = next((d for d in DEVELOPERS if d["name"] == sel), None)
     if not dev: return
 
-    st.markdown("<hr>", unsafe_allow_html=True)
-    st.markdown(f'<h3 class="section-title">{dev["name"]}</h3>', unsafe_allow_html=True)
-    st.markdown(f'<p style="color:#7a7a7a;margin-top:-8px;">{dev["role"]}</p>', unsafe_allow_html=True)
+    st.markdown("---")
+    st.markdown(f"**{dev['name']}** · {dev['role']}")
 
     agg = {}
     for s in sprints:
@@ -844,67 +849,32 @@ def render_individual():
     data = sorted(agg.values(), key=lambda x: x["startDate"], reverse=True)
     vel = calculate_velocity(data)
 
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        st.markdown(f'''
-        <div class="metric-card team-green">
-            <div class="metric-label">Velocity</div>
-            <div class="metric-value color-green">{vel:.2f}</div>
-            <div class="metric-sublabel">points per day</div>
-        </div>
-        ''', unsafe_allow_html=True)
-    with c2:
-        st.markdown(f'''
-        <div class="metric-card">
-            <div class="metric-label">Total Points</div>
-            <div class="metric-value">{sum(d["storyPoints"] for d in data):.1f}</div>
-            <div class="metric-sublabel">all time</div>
-        </div>
-        ''', unsafe_allow_html=True)
-    with c3:
-        st.markdown(f'''
-        <div class="metric-card">
-            <div class="metric-label">Sprints</div>
-            <div class="metric-value">{len(data)}</div>
-            <div class="metric-sublabel">tracked</div>
-        </div>
-        ''', unsafe_allow_html=True)
+    cols = st.columns(3)
+    with cols[0]:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Velocity</div><div class="metric-value green">{vel:.2f}</div><div class="metric-sub">pts/day</div></div>', unsafe_allow_html=True)
+    with cols[1]:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Total</div><div class="metric-value">{sum(d["storyPoints"] for d in data):.1f}</div><div class="metric-sub">all time</div></div>', unsafe_allow_html=True)
+    with cols[2]:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Sprints</div><div class="metric-value">{len(data)}</div><div class="metric-sub">tracked</div></div>', unsafe_allow_html=True)
 
     if data:
-        st.markdown("<div style='height:24px;'></div>", unsafe_allow_html=True)
-
-        chart = [{"Sprint": d["sprintName"],
-                  "Velocity": d["storyPoints"] / (d["sprintDays"] - d["totalPtoDays"]) if d["sprintDays"] - d["totalPtoDays"] > 0 else 0}
-                 for d in reversed(data[:10])]
+        st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
+        chart = [{"Sprint": d["sprintName"], "Velocity": d["storyPoints"] / (d["sprintDays"] - d["totalPtoDays"]) if d["sprintDays"] - d["totalPtoDays"] > 0 else 0} for d in reversed(data[:10])]
         df = pd.DataFrame(chart)
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Velocity"], mode="lines+markers",
-                                 line=dict(color="#6b7c6b", width=2), marker=dict(size=8),
-                                 fill="tozeroy", fillcolor="rgba(107,124,107,0.1)"))
+        fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Velocity"], mode="lines+markers", line=dict(color="#5d6b5d", width=2), marker=dict(size=6), fill="tozeroy", fillcolor="rgba(93,107,93,0.1)"))
         fig.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)",
-            plot_bgcolor="#fafaf8",
-            font_color="#4a4a4a",
-            height=260,
-            xaxis=dict(gridcolor="#e8e8e4", linecolor="#e8e8e4"),
-            yaxis=dict(gridcolor="#e8e8e4", linecolor="#e8e8e4", title="Points per Day"),
-            showlegend=False,
-            margin=dict(t=20, b=40)
+            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#2d2d2d", size=11),
+            height=220, margin=dict(t=10, b=40, l=40, r=20), showlegend=False,
+            xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10)),
+            yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title="pts/day", tickfont=dict(size=10))
         )
         st.plotly_chart(fig, use_container_width=True)
 
-        st.markdown("<hr>", unsafe_allow_html=True)
-        st.markdown('<p class="section-label">History</p>', unsafe_allow_html=True)
-        st.markdown('<h3 class="section-title">Sprint History</h3>', unsafe_allow_html=True)
-
-        tbl = [{"Sprint": d["sprintName"],
-                "Date": d["startDate"][:10],
-                "Teams": ", ".join(set("T1" if t=="team1" else "T2" if t=="team2" else "SB" for t in d["teams"])),
-                "Points": d["storyPoints"],
-                "PTO": d["totalPtoDays"],
-                "Velocity": f"{d['storyPoints']/(d['sprintDays']-d['totalPtoDays']):.2f}" if d["sprintDays"]-d["totalPtoDays"]>0 else "0"}
-               for d in data[:15]]
+        st.markdown("---")
+        tbl = [{"Sprint": d["sprintName"], "Date": d["startDate"][:10], "Pts": d["storyPoints"], "PTO": d["totalPtoDays"],
+                "Vel": f"{d['storyPoints']/(d['sprintDays']-d['totalPtoDays']):.2f}" if d["sprintDays"]-d["totalPtoDays"]>0 else "0"} for d in data[:15]]
         st.dataframe(pd.DataFrame(tbl), use_container_width=True, hide_index=True)
 
 # ============== MAIN ==============
