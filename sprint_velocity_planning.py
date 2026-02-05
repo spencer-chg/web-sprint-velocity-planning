@@ -104,6 +104,16 @@ button[kind="primary"] {
     display: flex !important;
     justify-content: center !important;
 }
+/* Disabled button = value display (white, not sage) */
+.stButton button:disabled,
+.stButton button[disabled] {
+    background: white !important;
+    background-color: white !important;
+    color: #4a4a4a !important;
+    border: 1px solid #e5e5e0 !important;
+    cursor: default !important;
+    opacity: 1 !important;
+}
 
 /* PIXEL PERFECT SPACING */
 [data-testid="stHorizontalBlock"] {
@@ -404,20 +414,24 @@ def render_dev_row(dev):
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
 
-    c1, c2, c3, c4 = st.columns([2.5, 1, 1, 1])
+    c1, c2 = st.columns([2, 3])
 
     with c1:
         st.markdown(f"**{first}**")
     with c2:
-        if st.button("－", key=f"m_{dev_id}"):
-            st.session_state.pto[dev_id] = max(0, pto - 0.5)
-            st.rerun()
-    with c3:
-        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:10px; height:40px; line-height:40px; text-align:center; font-weight:600; font-size:0.9rem;'>{pto:.1f}</div>", unsafe_allow_html=True)
-    with c4:
-        if st.button("＋", key=f"p_{dev_id}"):
-            st.session_state.pto[dev_id] = min(10, pto + 0.5)
-            st.rerun()
+        # All three in one row using buttons so they align
+        b1, b2, b3 = st.columns(3)
+        with b1:
+            if st.button("－", key=f"m_{dev_id}"):
+                st.session_state.pto[dev_id] = max(0, pto - 0.5)
+                st.rerun()
+        with b2:
+            # Value as a disabled-looking button for perfect alignment
+            st.button(f"{pto:.1f}", key=f"v_{dev_id}", disabled=True)
+        with b3:
+            if st.button("＋", key=f"p_{dev_id}"):
+                st.session_state.pto[dev_id] = min(10, pto + 0.5)
+                st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
@@ -557,18 +571,20 @@ def page_add_sprint():
                     # Pts row: [−] [value] [+] | Team dropdown
                     pts = st.session_state.sprint_pts.get(dev_id, 0.0)
 
-                    c1, c2, c3, c4, c5 = st.columns([1, 1, 1, 0.2, 2])
-                    with c1:
-                        if st.button("－", key=f"spm_{dev_id}"):
-                            st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
-                            st.rerun()
-                    with c2:
-                        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:10px; height:40px; line-height:40px; text-align:center; font-weight:600; font-size:0.9rem;'>{pts:.1f}</div>", unsafe_allow_html=True)
-                    with c3:
-                        if st.button("＋", key=f"spp_{dev_id}"):
-                            st.session_state.sprint_pts[dev_id] = pts + 0.5
-                            st.rerun()
-                    with c5:
+                    left, right = st.columns([3, 2])
+                    with left:
+                        b1, b2, b3 = st.columns(3)
+                        with b1:
+                            if st.button("－", key=f"spm_{dev_id}"):
+                                st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
+                                st.rerun()
+                        with b2:
+                            st.button(f"{pts:.1f}", key=f"spv_{dev_id}", disabled=True)
+                        with b3:
+                            if st.button("＋", key=f"spp_{dev_id}"):
+                                st.session_state.sprint_pts[dev_id] = pts + 0.5
+                                st.rerun()
+                    with right:
                         dt = team_assignments.get(dev_id, "team1")
                         di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
                         st.selectbox("Team", [t["name"] for t in TEAMS], di, key=f"tm_{dev_id}", label_visibility="collapsed")
