@@ -354,35 +354,71 @@ st.markdown("""
         fill: #7a7a7a !important;
     }
 
-    /* ======== DROPDOWN MENUS - LIGHT BACKGROUND ======== */
+    /* ======== DROPDOWN MENUS - AGGRESSIVE LIGHT BACKGROUND ======== */
+    /* Target ALL popover and menu elements globally */
     [data-baseweb="popover"],
-    [data-baseweb="popover"] > div,
+    [data-baseweb="popover"] *,
     [data-baseweb="menu"],
-    [data-baseweb="menu"] ul,
+    [data-baseweb="menu"] *,
+    [data-baseweb="list"],
+    [data-baseweb="list"] *,
     ul[role="listbox"],
-    div[role="listbox"] {
+    ul[role="listbox"] *,
+    div[role="listbox"],
+    div[role="listbox"] * {
         background: #faf9f6 !important;
         background-color: #faf9f6 !important;
-        border: 1px solid #e5e5e0 !important;
-        border-radius: 8px !important;
     }
 
+    [data-baseweb="popover"],
+    [data-baseweb="menu"],
+    ul[role="listbox"],
+    div[role="listbox"] {
+        border: 1px solid #e5e5e0 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+    }
+
+    /* Option items text color */
     [data-baseweb="menu"] li,
     ul[role="listbox"] li,
     div[role="listbox"] div[role="option"],
-    [data-baseweb="menu"] [role="option"] {
+    [data-baseweb="menu"] [role="option"],
+    [role="option"],
+    [role="option"] * {
         background: #faf9f6 !important;
         background-color: #faf9f6 !important;
         color: #4a4a4a !important;
     }
 
+    /* Hover states */
     [data-baseweb="menu"] li:hover,
     ul[role="listbox"] li:hover,
     div[role="listbox"] div[role="option"]:hover,
     [data-baseweb="menu"] [role="option"]:hover,
-    [data-highlighted="true"] {
+    [role="option"]:hover,
+    [data-highlighted="true"],
+    [data-highlighted="true"] * {
         background: #f0efec !important;
         background-color: #f0efec !important;
+    }
+
+    /* Selected option styling */
+    [aria-selected="true"],
+    [aria-selected="true"] *,
+    [data-baseweb="menu"] li[aria-selected="true"] {
+        background: #e8efe8 !important;
+        background-color: #e8efe8 !important;
+        color: #3d4d3d !important;
+    }
+
+    /* Override any inline dark backgrounds on body popover portals */
+    body > div[data-baseweb] {
+        background: transparent !important;
+    }
+
+    body > div[data-baseweb] > div {
+        background: #faf9f6 !important;
     }
 
     /* ======== DATE INPUTS - FULL STYLING ======== */
@@ -607,6 +643,48 @@ st.markdown("""
     /* Column gap fix */
     [data-testid="column"] {
         padding: 0 8px;
+    }
+
+    /* ======== REDUCE VERTICAL SPACING ======== */
+    /* Tighten up spacing between elements */
+    .stMarkdown {
+        margin-bottom: 0 !important;
+    }
+
+    /* Reduce gap after horizontal rules */
+    hr {
+        margin: 12px 0 !important;
+    }
+
+    /* Reduce vertical block spacing */
+    [data-testid="stVerticalBlock"] > div {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* Reduce spacing in tab content */
+    .stTabs [data-baseweb="tab-panel"] {
+        padding-top: 16px !important;
+    }
+
+    /* Reduce gaps between form elements */
+    .stSelectbox, .stNumberInput, .stTextInput, .stDateInput {
+        margin-bottom: 8px !important;
+    }
+
+    /* Reduce element container gaps */
+    [data-testid="element-container"] {
+        margin-bottom: 4px !important;
+    }
+
+    /* Tighter horizontal layout spacing */
+    [data-testid="stHorizontalBlock"] {
+        gap: 8px !important;
+    }
+
+    /* Reduce spacing after columns */
+    [data-testid="stColumn"] > div {
+        gap: 4px !important;
     }
 
     /* ======== PLOTLY CHARTS ======== */
