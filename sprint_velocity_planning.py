@@ -93,33 +93,32 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     border-radius: 8px !important;
 }
 
-/* Expander for move menu */
-[data-testid="column"]:last-child .stExpander {
-    border: none !important;
-}
-[data-testid="column"]:last-child .stExpander summary {
+/* Move selectbox trigger - minimal three-dot look */
+[data-testid="column"]:last-child .stSelectbox > div > div {
     background: transparent !important;
     border: none !important;
-    padding: 4px 8px !important;
-    font-size: 1.2rem !important;
-    color: #999 !important;
 }
-[data-testid="column"]:last-child .stExpander summary:hover {
-    background: #e8e8e3 !important;
-    border-radius: 8px !important;
+[data-testid="column"]:last-child .stSelectbox svg {
+    display: none !important;
 }
-[data-testid="column"]:last-child .stExpander summary span {
-    font-size: 1.2rem !important;
+
+/* Make dropdown popover responsive - not constrained by trigger width */
+[data-baseweb="popover"] {
+    width: fit-content !important;
+    min-width: fit-content !important;
 }
-[data-testid="column"]:last-child .stExpander [data-testid="stExpanderDetails"] {
-    background: white !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.12) !important;
-    padding: 12px !important;
-    position: absolute !important;
-    right: 0 !important;
-    min-width: 160px !important;
-    z-index: 100 !important;
+[data-baseweb="popover"] > div {
+    width: fit-content !important;
+    min-width: fit-content !important;
+}
+ul[role="listbox"] {
+    width: fit-content !important;
+    min-width: fit-content !important;
+    white-space: nowrap !important;
+}
+ul[role="listbox"] li {
+    white-space: nowrap !important;
+    padding-right: 24px !important;
 }
 
 /* Forecast card */
@@ -325,12 +324,12 @@ def render_dev_row(dev, team_id):
 
     with cols[4]:
         other = [t for t in TEAMS if t["id"] != team_id]
-        with st.expander("⋮", expanded=False):
-            st.caption("Move to")
-            for t in other:
-                if st.button(t["name"], key=f"mv_{dev_id}_{t['id']}"):
-                    save_team_assignment(dev_id, t["id"])
-                    st.rerun()
+        opts = ["⋮"] + [t["name"] for t in other]
+        sel = st.selectbox("", opts, key=f"mv_{dev_id}", label_visibility="collapsed")
+        if sel != "⋮":
+            new_id = next(t["id"] for t in other if t["name"] == sel)
+            save_team_assignment(dev_id, new_id)
+            st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
