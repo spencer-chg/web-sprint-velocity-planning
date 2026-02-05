@@ -930,55 +930,50 @@ def render_forecast():
     team_assignments = load_team_assignments()
     sprints = load_sprints()
 
-    # Build editable dataframe for PTO
-    team_names = {t["id"]: t["name"] for t in TEAMS}
-    df_data = []
-    for dev in DEVELOPERS:
-        current_team = team_assignments.get(dev["id"], "team1")
-        df_data.append({
-            "id": dev["id"],
-            "Developer": dev["name"],
-            "Team": team_names.get(current_team, "Team 1"),
-            "PTO Days": st.session_state.pto_data.get(dev["id"], 0.0)
-        })
-
-    df = pd.DataFrame(df_data)
-
     # Controls row
     col1, col2 = st.columns([3, 1])
     with col1:
         buffer_opts = {"85% (Standard)": 0.85, "70% (Conservative)": 0.70, "100% (Aggressive)": 1.00}
-        sel = st.selectbox("Planning Buffer", list(buffer_opts.keys()), index=0, label_visibility="collapsed")
+        sel = st.selectbox("Planning Buffer", list(buffer_opts.keys()), index=0)
         st.session_state.planning_buffer = buffer_opts[sel]
     with col2:
+        st.markdown("<div style='height:28px'></div>", unsafe_allow_html=True)
         calc = st.button("Calculate", type="primary", use_container_width=True)
 
     st.markdown("---")
 
-    # Editable table for PTO
-    edited_df = st.data_editor(
-        df,
-        column_config={
-            "id": None,  # Hide ID column
-            "Developer": st.column_config.TextColumn("Developer", disabled=True, width="medium"),
-            "Team": st.column_config.SelectboxColumn("Team", options=[t["name"] for t in TEAMS], width="small"),
-            "PTO Days": st.column_config.NumberColumn("PTO Days", min_value=0.0, max_value=10.0, step=0.5, width="small")
-        },
-        hide_index=True,
-        use_container_width=True,
-        key="forecast_editor"
-    )
+    # Table header
+    st.markdown('''
+    <div style="display:flex; padding:8px 12px; border-bottom:1px solid #e5e5e0; margin-bottom:8px;">
+        <div style="flex:2; font-size:0.7rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#8a8a8a;">Developer</div>
+        <div style="flex:1; font-size:0.7rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#8a8a8a;">Team</div>
+        <div style="flex:1; font-size:0.7rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#8a8a8a;">PTO Days</div>
+    </div>
+    ''', unsafe_allow_html=True)
 
-    # Sync edits back to session state and database
-    for _, row in edited_df.iterrows():
-        dev_id = row["id"]
-        st.session_state.pto_data[dev_id] = row["PTO Days"]
+    # Developer rows
+    for dev in DEVELOPERS:
+        current_team_id = team_assignments.get(dev["id"], "team1")
+        current_team_idx = next((i for i, t in enumerate(TEAMS) if t["id"] == current_team_id), 0)
 
-        # Check if team changed
-        new_team_name = row["Team"]
-        new_team_id = next((t["id"] for t in TEAMS if t["name"] == new_team_name), None)
-        if new_team_id and team_assignments.get(dev_id) != new_team_id:
-            update_team_assignment(dev_id, new_team_id)
+        c1, c2, c3 = st.columns([2, 1, 1])
+        with c1:
+            st.markdown(f"**{dev['name']}**")
+        with c2:
+            new_team = st.selectbox(
+                "Team", [t["name"] for t in TEAMS], index=current_team_idx,
+                key=f"team_{dev['id']}", label_visibility="collapsed"
+            )
+            new_team_id = next(t["id"] for t in TEAMS if t["name"] == new_team)
+            if new_team_id != current_team_id:
+                update_team_assignment(dev["id"], new_team_id)
+                st.rerun()
+        with c3:
+            pto = st.number_input(
+                "PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5,
+                key=f"pto_{dev['id']}", label_visibility="collapsed"
+            )
+            st.session_state.pto_data[dev["id"]] = pto
 
     if calc:
         buf = st.session_state.planning_buffer
