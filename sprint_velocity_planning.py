@@ -93,25 +93,24 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     border-radius: 8px !important;
 }
 
-/* Popover three-dot button */
-.stPopover > button {
+/* Move menu dropdown - minimal styling */
+[data-testid="column"]:last-child .stSelectbox [data-baseweb="select"] {
     background: transparent !important;
     border: none !important;
-    color: #999 !important;
-    font-size: 1.2rem !important;
-    padding: 4px 8px !important;
-    min-height: auto !important;
-    height: auto !important;
-    line-height: 1 !important;
 }
-.stPopover > button:hover {
-    background: #e5e5e0 !important;
-    color: #6b7c6b !important;
+[data-testid="column"]:last-child .stSelectbox [data-baseweb="select"] > div {
+    background: transparent !important;
+    padding: 6px !important;
+}
+[data-testid="column"]:last-child .stSelectbox svg {
+    display: none !important;
 }
 
-/* Popover content */
+/* Dropdown menu itself */
 [data-baseweb="popover"] {
-    min-width: 150px !important;
+    min-width: 140px !important;
+    border-radius: 10px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
 }
 
 /* Forecast card */
@@ -316,13 +315,19 @@ def render_dev_row(dev, team_id):
             st.session_state.pto[dev_id] = min(10, pto + 0.5)
 
     with cols[4]:
+        # Simple selectbox styled minimally - popover has bugs
         other = [t for t in TEAMS if t["id"] != team_id]
-        with st.popover("⋮"):
-            st.markdown("**Move to...**")
-            for t in other:
-                if st.button(t["name"], key=f"mv_{dev_id}_{t['id']}", use_container_width=True):
-                    save_team_assignment(dev_id, t["id"])
-                    st.rerun()
+        sel = st.selectbox(
+            "",
+            ["⋮", "─────"] + [f"→ {t['name']}" for t in other],
+            key=f"mv_{dev_id}",
+            label_visibility="collapsed"
+        )
+        if sel.startswith("→"):
+            team_name = sel.replace("→ ", "")
+            new_id = next(t["id"] for t in other if t["name"] == team_name)
+            save_team_assignment(dev_id, new_id)
+            st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
