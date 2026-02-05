@@ -166,6 +166,10 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
     letter-spacing: -0.01em;
 }
 
+/* === EXPANDER === */
+.streamlit-expanderHeader { font-size: 0.9rem !important; font-weight: 500 !important; color: var(--text-muted) !important; }
+.streamlit-expanderContent { padding-top: 12px !important; }
+
 /* === MISC === */
 hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0db, transparent); margin: 28px 0; }
 
@@ -337,7 +341,7 @@ def render_dev_row(dev):
     with c2:
         new_val = st.number_input(
             "PTO", value=pto, min_value=0.0, max_value=10.0, step=0.5,
-            key=f"pto_{dev_id}", label_visibility="collapsed"
+            format="%.1f", key=f"pto_{dev_id}", label_visibility="collapsed"
         )
         if new_val != pto:
             st.session_state.pto[dev_id] = new_val
@@ -377,28 +381,27 @@ def page_forecast():
             else:
                 st.markdown("<p style='color:#999; font-size:0.85rem; text-align:center; margin-top:8px;'>No developers</p>", unsafe_allow_html=True)
 
-    # Team management section
+    # Team management section - collapsed by default
     st.markdown("---")
-    st.markdown("<h4 style='text-align:center; color:#4a4a4a; font-weight:600; margin-bottom:16px;'>Manage Team Assignments</h4>", unsafe_allow_html=True)
-
-    for dev in DEVELOPERS:
-        c1, c2 = st.columns([2, 2])
-        with c1:
-            st.write(dev["name"])
-        with c2:
-            current = team_assignments.get(dev["id"], "team1")
-            current_idx = next((i for i, t in enumerate(TEAMS) if t["id"] == current), 0)
-            new_team = st.selectbox(
-                "",
-                [t["name"] for t in TEAMS],
-                index=current_idx,
-                key=f"team_assign_{dev['id']}",
-                label_visibility="collapsed"
-            )
-            new_id = next(t["id"] for t in TEAMS if t["name"] == new_team)
-            if new_id != current:
-                save_team_assignment(dev["id"], new_id)
-                st.rerun()
+    with st.expander("Manage Team Assignments"):
+        for dev in DEVELOPERS:
+            c1, c2 = st.columns([2, 2])
+            with c1:
+                st.write(dev["name"])
+            with c2:
+                current = team_assignments.get(dev["id"], "team1")
+                current_idx = next((i for i, t in enumerate(TEAMS) if t["id"] == current), 0)
+                new_team = st.selectbox(
+                    "",
+                    [t["name"] for t in TEAMS],
+                    index=current_idx,
+                    key=f"team_assign_{dev['id']}",
+                    label_visibility="collapsed"
+                )
+                new_id = next(t["id"] for t in TEAMS if t["name"] == new_team)
+                if new_id != current:
+                    save_team_assignment(dev["id"], new_id)
+                    st.rerun()
 
     # Calculate - only load sprints from DB when button is clicked
     if calc_btn:
@@ -481,7 +484,7 @@ def page_add_sprint():
                     with left:
                         new_pts = st.number_input(
                             "Points", value=pts, min_value=0.0, step=0.5,
-                            key=f"sp_{dev_id}", label_visibility="collapsed"
+                            format="%.1f", key=f"sp_{dev_id}", label_visibility="collapsed"
                         )
                         if new_pts != pts:
                             st.session_state.sprint_pts[dev_id] = new_pts
