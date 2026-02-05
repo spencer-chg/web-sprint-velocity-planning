@@ -37,9 +37,9 @@ st.markdown("""
 
     /* Root overrides */
     :root {
-        --primary-color: #5d6b5d;
+        --primary-color: #4a5d4a;
         --background-color: #f5f5f0;
-        --text-color: #2d2d2d;
+        --text-color: #3d3d3d;
     }
 
     /* Base styling */
@@ -63,58 +63,76 @@ st.markdown("""
         padding: 2rem 1rem 4rem 1rem !important;
     }
 
-    /* Typography - force dark text */
+    /* Typography - no pure black anywhere, soft grays like Pointing Poker */
     * {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
     }
 
-    h1, h2, h3, h4, h5, h6, p, span, div, label, .stMarkdown, .stText {
-        color: #2d2d2d !important;
+    /* Main text - soft dark gray, never black */
+    h1, h2, h3, h4, h5, h6 {
+        color: #4a4a4a !important;
     }
 
-    /* Muted text */
-    .text-muted {
-        color: #6b6b6b !important;
+    p, span, div, .stMarkdown, .stText {
+        color: #5a5a5a !important;
+    }
+
+    /* Bold/strong text - still soft */
+    strong, b {
+        color: #4a4a4a !important;
+    }
+
+    /* Labels and secondary text */
+    label, .stTextInput > label, .stNumberInput > label, .stSelectbox > label, .stDateInput > label {
+        color: #8a8a8a !important;
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+    }
+
+    /* Input text - soft gray, not black */
+    input, textarea, select, [data-baseweb="input"] input {
+        color: #4a4a4a !important;
     }
 
     /* Header */
     .app-header {
         text-align: center;
-        padding: 24px 0 20px 0;
+        padding: 32px 0 24px 0;
         margin-bottom: 8px;
     }
 
     .app-title {
         font-size: 1.75rem;
-        font-weight: 600;
-        color: #2d2d2d !important;
-        letter-spacing: 0.01em;
+        font-weight: 700;
+        color: #4a4a4a !important;
+        letter-spacing: -0.01em;
         margin: 0;
     }
 
     .app-subtitle {
-        color: #888 !important;
-        font-size: 0.7rem;
-        font-weight: 500;
-        margin-top: 6px;
-        text-transform: uppercase;
-        letter-spacing: 0.15em;
+        color: #9a9a9a !important;
+        font-size: 0.85rem;
+        font-weight: 400;
+        margin-top: 8px;
+        letter-spacing: 0.02em;
     }
 
     /* Section labels */
     .section-label {
-        font-size: 0.65rem;
-        font-weight: 600;
+        font-size: 0.7rem;
+        font-weight: 500;
         text-transform: uppercase;
-        letter-spacing: 0.12em;
-        color: #888 !important;
-        margin-bottom: 4px;
+        letter-spacing: 0.08em;
+        color: #8a8a8a !important;
+        margin-bottom: 8px;
     }
 
     .section-title {
         font-size: 1.1rem;
         font-weight: 600;
-        color: #2d2d2d !important;
+        color: #4a4a4a !important;
         margin: 0 0 16px 0;
     }
 
@@ -126,7 +144,7 @@ st.markdown("""
     .stTabs [data-baseweb="tab-list"] {
         gap: 0;
         background: transparent !important;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid #e0e0db;
         justify-content: center;
         padding: 0;
     }
@@ -137,20 +155,20 @@ st.markdown("""
         border-radius: 0 !important;
         padding: 12px 24px !important;
         font-weight: 500 !important;
-        font-size: 0.85rem !important;
-        color: #888 !important;
+        font-size: 0.9rem !important;
+        color: #8a8a8a !important;
         border-bottom: 2px solid transparent !important;
         margin-bottom: -1px;
     }
 
     .stTabs [aria-selected="true"] {
-        color: #5d6b5d !important;
-        border-bottom: 2px solid #5d6b5d !important;
+        color: #4a5d4a !important;
+        border-bottom: 2px solid #4a5d4a !important;
         background: transparent !important;
     }
 
     .stTabs [data-baseweb="tab"]:hover {
-        color: #5d6b5d !important;
+        color: #4a5d4a !important;
         background: transparent !important;
     }
 
@@ -174,12 +192,12 @@ st.markdown("""
         padding: 14px 16px;
         margin-bottom: 12px;
         border: 1px solid #e5e5e0;
-        border-left: 3px solid #5d6b5d;
+        border-left: 3px solid #4a5d4a;
     }
 
-    .team-card.orange { border-left-color: #b8956b; }
-    .team-card.green { border-left-color: #5d6b5d; }
-    .team-card.cyan { border-left-color: #5d7a7a; }
+    .team-card.orange { border-left-color: #a08060; }
+    .team-card.green { border-left-color: #4a5d4a; }
+    .team-card.cyan { border-left-color: #4a6a6a; }
 
     /* Team header */
     .team-header {
@@ -192,27 +210,27 @@ st.markdown("""
     .team-name {
         font-size: 0.95rem;
         font-weight: 600;
-        color: #2d2d2d !important;
+        color: #3d3d3d !important;
         margin: 0;
     }
 
-    .team-name.orange { color: #b8956b !important; }
-    .team-name.green { color: #5d6b5d !important; }
-    .team-name.cyan { color: #5d7a7a !important; }
+    .team-name.orange { color: #806040 !important; }
+    .team-name.green { color: #3d4d3d !important; }
+    .team-name.cyan { color: #3d5555 !important; }
 
     .team-meta {
         font-size: 0.75rem;
-        color: #888 !important;
+        color: #8a8a8a !important;
         margin-top: 2px;
     }
 
     .team-badge {
-        font-size: 0.65rem;
+        font-size: 0.7rem;
         font-weight: 500;
-        color: #888 !important;
-        background: #f0f0eb;
-        padding: 3px 8px;
-        border-radius: 10px;
+        color: #4a5d4a !important;
+        background: #e8efe8;
+        padding: 4px 10px;
+        border-radius: 12px;
     }
 
     /* Developer rows */
@@ -234,74 +252,63 @@ st.markdown("""
         color: #2d2d2d !important;
     }
 
-    /* Buttons */
+    /* Buttons - dark sage with cream/white text (high contrast, accessible) */
     .stButton > button {
-        background: #5d6b5d !important;
-        color: #fff !important;
+        background: #4a5d4a !important;
+        color: #fffef8 !important;
         border: none !important;
-        border-radius: 6px !important;
-        padding: 10px 20px !important;
+        border-radius: 8px !important;
+        padding: 12px 24px !important;
         font-weight: 500 !important;
-        font-size: 0.85rem !important;
+        font-size: 0.9rem !important;
         transition: background 0.2s !important;
     }
 
     .stButton > button:hover {
-        background: #4d5b4d !important;
-        color: #fff !important;
+        background: #3d4d3d !important;
+        color: #fffef8 !important;
     }
 
     .stButton > button:active, .stButton > button:focus {
-        background: #4d5b4d !important;
-        color: #fff !important;
+        background: #3d4d3d !important;
+        color: #fffef8 !important;
         box-shadow: none !important;
     }
 
-    /* Form inputs */
+    /* Form inputs - subtle borders like Pointing Poker */
     .stTextInput > div > div > input,
     .stNumberInput > div > div > input,
     .stDateInput > div > div > input {
         background: #fff !important;
-        border: 1px solid #ddd !important;
-        border-radius: 6px !important;
-        color: #2d2d2d !important;
-        font-size: 0.9rem !important;
-        padding: 8px 12px !important;
+        border: 1px solid #e0e0db !important;
+        border-radius: 8px !important;
+        color: #3d3d3d !important;
+        font-size: 0.95rem !important;
+        padding: 10px 14px !important;
     }
 
     .stTextInput > div > div > input:focus,
     .stNumberInput > div > div > input:focus {
-        border-color: #5d6b5d !important;
-        box-shadow: 0 0 0 1px #5d6b5d !important;
+        border-color: #4a5d4a !important;
+        box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
     /* Select boxes */
     .stSelectbox > div > div {
         background: #fff !important;
-        border-radius: 6px !important;
+        border-radius: 8px !important;
     }
 
     .stSelectbox [data-baseweb="select"] > div {
         background: #fff !important;
-        border: 1px solid #ddd !important;
-        border-radius: 6px !important;
+        border: 1px solid #e0e0db !important;
+        border-radius: 8px !important;
+        color: #3d3d3d !important;
     }
 
     .stSelectbox [data-baseweb="select"] > div:focus-within {
-        border-color: #5d6b5d !important;
-        box-shadow: 0 0 0 1px #5d6b5d !important;
-    }
-
-    /* Labels */
-    .stTextInput > label,
-    .stNumberInput > label,
-    .stSelectbox > label,
-    .stDateInput > label {
-        font-size: 0.7rem !important;
-        font-weight: 600 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.08em !important;
-        color: #888 !important;
+        border-color: #4a5d4a !important;
+        box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
     /* Number input container */
@@ -321,26 +328,26 @@ st.markdown("""
     .metric-value {
         font-size: 2rem;
         font-weight: 700;
-        color: #2d2d2d !important;
+        color: #3d3d3d !important;
         line-height: 1.2;
         margin: 4px 0;
     }
 
-    .metric-value.orange { color: #b8956b !important; }
-    .metric-value.green { color: #5d6b5d !important; }
-    .metric-value.cyan { color: #5d7a7a !important; }
+    .metric-value.orange { color: #806040 !important; }
+    .metric-value.green { color: #3d4d3d !important; }
+    .metric-value.cyan { color: #3d5555 !important; }
 
     .metric-label {
-        font-size: 0.6rem;
-        font-weight: 600;
+        font-size: 0.65rem;
+        font-weight: 500;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: #888 !important;
+        letter-spacing: 0.08em;
+        color: #7a7a7a !important;
     }
 
     .metric-sub {
         font-size: 0.75rem;
-        color: #888 !important;
+        color: #8a8a8a !important;
     }
 
     /* Forecast cards */
@@ -354,16 +361,16 @@ st.markdown("""
     }
 
     .forecast-team {
-        font-size: 0.65rem;
+        font-size: 0.7rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.08em;
         margin-bottom: 4px;
     }
 
     .forecast-raw {
         font-size: 0.8rem;
-        color: #888 !important;
+        color: #8a8a8a !important;
         margin-bottom: 8px;
     }
 
@@ -376,14 +383,14 @@ st.markdown("""
 
     .forecast-buffer {
         font-size: 0.7rem;
-        color: #888 !important;
+        color: #8a8a8a !important;
         text-transform: uppercase;
         letter-spacing: 0.05em;
     }
 
     /* Breakdown items */
     .breakdown-item {
-        background: #fafaf8;
+        background: #f8f8f5;
         border-radius: 6px;
         padding: 10px 12px;
         margin-top: 6px;
@@ -395,19 +402,19 @@ st.markdown("""
     .breakdown-name {
         font-size: 0.85rem;
         font-weight: 500;
-        color: #2d2d2d !important;
+        color: #3d3d3d !important;
     }
 
     .breakdown-meta {
         font-size: 0.7rem;
-        color: #888 !important;
+        color: #8a8a8a !important;
         margin-top: 1px;
     }
 
     .breakdown-value {
         font-size: 1rem;
         font-weight: 700;
-        color: #2d2d2d !important;
+        color: #3d3d3d !important;
     }
 
     /* Divider */
@@ -469,7 +476,7 @@ TEAMS = [
     {"id": "storyblok", "name": "Storyblok", "displayName": "Storyblok Team", "pmName": "Storyblok", "color": "cyan"},
 ]
 
-TEAM_COLORS = {"orange": "#b8956b", "green": "#5d6b5d", "cyan": "#5d7a7a"}
+TEAM_COLORS = {"orange": "#a08060", "green": "#4a5d4a", "cyan": "#4a6a6a"}
 
 HOLIDAYS = [
     {"name": "New Year's Day", "month": 1, "day": 1, "type": "full-day"},
