@@ -292,10 +292,31 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* ======== NUMBER INPUTS - MINIMAL ======== */
-    /* Just remove double borders, keep defaults otherwise */
-    .stNumberInput > div > div {
-        border-color: transparent !important;
+    /* ======== NUMBER INPUTS ======== */
+    /* Input field - cream background */
+    .stNumberInput [data-baseweb="input"] {
+        background-color: #faf9f6 !important;
+        border: 1px solid #e0e0db !important;
+        border-radius: 8px !important;
+    }
+
+    .stNumberInput input {
+        background-color: #faf9f6 !important;
+        color: #4a4a4a !important;
+    }
+
+    /* +/- buttons - sage green */
+    .stNumberInput [data-baseweb="input"] button {
+        background-color: #6b7c6b !important;
+        border: none !important;
+    }
+
+    .stNumberInput [data-baseweb="input"] button:hover {
+        background-color: #5a6b5a !important;
+    }
+
+    .stNumberInput [data-baseweb="input"] button svg {
+        fill: white !important;
     }
 
     /* ======== SELECT BOXES / DROPDOWNS ======== */
@@ -930,12 +951,14 @@ def render_forecast():
 
         if devs:
             for dev in devs:
-                c1, c2 = st.columns([3, 2])
-                with c1:
-                    st.markdown(f"<span style='font-size:0.85rem;'>{dev['name']}</span>", unsafe_allow_html=True)
-                with c2:
-                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
-                    st.session_state.pto_data[dev["id"]] = pto
+                st.markdown(f"**{dev['name']}**")
+                pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}")
+                st.session_state.pto_data[dev["id"]] = pto
+                other_teams = [t for t in TEAMS if t["id"] != team["id"]]
+                mv = st.selectbox("Move to", ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}")
+                if mv != "—":
+                    update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
+                    st.rerun()
         else:
             st.markdown("*No developers*")
 
