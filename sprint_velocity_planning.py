@@ -118,28 +118,29 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     display: none !important;
 }
 
-/* Dropdown menu */
+/* Dropdown - the popover body that contains the menu */
+[data-baseweb="popover"] > div:first-child {
+    width: auto !important;
+    min-width: 140px !important;
+    max-width: none !important;
+}
 ul[role="listbox"] {
-    min-width: 160px !important;
+    width: auto !important;
+    min-width: 140px !important;
     border-radius: 12px !important;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
     background: white !important;
     padding: 8px 0 !important;
 }
 ul[role="listbox"] li {
-    padding: 12px 20px !important;
+    padding: 12px 16px !important;
+    width: auto !important;
 }
-/* Target the INNER content that has truncation */
-ul[role="listbox"] li *,
-ul[role="listbox"] li div,
-ul[role="listbox"] li span,
-[role="option"] *,
-[role="option"] div,
-[role="option"] span {
-    overflow: visible !important;
-    text-overflow: clip !important;
-    white-space: nowrap !important;
+ul[role="listbox"] li div {
+    width: auto !important;
     max-width: none !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
 }
 
 /* Forecast card */
