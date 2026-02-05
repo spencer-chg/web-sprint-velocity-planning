@@ -973,18 +973,17 @@ def render_forecast():
 
         if devs:
             for dev in devs:
-                c1, c2, c3 = st.columns([3, 4, 1])
+                st.markdown(f"**{dev['name']}**")
+                c1, c2 = st.columns([5, 1])
                 with c1:
-                    st.markdown(f"<div style='padding:10px 0; font-weight:500; font-size:0.85rem;'>{dev['name']}</div>", unsafe_allow_html=True)
-                with c2:
                     pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
                     st.session_state.pto_data[dev["id"]] = pto
-                with c3:
+                with c2:
                     other_teams = [t for t in TEAMS if t["id"] != team["id"]]
-                    with st.popover("⋮"):
-                        st.markdown(f"**Move {dev['name']}**")
+                    with st.popover("•••"):
+                        st.write(f"Move to:")
                         for t in other_teams:
-                            if st.button(t["name"], key=f"mv_{dev['id']}_{t['id']}", use_container_width=True):
+                            if st.button(t["name"], key=f"mv_{dev['id']}_{t['id']}"):
                                 update_team_assignment(dev["id"], t["id"])
                                 st.rerun()
         else:
