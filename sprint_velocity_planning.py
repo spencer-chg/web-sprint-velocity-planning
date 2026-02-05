@@ -118,33 +118,29 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     display: none !important;
 }
 
-/* Dropdown menu - FORCE wider with max specificity */
-div[data-baseweb="popover"] {
-    min-width: 200px !important;
-    width: max-content !important;
-    max-width: 300px !important;
+/* Dropdown menu - allow overflow from columns */
+[data-testid="column"] {
+    overflow: visible !important;
 }
-ul[role="listbox"],
-div[data-baseweb="menu"],
-div[data-baseweb="listbox"] {
-    min-width: 200px !important;
-    width: max-content !important;
-    max-width: 300px !important;
+.stSelectbox {
+    overflow: visible !important;
+}
+div[data-baseweb="popover"] {
+    overflow: visible !important;
+}
+ul[role="listbox"] {
+    min-width: 160px !important;
     border-radius: 12px !important;
     box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
     background: white !important;
     padding: 8px 0 !important;
     overflow: visible !important;
 }
-ul[role="listbox"] li,
-li[role="option"],
-div[role="option"] {
+ul[role="listbox"] li {
     padding: 12px 20px !important;
     font-size: 0.9rem !important;
-    white-space: nowrap !important;
     overflow: visible !important;
-    text-overflow: unset !important;
-    min-width: 150px !important;
+    white-space: nowrap !important;
 }
 
 /* Forecast card */
