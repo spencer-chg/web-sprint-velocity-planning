@@ -106,6 +106,32 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     color: #6b7c6b !important;
 }
 
+/* Move menu popup */
+.move-menu-title {
+    color: #999;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin: 0 0 4px 4px;
+    padding: 12px 0 0 0;
+}
+
+/* Style move menu buttons as menu items */
+.move-menu-title + div .stButton > button,
+.move-menu-title ~ div .stButton > button {
+    background: white !important;
+    color: #4a4a4a !important;
+    border: 1px solid #e5e5e0 !important;
+    font-weight: 500 !important;
+    margin-bottom: 6px !important;
+}
+.move-menu-title + div .stButton > button:hover,
+.move-menu-title ~ div .stButton > button:hover {
+    background: #f5f5f0 !important;
+    border-color: #6b7c6b !important;
+    color: #6b7c6b !important;
+}
+
 /* Forecast card */
 .forecast-card { background: white; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
 .forecast-card .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: #999; }
@@ -314,14 +340,16 @@ def render_dev_row(dev, team_id):
     # Show move menu when toggled
     if st.session_state.get(menu_key, False):
         other = [t for t in TEAMS if t["id"] != team_id]
-        menu_cols = st.columns([2.5, 6])
+        menu_cols = st.columns([3, 5])
         with menu_cols[1]:
-            st.markdown(f"<div style='background:white;padding:12px 16px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.1);margin-top:-8px;'><strong style='color:#888;font-size:0.75rem;'>MOVE TO</strong></div>", unsafe_allow_html=True)
+            st.markdown('<div class="move-menu">', unsafe_allow_html=True)
+            st.markdown('<p class="move-menu-title">MOVE TO</p>', unsafe_allow_html=True)
             for t in other:
                 if st.button(t["name"], key=f"mv_{dev_id}_{t['id']}", use_container_width=True):
                     save_team_assignment(dev_id, t["id"])
                     st.session_state[menu_key] = False
                     st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True)
 
 # ============== PAGES ==============
 def page_forecast():
