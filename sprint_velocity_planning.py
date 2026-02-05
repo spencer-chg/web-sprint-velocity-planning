@@ -93,54 +93,17 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     border-radius: 8px !important;
 }
 
-/* Three-dot menu button */
-[data-testid="column"]:last-child .stSelectbox [data-baseweb="select"] {
+/* Three-dot button - minimal style */
+[data-testid="column"]:last-child .stButton > button {
     background: transparent !important;
-    border: none !important;
-    border-radius: 8px !important;
-    min-height: 36px !important;
-    cursor: pointer !important;
-}
-[data-testid="column"]:last-child .stSelectbox [data-baseweb="select"] > div {
-    background: transparent !important;
-    padding: 8px 12px !important;
-    font-size: 1.2rem !important;
     color: #999 !important;
-    letter-spacing: 2px !important;
+    font-size: 1.3rem !important;
+    letter-spacing: 1px !important;
+    padding: 0 8px !important;
 }
-[data-testid="column"]:last-child .stSelectbox [data-baseweb="select"]:hover {
+[data-testid="column"]:last-child .stButton > button:hover {
     background: #e8e8e3 !important;
-}
-[data-testid="column"]:last-child .stSelectbox [data-baseweb="select"]:hover > div {
     color: #6b7c6b !important;
-}
-[data-testid="column"]:last-child .stSelectbox svg {
-    display: none !important;
-}
-
-/* Dropdown - the popover body that contains the menu */
-[data-baseweb="popover"] > div:first-child {
-    width: auto !important;
-    min-width: 140px !important;
-    max-width: none !important;
-}
-ul[role="listbox"] {
-    width: auto !important;
-    min-width: 140px !important;
-    border-radius: 12px !important;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
-    background: white !important;
-    padding: 8px 0 !important;
-}
-ul[role="listbox"] li {
-    padding: 12px 16px !important;
-    width: auto !important;
-}
-ul[role="listbox"] li div {
-    width: auto !important;
-    max-width: none !important;
-    overflow: visible !important;
-    text-overflow: unset !important;
 }
 
 /* Forecast card */
@@ -324,8 +287,9 @@ def render_dev_row(dev, team_id):
     dev_id = dev["id"]
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
+    menu_key = f"menu_{dev_id}"
 
-    cols = st.columns([2.5, 1, 2, 1, 2])
+    cols = st.columns([2.5, 1, 2, 1, 1])
 
     with cols[0]:
         st.markdown(f"**{first}**")
@@ -335,7 +299,6 @@ def render_dev_row(dev, team_id):
             st.session_state.pto[dev_id] = max(0, pto - 0.5)
 
     with cols[2]:
-        # Editable input
         val = st.number_input("", min_value=0.0, max_value=10.0, value=pto, step=0.5,
                               key=f"input_{dev_id}", label_visibility="collapsed", format="%.1f")
         st.session_state.pto[dev_id] = val
@@ -345,17 +308,20 @@ def render_dev_row(dev, team_id):
             st.session_state.pto[dev_id] = min(10, pto + 0.5)
 
     with cols[4]:
+        if st.button("⋮", key=f"dots_{dev_id}"):
+            st.session_state[menu_key] = not st.session_state.get(menu_key, False)
+
+    # Show move menu when toggled
+    if st.session_state.get(menu_key, False):
         other = [t for t in TEAMS if t["id"] != team_id]
-        sel = st.selectbox(
-            "",
-            ["⋮"] + [t["name"] for t in other],
-            key=f"mv_{dev_id}",
-            label_visibility="collapsed"
-        )
-        if sel != "⋮":
-            new_id = next(t["id"] for t in other if t["name"] == sel)
-            save_team_assignment(dev_id, new_id)
-            st.rerun()
+        menu_cols = st.columns([2.5, 6])
+        with menu_cols[1]:
+            st.markdown(f"<div style='background:white;padding:12px 16px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,0.1);margin-top:-8px;'><strong style='color:#888;font-size:0.75rem;'>MOVE TO</strong></div>", unsafe_allow_html=True)
+            for t in other:
+                if st.button(t["name"], key=f"mv_{dev_id}_{t['id']}", use_container_width=True):
+                    save_team_assignment(dev_id, t["id"])
+                    st.session_state[menu_key] = False
+                    st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
