@@ -22,12 +22,12 @@ def get_supabase():
 
 supabase = get_supabase()
 
-# ============== MINIMAL CLEAN CSS ==============
+# ============== CLEAN CSS ==============
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-/* Base */
+/* === BASE === */
 :root { --sage: #6b7c6b; --cream: #f5f5f0; }
 html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !important; }
 .stApp > header { background: transparent !important; }
@@ -35,246 +35,79 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 * { font-family: 'Inter', -apple-system, sans-serif !important; }
 .block-container { max-width: 920px !important; padding: 1rem 1rem 3rem !important; }
 
-/* Header */
+/* === HEADER === */
 .header { text-align: center; padding: 20px 0 16px; }
 .header h1 { font-size: 1.4rem; font-weight: 600; color: #3a3a3a; margin: 0; }
 .header p { font-size: 0.7rem; color: #888; margin: 4px 0 0; }
 
-/* Tabs */
+/* === TABS === */
 .stTabs [data-baseweb="tab-list"] { justify-content: center; border-bottom: 1px solid #e5e5e0; gap: 0; }
 .stTabs [data-baseweb="tab"] { color: #888 !important; font-size: 0.85rem !important; padding: 10px 20px !important; }
 .stTabs [aria-selected="true"] { color: #6b7c6b !important; border-bottom: 2px solid #6b7c6b !important; }
 .stTabs [data-baseweb="tab-highlight"] { display: none !important; }
 
-/* Team Card */
+/* === CARDS === */
 .team-card { background: white; border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
 .team-card h3 { font-size: 0.9rem; font-weight: 600; color: #6b7c6b; margin: 0 0 2px; }
 .team-card p { font-size: 0.7rem; color: #999; margin: 0; }
+.forecast-card { background: white; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.forecast-card .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: #999; }
+.forecast-card .value { font-size: 2rem; font-weight: 700; color: #6b7c6b; }
+.forecast-card .sub { font-size: 0.7rem; color: #aaa; }
+.metric { background: white; border-radius: 10px; padding: 16px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.metric .label { font-size: 0.65rem; text-transform: uppercase; color: #999; }
+.metric .value { font-size: 1.5rem; font-weight: 700; color: #6b7c6b; }
 
-/* Dev Row */
-.dev-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0eb; }
-.dev-row:last-child { border-bottom: none; }
-.dev-name { flex: 1; font-size: 0.85rem; font-weight: 500; color: #4a4a4a; }
-.pto-control { display: flex; align-items: center; gap: 2px; }
-.pto-btn { width: 32px; height: 32px; border-radius: 8px; border: none; background: #6b7c6b; color: white; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.pto-btn:hover { background: #5a6a5a; }
-.pto-val { width: 44px; text-align: center; font-weight: 600; font-size: 0.85rem; color: #4a4a4a; padding: 6px 0; background: #f5f5f0; border-radius: 6px; margin: 0 2px; }
-.move-link { font-size: 0.75rem; color: #999; margin-left: 12px; cursor: pointer; }
-.move-link:hover { color: #6b7c6b; }
-
-/* ALL buttons sage green */
-.stButton button,
-.stButton > button,
-.stButton button[kind],
-.stButton button[data-testid],
-[data-testid="baseButton-secondary"],
-[data-testid="baseButton-primary"],
-[data-testid="stBaseButton-secondary"],
-[data-testid="stBaseButton-primary"] {
+/* === BUTTONS === */
+.stButton button {
     background: #6b7c6b !important;
-    background-color: #6b7c6b !important;
     color: white !important;
     border: none !important;
     border-radius: 10px !important;
     font-weight: 600 !important;
-    padding: 0 !important;
     height: 40px !important;
-    min-height: 40px !important;
     width: 40px !important;
     min-width: 40px !important;
     max-width: 40px !important;
-    line-height: 40px !important;
+    padding: 0 !important;
     margin: 0 auto !important;
 }
-.stButton button:hover,
-.stButton > button:hover,
-[data-testid="baseButton-secondary"]:hover,
-[data-testid="baseButton-primary"]:hover {
-    background: #5a6a5a !important;
-    background-color: #5a6a5a !important;
-}
-/* Full-width buttons (Calculate, Save Sprint) */
-.stButton[data-testid="stButton"]:has(button[kind="primary"]) button,
+.stButton button:hover { background: #5a6a5a !important; }
+.stButton { display: flex !important; justify-content: center !important; }
+
+/* Primary buttons (Calculate, Save) - full width */
 button[kind="primary"] {
     width: 100% !important;
     max-width: 100% !important;
-    border-radius: 10px !important;
 }
-.stButton {
-    display: flex !important;
-    justify-content: center !important;
-}
-/* Disabled button = value display (white, not sage) */
-.stButton button:disabled,
-.stButton button[disabled] {
+
+/* Disabled button = value display */
+.stButton button:disabled {
     background: white !important;
-    background-color: white !important;
     color: #4a4a4a !important;
     border: 1px solid #e5e5e0 !important;
-    cursor: default !important;
     opacity: 1 !important;
+    cursor: default !important;
 }
 
-/* PIXEL PERFECT SPACING */
-[data-testid="stHorizontalBlock"] {
-    gap: 6px !important;
-    align-items: center !important;
+/* === FORM INPUTS === */
+.stTextInput input, .stDateInput input {
+    background: white !important;
+    border: 1px solid #e5e5e0 !important;
+    border-radius: 8px !important;
 }
-[data-testid="column"] {
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-[data-testid="column"] > div {
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-}
-[data-testid="column"] > div > div {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-/* Markdown containers - match button height for alignment */
-[data-testid="column"] [data-testid="stMarkdown"] {
-    padding: 0 !important;
-    margin: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 100% !important;
-    height: 40px !important;
-}
-[data-testid="column"] [data-testid="stMarkdown"] > div {
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
-    height: 40px !important;
-    display: flex !important;
-    align-items: center !important;
-}
-[data-testid="column"] [data-testid="stMarkdown"] p {
-    padding: 0 !important;
-    margin: 0 !important;
-    width: 100% !important;
-}
-
-/* Buttons: fixed size, match value box height */
-[data-testid="column"] .stButton {
-    padding: 0 !important;
-    margin: 0 !important;
-    height: 40px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-[data-testid="column"] .stButton > div {
-    height: 40px !important;
-    display: flex !important;
-    align-items: center !important;
-}
-.stButton > button {
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Text input: strip all spacing */
-.stTextInput {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-.stTextInput > div {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-.stTextInput > div > div {
-    padding: 0 !important;
-    margin: 0 !important;
-}
-.stTextInput input {
-    text-align: center !important;
-    font-weight: 600 !important;
-    padding: 8px 12px !important;
-    margin: 0 !important;
-}
-
-/* Selectbox */
 .stSelectbox > div > div {
     background: white !important;
     border: 1px solid #e5e5e0 !important;
     border-radius: 8px !important;
 }
 
-/* Forecast card */
-.forecast-card { background: white; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
-.forecast-card .label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: #999; }
-.forecast-card .value { font-size: 2rem; font-weight: 700; color: #6b7c6b; }
-.forecast-card .sub { font-size: 0.7rem; color: #aaa; }
+/* === LAYOUT === */
+[data-testid="stHorizontalBlock"] { gap: 6px !important; align-items: center !important; }
+[data-testid="column"] { padding: 0 !important; margin: 0 !important; }
 
-/* Metric */
-.metric { background: white; border-radius: 10px; padding: 16px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
-.metric .label { font-size: 0.65rem; text-transform: uppercase; color: #999; }
-.metric .value { font-size: 1.5rem; font-weight: 700; color: #6b7c6b; }
-
-/* Form inputs */
-.stTextInput input, .stDateInput input { background: white !important; border: 1px solid #e5e5e0 !important; border-radius: 8px !important; }
-
-/* Form container styling */
-[data-testid="stForm"] {
-    background: white;
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    border: none !important;
-}
-
-/* Number input - sage green buttons everywhere */
-.stNumberInput input,
-[data-testid="stNumberInput"] input {
-    background: white !important;
-    border: none !important;
-    text-align: center !important;
-    font-weight: 600 !important;
-    color: #4a4a4a !important;
-}
-.stNumberInput [data-baseweb="input"],
-[data-testid="stNumberInput"] [data-baseweb="input"] {
-    background: white !important;
-    border: 1px solid #e5e5e0 !important;
-    border-radius: 8px !important;
-}
-.stNumberInput button,
-.stNumberInput [data-testid="stNumberInputStepUp"],
-.stNumberInput [data-testid="stNumberInputStepDown"],
-[data-testid="stNumberInput"] button,
-[data-baseweb="input"] button {
-    background: #6b7c6b !important;
-    background-color: #6b7c6b !important;
-    color: white !important;
-    border: none !important;
-}
-.stNumberInput button:hover,
-[data-testid="stNumberInput"] button:hover,
-[data-baseweb="input"] button:hover {
-    background: #5a6a5a !important;
-    background-color: #5a6a5a !important;
-}
-.stNumberInput button:first-of-type,
-[data-testid="stNumberInput"] button:first-of-type {
-    border-radius: 8px 0 0 8px !important;
-}
-.stNumberInput button:last-of-type,
-[data-testid="stNumberInput"] button:last-of-type {
-    border-radius: 0 8px 8px 0 !important;
-}
-
-/* Hide default hr styling issues */
+/* === MISC === */
 hr { border: none; height: 1px; background: #e5e5e0; margin: 20px 0; }
-
 </style>
 """, unsafe_allow_html=True)
 
