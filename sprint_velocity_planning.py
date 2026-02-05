@@ -64,6 +64,7 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
 }
 .team-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04); }
 .team-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin: 0 0 4px; }
+.team-card h3 a { display: none !important; }
 .team-card p { font-size: 0.7rem; color: #aaa; margin: 0; letter-spacing: 0.01em; }
 
 .forecast-card {
