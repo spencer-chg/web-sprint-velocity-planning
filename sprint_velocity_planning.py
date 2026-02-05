@@ -107,6 +107,9 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
     font-size: 0.95rem !important;
 }
 
+/* Tighter vertical spacing */
+.stSelectbox, .stButton { margin-bottom: -10px !important; }
+
 /* === FORM INPUTS === */
 .stTextInput input, .stDateInput input {
     background: white !important;
@@ -344,8 +347,9 @@ def page_forecast():
     # Use cached data - no DB calls on +/- clicks
     team_assignments = get_team_assignments()
 
-    # Buffer selector + Calculate button - side by side, centered
-    _, c1, c2, _ = st.columns([1, 1.2, 0.8, 1])
+    # Buffer selector + Calculate button - centered, compact
+    st.markdown("<div style='margin-top:-10px'></div>", unsafe_allow_html=True)
+    _, c1, c2, _ = st.columns([1.5, 1, 0.6, 1.5])
     with c1:
         buf_opts = {"Buffer - 85%": 0.85, "Buffer - 70%": 0.70, "Buffer - 100%": 1.0}
         sel = st.selectbox("Buffer", list(buf_opts.keys()), label_visibility="collapsed")
@@ -353,7 +357,7 @@ def page_forecast():
     with c2:
         calc_btn = st.button("Calculate", type="primary", use_container_width=True)
 
-    st.markdown("---")
+    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
 
     # Team headers - 2 columns with spacer
     card_cols = st.columns([1, 0.15, 1])
