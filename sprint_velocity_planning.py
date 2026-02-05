@@ -99,6 +99,7 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
     background: var(--sage-dark) !important;
     box-shadow: 0 4px 8px rgba(107,124,107,0.25) !important;
 }
+.stButton button, .stSelectbox, .stNumberInput { white-space: nowrap !important; min-width: fit-content !important; }
 
 /* Number inputs */
 .stNumberInput input {
@@ -349,7 +350,7 @@ def page_forecast():
 
     # Buffer selector + Calculate button - centered, compact
     st.markdown("<div style='margin-top:-10px'></div>", unsafe_allow_html=True)
-    _, c1, c2, _ = st.columns([1.5, 1, 0.6, 1.5])
+    _, c1, c2, _ = st.columns([1, 1, 1, 1])
     with c1:
         buf_opts = {"Buffer - 85%": 0.85, "Buffer - 70%": 0.70, "Buffer - 100%": 1.0}
         sel = st.selectbox("Buffer", list(buf_opts.keys()), label_visibility="collapsed")
