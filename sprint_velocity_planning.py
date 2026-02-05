@@ -75,12 +75,16 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     background-color: #6b7c6b !important;
     color: white !important;
     border: none !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
     font-weight: 600 !important;
     padding: 0 !important;
-    height: 36px !important;
-    min-height: 36px !important;
-    line-height: 36px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    line-height: 40px !important;
+    margin: 0 auto !important;
 }
 .stButton button:hover,
 .stButton > button:hover,
@@ -88,6 +92,17 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 [data-testid="baseButton-primary"]:hover {
     background: #5a6a5a !important;
     background-color: #5a6a5a !important;
+}
+/* Full-width buttons (Calculate, Save Sprint) */
+.stButton[data-testid="stButton"]:has(button[kind="primary"]) button,
+button[kind="primary"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 10px !important;
+}
+.stButton {
+    display: flex !important;
+    justify-content: center !important;
 }
 
 /* PIXEL PERFECT SPACING */
@@ -350,25 +365,20 @@ def render_dev_row(dev):
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
 
-    # Render entire control as HTML with flexbox for pixel-perfect spacing
-    col1, col2 = st.columns([3, 4])
+    c1, c2, c3, c4 = st.columns([2.5, 1, 1, 1])
 
-    with col1:
+    with c1:
         st.markdown(f"**{first}**")
-
-    with col2:
-        # Button container with perfect spacing
-        btn_cols = st.columns([1, 1, 1])
-        with btn_cols[0]:
-            if st.button("－", key=f"m_{dev_id}", use_container_width=True):
-                st.session_state.pto[dev_id] = max(0, pto - 0.5)
-                st.rerun()
-        with btn_cols[1]:
-            st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:8px; padding:8px 0; text-align:center; font-weight:600;'>{pto:.1f}</div>", unsafe_allow_html=True)
-        with btn_cols[2]:
-            if st.button("＋", key=f"p_{dev_id}", use_container_width=True):
-                st.session_state.pto[dev_id] = min(10, pto + 0.5)
-                st.rerun()
+    with c2:
+        if st.button("－", key=f"m_{dev_id}"):
+            st.session_state.pto[dev_id] = max(0, pto - 0.5)
+            st.rerun()
+    with c3:
+        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:8px; padding:8px 4px; text-align:center; font-weight:600; font-size:0.9rem;'>{pto:.1f}</div>", unsafe_allow_html=True)
+    with c4:
+        if st.button("＋", key=f"p_{dev_id}"):
+            st.session_state.pto[dev_id] = min(10, pto + 0.5)
+            st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
@@ -506,20 +516,18 @@ def page_add_sprint():
                     # Pts row: [−] [value] [+] | Team dropdown
                     pts = st.session_state.sprint_pts.get(dev_id, 0.0)
 
-                    left, right = st.columns([3, 2])
-                    with left:
-                        btn_cols = st.columns([1, 1, 1])
-                        with btn_cols[0]:
-                            if st.button("－", key=f"spm_{dev_id}", use_container_width=True):
-                                st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
-                                st.rerun()
-                        with btn_cols[1]:
-                            st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:8px; padding:8px 0; text-align:center; font-weight:600;'>{pts:.1f}</div>", unsafe_allow_html=True)
-                        with btn_cols[2]:
-                            if st.button("＋", key=f"spp_{dev_id}", use_container_width=True):
-                                st.session_state.sprint_pts[dev_id] = pts + 0.5
-                                st.rerun()
-                    with right:
+                    c1, c2, c3, c4, c5 = st.columns([1, 1, 1, 0.2, 2])
+                    with c1:
+                        if st.button("－", key=f"spm_{dev_id}"):
+                            st.session_state.sprint_pts[dev_id] = max(0, pts - 0.5)
+                            st.rerun()
+                    with c2:
+                        st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:8px; padding:8px 4px; text-align:center; font-weight:600; font-size:0.9rem;'>{pts:.1f}</div>", unsafe_allow_html=True)
+                    with c3:
+                        if st.button("＋", key=f"spp_{dev_id}"):
+                            st.session_state.sprint_pts[dev_id] = pts + 0.5
+                            st.rerun()
+                    with c5:
                         dt = team_assignments.get(dev_id, "team1")
                         di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
                         st.selectbox("Team", [t["name"] for t in TEAMS], di, key=f"tm_{dev_id}", label_visibility="collapsed")
