@@ -350,29 +350,25 @@ def render_dev_row(dev):
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
 
-    cols = st.columns([3, 1, 1, 1], gap="small")
+    # Render entire control as HTML with flexbox for pixel-perfect spacing
+    col1, col2 = st.columns([3, 4])
 
-    with cols[0]:
+    with col1:
         st.markdown(f"**{first}**")
 
-    with cols[1]:
-        if st.button("－", key=f"m_{dev_id}"):
-            st.session_state.pto[dev_id] = max(0, pto - 0.5)
-            st.rerun()
-
-    with cols[2]:
-        val_str = st.text_input("", value=f"{pto:.1f}", key=f"input_{dev_id}", label_visibility="collapsed")
-        try:
-            parsed = float(val_str)
-            if 0 <= parsed <= 10:
-                st.session_state.pto[dev_id] = parsed
-        except:
-            pass
-
-    with cols[3]:
-        if st.button("＋", key=f"p_{dev_id}"):
-            st.session_state.pto[dev_id] = min(10, pto + 0.5)
-            st.rerun()
+    with col2:
+        # Button container with perfect spacing
+        btn_cols = st.columns([1, 1, 1])
+        with btn_cols[0]:
+            if st.button("－", key=f"m_{dev_id}", use_container_width=True):
+                st.session_state.pto[dev_id] = max(0, pto - 0.5)
+                st.rerun()
+        with btn_cols[1]:
+            st.markdown(f"<div style='background:white; border:1px solid #e5e5e0; border-radius:8px; padding:8px 0; text-align:center; font-weight:600;'>{pto:.1f}</div>", unsafe_allow_html=True)
+        with btn_cols[2]:
+            if st.button("＋", key=f"p_{dev_id}", use_container_width=True):
+                st.session_state.pto[dev_id] = min(10, pto + 0.5)
+                st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
