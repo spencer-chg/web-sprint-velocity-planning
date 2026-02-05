@@ -293,69 +293,60 @@ st.markdown("""
     }
 
     /* ======== NUMBER INPUTS ======== */
-    /* Remove ALL borders from outer containers */
-    .stNumberInput > div {
-        border: none !important;
-        box-shadow: none !important;
-    }
+    /* Container cleanup */
+    .stNumberInput > div,
     .stNumberInput > div > div {
         border: none !important;
         box-shadow: none !important;
+        background: transparent !important;
     }
 
-    /* Single border on the actual input container */
+    /* The input wrapper with buttons */
     .stNumberInput [data-baseweb="input"] {
-        background: #faf9f6 !important;
-        border: 1px solid #e5e5e0 !important;
-        border-radius: 6px !important;
+        background: #fff !important;
+        border: 1px solid #d8d8d3 !important;
+        border-radius: 8px !important;
         box-shadow: none !important;
+        overflow: hidden !important;
     }
 
+    /* Input field itself */
     .stNumberInput input {
-        background: #faf9f6 !important;
-        color: #4a4a4a !important;
+        background: #fff !important;
+        color: #3d3d3d !important;
         font-size: 0.9rem !important;
+        font-weight: 500 !important;
         border: none !important;
+        text-align: center !important;
     }
 
-    /* Stepper buttons - clean minimal style */
-    .stNumberInput button {
-        background: #faf9f6 !important;
-        color: #8a8a8a !important;
+    /* Stepper buttons - sage green style */
+    .stNumberInput [data-baseweb="input"] button {
+        background: #4a5d4a !important;
+        color: #fff !important;
         border: none !important;
         border-radius: 0 !important;
         box-shadow: none !important;
-        min-width: 32px !important;
+        min-width: 36px !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
-    /* Add subtle left border only */
-    .stNumberInput button:first-of-type {
-        border-left: 1px solid #e8e8e3 !important;
+    .stNumberInput [data-baseweb="input"] button:hover {
+        background: #3d4d3d !important;
     }
 
-    .stNumberInput button:last-of-type {
-        border-left: 1px solid #e8e8e3 !important;
+    .stNumberInput [data-baseweb="input"] button svg {
+        fill: #fff !important;
+        stroke: #fff !important;
+        width: 16px !important;
+        height: 16px !important;
     }
 
-    .stNumberInput button:hover {
-        background: #f0efec !important;
-        color: #5a5a5a !important;
-    }
-
-    .stNumberInput button svg {
-        fill: #8a8a8a !important;
-        width: 14px !important;
-        height: 14px !important;
-    }
-
-    .stNumberInput button:hover svg {
-        fill: #5a5a5a !important;
-    }
-
-    /* Override red focus - sage green */
+    /* Focus state - sage green ring */
     .stNumberInput [data-baseweb="input"]:focus-within {
         border-color: #4a5d4a !important;
-        box-shadow: 0 0 0 1px #4a5d4a !important;
+        box-shadow: 0 0 0 2px rgba(74, 93, 74, 0.2) !important;
     }
 
     /* ======== SELECT BOXES / DROPDOWNS ======== */
@@ -930,7 +921,7 @@ def render_forecast():
     team_assignments = load_team_assignments()
     sprints = load_sprints()
 
-    # Controls row
+    # Buffer + Calculate row
     col1, col2 = st.columns([3, 1])
     with col1:
         buffer_opts = {"85% (Standard)": 0.85, "70% (Conservative)": 0.70, "100% (Aggressive)": 1.00}
@@ -942,38 +933,42 @@ def render_forecast():
 
     st.markdown("---")
 
-    # Table header
-    st.markdown('''
-    <div style="display:flex; padding:8px 12px; border-bottom:1px solid #e5e5e0; margin-bottom:8px;">
-        <div style="flex:2; font-size:0.7rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#8a8a8a;">Developer</div>
-        <div style="flex:1; font-size:0.7rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#8a8a8a;">Team</div>
-        <div style="flex:1; font-size:0.7rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:#8a8a8a;">PTO Days</div>
-    </div>
-    ''', unsafe_allow_html=True)
+    # Team cards - each team gets its own section
+    for team in TEAMS:
+        devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
 
-    # Developer rows
-    for dev in DEVELOPERS:
-        current_team_id = team_assignments.get(dev["id"], "team1")
-        current_team_idx = next((i for i, t in enumerate(TEAMS) if t["id"] == current_team_id), 0)
+        # Team card header
+        st.markdown(f'''
+        <div class="team-card">
+            <div class="team-header">
+                <div>
+                    <div class="team-name">{team['displayName']}</div>
+                    <div class="team-meta">{team['pmName']}</div>
+                </div>
+                <span class="team-badge">{len(devs)} dev{"s" if len(devs) != 1 else ""}</span>
+            </div>
+        </div>
+        ''', unsafe_allow_html=True)
 
-        c1, c2, c3 = st.columns([2, 1, 1])
-        with c1:
-            st.markdown(f"**{dev['name']}**")
-        with c2:
-            new_team = st.selectbox(
-                "Team", [t["name"] for t in TEAMS], index=current_team_idx,
-                key=f"team_{dev['id']}", label_visibility="collapsed"
-            )
-            new_team_id = next(t["id"] for t in TEAMS if t["name"] == new_team)
-            if new_team_id != current_team_id:
-                update_team_assignment(dev["id"], new_team_id)
-                st.rerun()
-        with c3:
-            pto = st.number_input(
-                "PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5,
-                key=f"pto_{dev['id']}", label_visibility="collapsed"
-            )
-            st.session_state.pto_data[dev["id"]] = pto
+        if devs:
+            # Developer rows within team
+            for dev in devs:
+                other_teams = [t for t in TEAMS if t["id"] != team["id"]]
+                c1, c2, c3 = st.columns([3, 2, 2])
+                with c1:
+                    st.markdown(f"<div style='padding:8px 0; font-weight:500; color:#3d3d3d;'>{dev['name']}</div>", unsafe_allow_html=True)
+                with c2:
+                    move_opts = ["—"] + [t["name"] for t in other_teams]
+                    mv = st.selectbox("Move", move_opts, key=f"mv_{dev['id']}", label_visibility="collapsed")
+                    if mv != "—":
+                        new_team_id = next(t["id"] for t in other_teams if t["name"] == mv)
+                        update_team_assignment(dev["id"], new_team_id)
+                        st.rerun()
+                with c3:
+                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+                    st.session_state.pto_data[dev["id"]] = pto
+        else:
+            st.markdown('<p style="color:#9a9a9a; font-size:0.85rem; padding:8px 0;">No developers assigned</p>', unsafe_allow_html=True)
 
     if calc:
         buf = st.session_state.planning_buffer
