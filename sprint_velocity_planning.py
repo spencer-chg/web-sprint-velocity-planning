@@ -63,7 +63,7 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
     transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 .team-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04); }
-.team-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--sage); margin: 0 0 4px; }
+.team-card h3 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin: 0 0 4px; }
 .team-card p { font-size: 0.7rem; color: #aaa; margin: 0; letter-spacing: 0.01em; }
 
 .forecast-card {
@@ -209,11 +209,14 @@ DEVELOPERS = [
     {"id": "tom-sharrock", "name": "Tom Sharrock"},
 ]
 
+# Active teams (for forecasting and new sprints)
 TEAMS = [
     {"id": "team1", "name": "Team 1", "pm": "Jason & Spencer"},
     {"id": "team2", "name": "Team 2", "pm": "Matt & Matt"},
-    {"id": "storyblok", "name": "Storyblok", "pm": "Storyblok"},
 ]
+
+# All teams including legacy (for historical data)
+ALL_TEAMS = TEAMS + [{"id": "storyblok", "name": "Storyblok", "pm": "Storyblok"}]
 
 HOLIDAYS = [
     {"name": "New Year's Day", "month": 1, "day": 1, "type": "full"},
@@ -259,6 +262,7 @@ def load_team_assignments():
         result = supabase.table("team_assignments").select("*").execute()
         if result.data: return {r["engineer_id"]: r["team_id"] for r in result.data}
     except: pass
+    # Default assignments - all devs on Team 1 or Team 2
     return {"fredrik-svensson": "team1", "fernando-fernandez": "team1", "matthew-callison": "team1", "cody-worthen": "team1",
             "stephen-corry": "team2", "tom-sharrock": "team2", "brady-hession": "team2", "jaime-virrueta": "team2"}
 
@@ -369,11 +373,10 @@ def page_forecast():
 
     st.markdown("---")
 
-    # Team cards row (all aligned at top) - match dev row spacing
-    card_cols = st.columns([1, 0.1, 1, 0.1, 1])
-    team_col_indices = [0, 2, 4]
+    # Team cards row - 2 columns with spacer
+    card_cols = st.columns([1, 0.15, 1])
     for i, team in enumerate(TEAMS):
-        with card_cols[team_col_indices[i]]:
+        with card_cols[i * 2]:  # 0 and 2 (skip spacer at 1)
             devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
             st.markdown(f"""
             <div class="team-card">
@@ -382,11 +385,10 @@ def page_forecast():
             </div>
             """, unsafe_allow_html=True)
 
-    # Developer rows (below cards) - add gap between columns
-    dev_cols = st.columns([1, 0.1, 1, 0.1, 1])
-    team_col_indices = [0, 2, 4]  # Skip the spacer columns
+    # Developer rows - 2 columns with spacer
+    dev_cols = st.columns([1, 0.15, 1])
     for i, team in enumerate(TEAMS):
-        with dev_cols[team_col_indices[i]]:
+        with dev_cols[i * 2]:  # 0 and 2 (skip spacer at 1)
             devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
             if devs:
                 for dev in devs:
@@ -439,10 +441,10 @@ def page_forecast():
     if st.session_state.forecast:
         st.markdown("---")
         f = st.session_state.forecast
-        cols = st.columns(3)
+        cols = st.columns([1, 0.15, 1])
         for i, team in enumerate(TEAMS):
             r = f["teams"].get(team["id"], {})
-            with cols[i]:
+            with cols[i * 2]:  # 0 and 2 (skip spacer)
                 st.markdown(f"""
                 <div class="forecast-card">
                     <div class="label">{team['name']}</div>
@@ -548,30 +550,41 @@ def page_analytics():
         st.info("No sprint data yet.")
         return
 
-    recent = sprints[:6]
-    def avg(tid): return sum(sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == tid) for s in recent) / len(recent) if recent else 0
+    # Load current team assignments to remap legacy Storyblok data
+    team_assignments = load_team_assignments()
 
-    cols = st.columns(4)
+    def get_effective_team(assignment):
+        """Map old storyblok assignments to current team based on developer's current assignment"""
+        if assignment["teamId"] == "storyblok":
+            return team_assignments.get(assignment["engineerId"], "team1")
+        return assignment["teamId"]
+
+    def team_pts(sprint, tid):
+        """Sum points for a team, including remapped Storyblok assignments"""
+        return sum(a["storyPoints"] for a in sprint.get("assignments", []) if get_effective_team(a) == tid)
+
+    recent = sprints[:6]
+    def avg(tid): return sum(team_pts(s, tid) for s in recent) / len(recent) if recent else 0
+
+    cols = st.columns(3)
     overall = sum(sum(a["storyPoints"] for a in s.get("assignments", [])) for s in recent) / len(recent) if recent else 0
 
-    for i, (lbl, val) in enumerate([("Overall", overall), ("Team 1", avg("team1")), ("Team 2", avg("team2")), ("Storyblok", avg("storyblok"))]):
+    for i, (lbl, val) in enumerate([("Overall", overall), ("Team 1", avg("team1")), ("Team 2", avg("team2"))]):
         with cols[i]:
             st.markdown(f'<div class="metric"><div class="label">{lbl}</div><div class="value">{val:.1f}</div></div>', unsafe_allow_html=True)
 
     st.markdown("<div style='height:20px'></div>", unsafe_allow_html=True)
 
-    # Chart
+    # Chart - Storyblok data collapsed into current team assignments
     data = [{"Sprint": s["sprintName"],
-             "Team 1": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team1"),
-             "Team 2": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team2"),
-             "Storyblok": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "storyblok")}
+             "Team 1": team_pts(s, "team1"),
+             "Team 2": team_pts(s, "team2")}
             for s in reversed(sprints[:12])]
     df = pd.DataFrame(data)
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 1"], mode="lines+markers", name="Team 1", line=dict(color="#6b7c6b", width=2)))
     fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 2"], mode="lines+markers", name="Team 2", line=dict(color="#5a6a5a", width=2)))
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Storyblok"], mode="lines+markers", name="Storyblok", line=dict(color="#999", width=2, dash="dot")))
     fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#faf9f6", font=dict(color="#4a4a4a", size=11), height=280,
                       margin=dict(t=30, b=50, l=40, r=20), xaxis=dict(gridcolor="#e5e5e0", tickangle=-45), yaxis=dict(gridcolor="#e5e5e0", title="Pts"),
                       legend=dict(orientation="h", y=1.12, x=0.5, xanchor="center"))
@@ -579,9 +592,8 @@ def page_analytics():
 
     st.markdown("---")
     tbl = [{"Sprint": s["sprintName"], "Period": f"{s['startDate']} → {s['endDate']}",
-            "T1": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team1"),
-            "T2": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team2"),
-            "SB": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "storyblok")} for s in sprints[:10]]
+            "Team 1": team_pts(s, "team1"),
+            "Team 2": team_pts(s, "team2")} for s in sprints[:10]]
     st.dataframe(pd.DataFrame(tbl), use_container_width=True, hide_index=True)
 
 def page_individual():
