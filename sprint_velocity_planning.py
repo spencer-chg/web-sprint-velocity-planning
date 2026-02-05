@@ -93,24 +93,35 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     border-radius: 8px !important;
 }
 
-/* Move menu dropdown - minimal styling */
+/* Move menu dropdown - looks like a button */
 [data-testid="column"]:last-child .stSelectbox [data-baseweb="select"] {
-    background: transparent !important;
+    background: #f5f5f0 !important;
     border: none !important;
+    border-radius: 8px !important;
+    min-height: 36px !important;
 }
 [data-testid="column"]:last-child .stSelectbox [data-baseweb="select"] > div {
     background: transparent !important;
-    padding: 6px !important;
+    padding: 6px 12px !important;
+    font-size: 1.1rem !important;
+    color: #888 !important;
+}
+[data-testid="column"]:last-child .stSelectbox [data-baseweb="select"]:hover {
+    background: #e8e8e3 !important;
 }
 [data-testid="column"]:last-child .stSelectbox svg {
     display: none !important;
 }
 
-/* Dropdown menu itself */
-[data-baseweb="popover"] {
-    min-width: 140px !important;
+/* Dropdown menu itself - wider and styled */
+[data-baseweb="popover"], [data-baseweb="menu"] {
+    min-width: 160px !important;
     border-radius: 10px !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+    background: white !important;
+}
+[data-baseweb="menu"] li {
+    padding: 10px 14px !important;
 }
 
 /* Forecast card */
@@ -315,17 +326,15 @@ def render_dev_row(dev, team_id):
             st.session_state.pto[dev_id] = min(10, pto + 0.5)
 
     with cols[4]:
-        # Simple selectbox styled minimally - popover has bugs
         other = [t for t in TEAMS if t["id"] != team_id]
         sel = st.selectbox(
             "",
-            ["⋮", "─────"] + [f"→ {t['name']}" for t in other],
+            ["⋮"] + [t["name"] for t in other],
             key=f"mv_{dev_id}",
             label_visibility="collapsed"
         )
-        if sel.startswith("→"):
-            team_name = sel.replace("→ ", "")
-            new_id = next(t["id"] for t in other if t["name"] == team_name)
+        if sel != "⋮":
+            new_id = next(t["id"] for t in other if t["name"] == sel)
             save_team_assignment(dev_id, new_id)
             st.rerun()
 
