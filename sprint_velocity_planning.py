@@ -166,13 +166,6 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
     letter-spacing: -0.01em;
 }
 
-/* === EXPANDER - hide broken arrow text === */
-[data-testid="stExpander"] summary > span:first-child { font-size: 0 !important; }
-[data-testid="stExpander"] summary > span:first-child::after { content: "▸ "; font-size: 0.9rem !important; }
-[data-testid="stExpander"][open] summary > span:first-child::after { content: "▾ "; }
-.streamlit-expanderHeader { font-size: 0.9rem !important; font-weight: 500 !important; color: var(--text-muted) !important; }
-.streamlit-expanderContent { padding-top: 12px !important; }
-
 /* === MISC === */
 hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0db, transparent); margin: 28px 0; }
 
@@ -384,9 +377,20 @@ def page_forecast():
             else:
                 st.markdown("<p style='color:#999; font-size:0.85rem; text-align:center; margin-top:8px;'>No developers</p>", unsafe_allow_html=True)
 
-    # Team management section - collapsed by default
+    # Team management section - toggle with button
     st.markdown("---")
-    with st.expander("Manage Team Assignments"):
+    if "show_team_mgmt" not in st.session_state:
+        st.session_state.show_team_mgmt = False
+
+    _, btn_col, _ = st.columns([1, 2, 1])
+    with btn_col:
+        label = "Hide Team Assignments" if st.session_state.show_team_mgmt else "Manage Team Assignments"
+        if st.button(label, use_container_width=True):
+            st.session_state.show_team_mgmt = not st.session_state.show_team_mgmt
+            st.rerun()
+
+    if st.session_state.show_team_mgmt:
+        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
         for dev in DEVELOPERS:
             c1, c2 = st.columns([2, 2])
             with c1:
