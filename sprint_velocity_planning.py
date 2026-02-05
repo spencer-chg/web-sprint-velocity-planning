@@ -501,9 +501,10 @@ st.markdown("""
         margin: 4px 0;
     }
 
-    .metric-value.orange { color: #806040 !important; }
+    /* All metric values use consistent sage green */
+    .metric-value.orange { color: #3d4d3d !important; }
     .metric-value.green { color: #3d4d3d !important; }
-    .metric-value.cyan { color: #3d5555 !important; }
+    .metric-value.cyan { color: #3d4d3d !important; }
 
     .metric-label {
         font-size: 0.65rem;
@@ -661,60 +662,69 @@ st.markdown("""
         padding: 0 8px;
     }
 
-    /* ======== REDUCE VERTICAL SPACING - AGGRESSIVE ======== */
-    /* Tighten up spacing between elements */
+    /* ======== BALANCED SPACING ======== */
+    /* Clean but not cramped */
     .stMarkdown {
         margin-bottom: 0 !important;
     }
 
-    /* Reduce gap after horizontal rules */
+    /* Dividers - proper breathing room */
     hr {
-        margin: 8px 0 !important;
+        margin: 16px 0 !important;
     }
 
-    /* Reduce vertical block spacing */
+    /* Vertical block spacing - balanced */
     [data-testid="stVerticalBlock"] > div {
         padding-top: 0 !important;
         padding-bottom: 0 !important;
-        gap: 0.25rem !important;
     }
 
     [data-testid="stVerticalBlock"] {
-        gap: 0.25rem !important;
+        gap: 0.75rem !important;
     }
 
-    /* Reduce spacing in tab content */
+    /* Tab content padding */
     .stTabs [data-baseweb="tab-panel"] {
-        padding-top: 12px !important;
+        padding-top: 16px !important;
     }
 
-    /* Reduce gaps between form elements */
+    /* Form elements - slight margin */
     .stSelectbox, .stNumberInput, .stTextInput, .stDateInput {
+        margin-bottom: 6px !important;
+    }
+
+    /* Element containers */
+    [data-testid="element-container"] {
         margin-bottom: 4px !important;
     }
 
-    /* Reduce element container gaps */
-    [data-testid="element-container"] {
-        margin-bottom: 2px !important;
-    }
-
-    /* Tighter horizontal layout spacing */
+    /* Horizontal layouts */
     [data-testid="stHorizontalBlock"] {
-        gap: 6px !important;
+        gap: 8px !important;
     }
 
-    /* Reduce spacing after columns */
+    /* Column inner spacing */
     [data-testid="stColumn"] > div {
-        gap: 2px !important;
+        gap: 4px !important;
     }
 
-    /* Remove extra padding from form containers */
+    /* Form containers */
     .stForm {
         padding: 0 !important;
     }
 
     [data-testid="stForm"] > div {
-        gap: 0.5rem !important;
+        gap: 0.75rem !important;
+    }
+
+    /* Developer row styling - add visual separation */
+    .dev-row-container {
+        padding: 10px 0;
+        border-bottom: 1px solid #f0efec;
+    }
+
+    .dev-row-container:last-child {
+        border-bottom: none;
     }
 
     /* ======== PLOTLY CHARTS ======== */
@@ -762,7 +772,8 @@ TEAMS = [
     {"id": "storyblok", "name": "Storyblok", "displayName": "Storyblok Team", "pmName": "Storyblok", "color": "cyan"},
 ]
 
-TEAM_COLORS = {"orange": "#a08060", "green": "#4a5d4a", "cyan": "#4a6a6a"}
+# All teams use consistent sage green
+TEAM_COLORS = {"orange": "#4a5d4a", "green": "#4a5d4a", "cyan": "#4a5d4a"}
 
 HOLIDAYS = [
     {"name": "New Year's Day", "month": 1, "day": 1, "type": "full-day"},
@@ -943,15 +954,17 @@ def render_forecast():
             ''', unsafe_allow_html=True)
 
             for dev in devs:
-                st.markdown(f"**{dev['name']}**")
+                st.markdown(f'''<div style="padding: 8px 0; border-bottom: 1px solid #f0efec;">
+                    <span style="font-weight: 500; color: #3d3d3d; font-size: 0.9rem;">{dev['name']}</span>
+                </div>''', unsafe_allow_html=True)
                 c1, c2 = st.columns([2, 1])
                 with c1:
-                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+                    pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
                     st.session_state.pto_data[dev["id"]] = pto
                 with c2:
                     others = [t for t in TEAMS if t["id"] != team["id"]]
-                    mv = st.selectbox("Move", [""] + [t["name"] for t in others], key=f"mv_{dev['id']}", label_visibility="collapsed")
-                    if mv:
+                    mv = st.selectbox("Move to", ["Move to..."] + [t["name"] for t in others], key=f"mv_{dev['id']}", label_visibility="collapsed")
+                    if mv and mv != "Move to...":
                         new_team = next(t["id"] for t in others if t["name"] == mv)
                         update_team_assignment(dev["id"], new_team)
                         st.rerun()
@@ -1026,18 +1039,19 @@ def render_add_sprint():
                 if i + j < len(DEVELOPERS):
                     dev = DEVELOPERS[i + j]
                     with col:
-                        st.markdown(f"**{dev['name']}**")
+                        st.markdown(f'''<div style="font-weight: 500; color: #3d3d3d; font-size: 0.9rem; margin-bottom: 4px;">{dev['name']}</div>''', unsafe_allow_html=True)
                         c1, c2, c3 = st.columns(3)
-                        with c1: pts = st.number_input("Pts", 0.0, step=0.5, key=f"sp_{dev['id']}")
+                        with c1: pts = st.number_input("PTS", 0.0, step=0.5, key=f"sp_{dev['id']}")
                         with c2: pto = st.number_input("PTO", 0.0, 10.0, step=0.5, key=f"pto_a_{dev['id']}")
                         with c3:
                             teams = [t["name"] for t in TEAMS]
                             dt = team_assignments.get(dev["id"], "team1")
                             di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
-                            tm = st.selectbox("Team", teams, di, key=f"tm_{dev['id']}")
+                            tm = st.selectbox("TEAM", teams, di, key=f"tm_{dev['id']}")
                         if pts > 0:
                             tid = next(t["id"] for t in TEAMS if t["name"] == tm)
                             assigns.append({"engineerId": dev["id"], "teamId": tid, "storyPoints": pts, "totalPtoDays": pto})
+                        st.markdown('<div style="height: 12px;"></div>', unsafe_allow_html=True)
 
         if st.form_submit_button("Save Sprint", type="primary", use_container_width=True):
             if not name: st.error("Enter sprint name")
@@ -1087,9 +1101,10 @@ def render_team_analytics():
     df = pd.DataFrame(data)
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 1"], mode="lines+markers", name="Team 1", line=dict(color="#b8956b", width=2), marker=dict(size=5)))
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 2"], mode="lines+markers", name="Team 2", line=dict(color="#5d6b5d", width=2), marker=dict(size=5)))
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Storyblok"], mode="lines+markers", name="Storyblok", line=dict(color="#5d7a7a", width=2), marker=dict(size=5)))
+    # Using sage green variations for chart differentiation
+    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 1"], mode="lines+markers", name="Team 1", line=dict(color="#4a5d4a", width=2), marker=dict(size=6)))
+    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 2"], mode="lines+markers", name="Team 2", line=dict(color="#6b8c6b", width=2), marker=dict(size=6)))
+    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Storyblok"], mode="lines+markers", name="Storyblok", line=dict(color="#8aaa8a", width=2, dash="dot"), marker=dict(size=6)))
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#5a5a5a", size=11),
         height=300, margin=dict(t=40, b=60, l=50, r=20),
@@ -1115,9 +1130,9 @@ def render_individual():
         st.info("No sprint data yet.")
         return
 
-    sel = st.selectbox("Select Developer", ["Choose..."] + [d["name"] for d in DEVELOPERS])
-    if sel == "Choose...":
-        st.markdown("Select a developer to view their metrics.")
+    sel = st.selectbox("Select Developer", ["Select a developer..."] + [d["name"] for d in DEVELOPERS])
+    if sel == "Select a developer...":
+        st.markdown('<p style="color: #8a8a8a; font-size: 0.9rem;">Select a developer above to view their performance metrics.</p>', unsafe_allow_html=True)
         return
 
     dev = next((d for d in DEVELOPERS if d["name"] == sel), None)
