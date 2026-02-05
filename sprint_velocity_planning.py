@@ -275,7 +275,7 @@ def render_dev_row(dev, team_id):
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
 
-    cols = st.columns([3, 1, 1.5, 1, 1.5])
+    cols = st.columns([3, 1, 2, 1, 1.5])
 
     with cols[0]:
         st.markdown(f"**{first}**")
