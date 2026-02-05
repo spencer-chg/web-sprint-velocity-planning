@@ -93,35 +93,51 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     border-radius: 8px !important;
 }
 
-/* Move menu dropdown - looks like a button */
+/* Three-dot menu button */
 [data-testid="column"]:last-child .stSelectbox [data-baseweb="select"] {
-    background: #f5f5f0 !important;
+    background: transparent !important;
     border: none !important;
     border-radius: 8px !important;
     min-height: 36px !important;
+    cursor: pointer !important;
 }
 [data-testid="column"]:last-child .stSelectbox [data-baseweb="select"] > div {
     background: transparent !important;
-    padding: 6px 12px !important;
-    font-size: 1.1rem !important;
-    color: #888 !important;
+    padding: 8px 12px !important;
+    font-size: 1.2rem !important;
+    color: #999 !important;
+    letter-spacing: 2px !important;
 }
 [data-testid="column"]:last-child .stSelectbox [data-baseweb="select"]:hover {
     background: #e8e8e3 !important;
+}
+[data-testid="column"]:last-child .stSelectbox [data-baseweb="select"]:hover > div {
+    color: #6b7c6b !important;
 }
 [data-testid="column"]:last-child .stSelectbox svg {
     display: none !important;
 }
 
-/* Dropdown menu itself - wider and styled */
-[data-baseweb="popover"], [data-baseweb="menu"] {
-    min-width: 160px !important;
-    border-radius: 10px !important;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
-    background: white !important;
+/* Dropdown menu - FORCE wider */
+[data-baseweb="popover"] {
+    min-width: 180px !important;
+    width: auto !important;
 }
-[data-baseweb="menu"] li {
-    padding: 10px 14px !important;
+[data-baseweb="menu"],
+[data-baseweb="listbox"],
+[role="listbox"] {
+    min-width: 180px !important;
+    width: max-content !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15) !important;
+    background: white !important;
+    padding: 6px 0 !important;
+}
+[data-baseweb="menu"] li,
+[role="option"] {
+    padding: 12px 16px !important;
+    font-size: 0.9rem !important;
+    white-space: nowrap !important;
 }
 
 /* Forecast card */
