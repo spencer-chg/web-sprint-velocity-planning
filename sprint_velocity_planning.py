@@ -90,55 +90,52 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     background-color: #5a6a5a !important;
 }
 
-/* PIXEL PERFECT: Strip all default spacing */
+/* PIXEL PERFECT SPACING */
 [data-testid="stHorizontalBlock"] {
-    gap: 8px !important;
+    gap: 6px !important;
+    align-items: center !important;
 }
 [data-testid="column"] {
     padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    margin: 0 !important;
 }
 [data-testid="column"] > div {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 [data-testid="column"] > div > div {
-    width: 100% !important;
-}
-
-/* Buttons: no margin, centered */
-[data-testid="column"] .stButton {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
-}
-[data-testid="column"] .stButton > button {
+    padding: 0 !important;
     margin: 0 !important;
-    width: 36px !important;
-    min-width: 36px !important;
-    max-width: 36px !important;
 }
 
-/* Text input for value: centered, fixed width */
-[data-testid="column"] .stTextInput {
-    width: 100% !important;
+/* Buttons: fixed size, no extra space */
+.stButton {
+    padding: 0 !important;
+    margin: 0 !important;
 }
-[data-testid="column"] .stTextInput > div {
-    width: 100% !important;
-    display: flex !important;
-    justify-content: center !important;
+.stButton > button {
+    margin: 0 !important;
+    padding: 0 !important;
 }
-[data-testid="column"] .stTextInput input {
+
+/* Text input: strip all spacing */
+.stTextInput {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.stTextInput > div {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.stTextInput > div > div {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+.stTextInput input {
     text-align: center !important;
     font-weight: 600 !important;
-    width: 70px !important;
-    min-width: 70px !important;
-    max-width: 70px !important;
-    margin: 0 auto !important;
+    padding: 8px 12px !important;
+    margin: 0 !important;
 }
 
 /* Selectbox */
@@ -353,7 +350,7 @@ def render_dev_row(dev):
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
 
-    cols = st.columns([3, 1, 1.5, 1], gap="small")
+    cols = st.columns([3, 1, 1, 1], gap="small")
 
     with cols[0]:
         st.markdown(f"**{first}**")
@@ -511,7 +508,7 @@ def page_add_sprint():
                     st.markdown(f"**{dev['name']}**")
 
                     # Pts row: [−] [value] [+] | Team dropdown
-                    c1, c2, c3, c4, c5 = st.columns([1, 1.5, 1, 0.3, 3], gap="small")
+                    c1, c2, c3, c4, c5 = st.columns([1, 1, 1, 0.3, 3], gap="small")
                     pts = st.session_state.sprint_pts.get(dev_id, 0.0)
 
                     with c1:
