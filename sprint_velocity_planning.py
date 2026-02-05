@@ -77,15 +77,12 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 }
 .stButton > button:hover { background: #5a6a5a !important; background-color: #5a6a5a !important; }
 
-/* Selectbox - three dot menu style */
+/* Selectbox default */
 .stSelectbox > div > div {
-    background: #f5f5f0 !important;
-    border: none !important;
-    border-radius: 6px !important;
-    min-height: 32px !important;
+    background: white !important;
+    border: 1px solid #e5e5e0 !important;
+    border-radius: 8px !important;
 }
-.stSelectbox svg { opacity: 0 !important; width: 0 !important; }
-.stSelectbox [data-baseweb="select"] > div { padding: 4px 10px !important; }
 
 /* Forecast card */
 .forecast-card { background: white; border-radius: 14px; padding: 20px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
@@ -244,13 +241,13 @@ def render_dev_row(dev, team_id):
     pto = st.session_state.pto.get(dev_id, 0.0)
     val = int(pto) if pto == int(pto) else pto
 
-    cols = st.columns([4, 1.2, 1.5, 1.2, 1.2])
+    cols = st.columns([3, 1, 1, 1, 1.5])
 
     with cols[0]:
         st.markdown(f"**{first}**")
 
     with cols[1]:
-        if st.button("−", key=f"m_{dev_id}"):
+        if st.button("－", key=f"m_{dev_id}"):
             st.session_state.pto[dev_id] = max(0, pto - 0.5)
             st.rerun()
 
@@ -258,7 +255,7 @@ def render_dev_row(dev, team_id):
         st.markdown(f"<div style='text-align:center;font-weight:600;padding:6px 0'>{val}</div>", unsafe_allow_html=True)
 
     with cols[3]:
-        if st.button("+", key=f"p_{dev_id}"):
+        if st.button("＋", key=f"p_{dev_id}"):
             st.session_state.pto[dev_id] = min(10, pto + 0.5)
             st.rerun()
 
