@@ -293,21 +293,35 @@ st.markdown("""
     }
 
     /* ======== NUMBER INPUTS ======== */
+    /* Remove ALL borders from outer containers */
+    .stNumberInput > div {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .stNumberInput > div > div {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Single border on the actual input container */
     .stNumberInput [data-baseweb="input"] {
         background: #faf9f6 !important;
         border: 1px solid #e5e5e0 !important;
         border-radius: 6px !important;
+        box-shadow: none !important;
     }
 
     .stNumberInput input {
         background: #faf9f6 !important;
         color: #4a4a4a !important;
         font-size: 0.9rem !important;
+        border: none !important;
     }
 
     .stNumberInput button {
         background: #faf9f6 !important;
         color: #7a7a7a !important;
+        border: none !important;
         border-left: 1px solid #e5e5e0 !important;
     }
 
@@ -319,24 +333,40 @@ st.markdown("""
         fill: #7a7a7a !important;
     }
 
+    /* Override red focus - sage green */
     .stNumberInput [data-baseweb="input"]:focus-within {
         border-color: #4a5d4a !important;
+        box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
     /* ======== SELECT BOXES / DROPDOWNS ======== */
+    /* Remove outer container borders */
+    .stSelectbox > div {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .stSelectbox > div > div {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
     .stSelectbox [data-baseweb="select"] {
         background: #faf9f6 !important;
         border: 1px solid #e5e5e0 !important;
         border-radius: 6px !important;
+        box-shadow: none !important;
     }
 
     .stSelectbox [data-baseweb="select"] > div {
         background: #faf9f6 !important;
         color: #4a4a4a !important;
+        border: none !important;
     }
 
+    /* Override red focus - sage green */
     .stSelectbox [data-baseweb="select"]:focus-within {
         border-color: #4a5d4a !important;
+        box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
     .stSelectbox svg {
@@ -411,19 +441,31 @@ st.markdown("""
     }
 
     /* ======== DATE INPUTS ======== */
+    .stDateInput > div {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .stDateInput > div > div {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
     .stDateInput [data-baseweb="input"] {
         background: #faf9f6 !important;
         border: 1px solid #e5e5e0 !important;
         border-radius: 6px !important;
+        box-shadow: none !important;
     }
 
     .stDateInput input {
         background: #faf9f6 !important;
         color: #4a4a4a !important;
+        border: none !important;
     }
 
     .stDateInput [data-baseweb="input"]:focus-within {
         border-color: #4a5d4a !important;
+        box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
     .stDateInput svg {
@@ -449,6 +491,15 @@ st.markdown("""
     }
 
     /* ======== TEXT INPUTS ======== */
+    .stTextInput > div {
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .stTextInput > div > div {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
     .stTextInput input {
         background: #faf9f6 !important;
         border: 1px solid #e5e5e0 !important;
@@ -456,10 +507,12 @@ st.markdown("""
         color: #4a4a4a !important;
         font-size: 0.9rem !important;
         padding: 10px 14px !important;
+        box-shadow: none !important;
     }
 
     .stTextInput input:focus {
         border-color: #4a5d4a !important;
+        box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
     /* Metric cards */
@@ -583,56 +636,10 @@ st.markdown("""
         color: #555 !important;
     }
 
-    /* ======== DATA TABLES - SOFT STYLING ======== */
-    .stDataFrame {
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
+    /* ======== DATA TABLES ======== */
+    .stDataFrame,
     [data-testid="stDataFrame"] {
-        background: #faf9f6 !important;
-    }
-
-    /* Table header */
-    [data-testid="stDataFrame"] thead th,
-    [data-testid="stDataFrame"] [role="columnheader"] {
-        background: #f0efec !important;
-        color: #5a5a5a !important;
-        font-weight: 500 !important;
-        border-bottom: 1px solid #e5e5e0 !important;
-    }
-
-    /* Table cells */
-    [data-testid="stDataFrame"] tbody td,
-    [data-testid="stDataFrame"] [role="gridcell"] {
-        background: #faf9f6 !important;
-        color: #4a4a4a !important;
-        border-bottom: 1px solid #f0efec !important;
-    }
-
-    /* Table rows hover */
-    [data-testid="stDataFrame"] tbody tr:hover td {
-        background: #f5f4f1 !important;
-    }
-
-    /* Glide data grid (Streamlit's table component) */
-    .dvn-scroller {
-        background: #faf9f6 !important;
-    }
-
-    [data-testid="glideDataEditor"],
-    [data-testid="stDataFrameGlideDataEditor"] {
-        background: #faf9f6 !important;
-    }
-
-    /* Override any dark backgrounds in the grid */
-    .dvn-scroller *,
-    [data-testid="glideDataEditor"] * {
-        background-color: inherit;
-    }
-
-    canvas + div {
-        background: #faf9f6 !important;
+        border-radius: 8px;
     }
 
     /* Column gap fix */
@@ -1136,7 +1143,8 @@ def render_individual():
     with cols[0]:
         st.markdown(f'<div class="metric-card"><div class="metric-label">Velocity</div><div class="metric-value green">{vel:.2f}</div><div class="metric-sub">pts/day</div></div>', unsafe_allow_html=True)
     with cols[1]:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Total</div><div class="metric-value">{sum(d["storyPoints"] for d in data):.1f}</div><div class="metric-sub">all time</div></div>', unsafe_allow_html=True)
+        recent_pts = sum(d["storyPoints"] for d in data[:10])
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Recent Total</div><div class="metric-value">{recent_pts:.1f}</div><div class="metric-sub">last 10 sprints</div></div>', unsafe_allow_html=True)
     with cols[2]:
         st.markdown(f'<div class="metric-card"><div class="metric-label">Sprints</div><div class="metric-value">{len(data)}</div><div class="metric-sub">tracked</div></div>', unsafe_allow_html=True)
 
