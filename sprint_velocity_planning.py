@@ -959,13 +959,13 @@ def render_team_analytics():
     fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Storyblok"], mode="lines+markers", name="Storyblok", line=dict(color="#5d7a7a", width=2), marker=dict(size=5)))
     fig.update_layout(
         paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#5a5a5a", size=11),
-        height=280, margin=dict(t=20, b=40, l=40, r=20),
+        height=280, margin=dict(t=20, b=60, l=50, r=20),
         xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10, color="#6a6a6a"), tickangle=-45),
-        yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title="Points", tickfont=dict(size=10, color="#6a6a6a"), titlefont=dict(color="#6a6a6a")),
+        yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title=dict(text="Points", font=dict(color="#6a6a6a")), tickfont=dict(size=10, color="#6a6a6a")),
         legend=dict(orientation="h", y=1.15, x=0.5, xanchor="center", bgcolor="rgba(0,0,0,0)", font=dict(size=11, color="#5a5a5a")),
         hovermode="x unified"
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width='stretch')
 
     st.markdown("---")
     st.markdown('<p class="section-label">Recent Sprints</p>', unsafe_allow_html=True)
@@ -974,7 +974,7 @@ def render_team_analytics():
             "T2": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team2"),
             "SB": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "storyblok")}
            for s in sprints[:10]]
-    st.dataframe(pd.DataFrame(tbl), use_container_width=True, hide_index=True)
+    st.dataframe(pd.DataFrame(tbl), width='stretch', hide_index=True)
 
 def render_individual():
     sprints = load_sprints()
@@ -1026,16 +1026,16 @@ def render_individual():
         fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Velocity"], mode="lines+markers", line=dict(color="#5d6b5d", width=2), marker=dict(size=6), fill="tozeroy", fillcolor="rgba(93,107,93,0.1)"))
         fig.update_layout(
             paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#5a5a5a", size=11),
-            height=220, margin=dict(t=10, b=40, l=40, r=20), showlegend=False,
+            height=220, margin=dict(t=10, b=60, l=50, r=20), showlegend=False,
             xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10, color="#6a6a6a"), tickangle=-45),
-            yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title="pts/day", tickfont=dict(size=10, color="#6a6a6a"), titlefont=dict(color="#6a6a6a"))
+            yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title=dict(text="pts/day", font=dict(color="#6a6a6a")), tickfont=dict(size=10, color="#6a6a6a"))
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width='stretch')
 
         st.markdown("---")
         tbl = [{"Sprint": d["sprintName"], "Date": d["startDate"][:10], "Pts": d["storyPoints"], "PTO": d["totalPtoDays"],
                 "Vel": f"{d['storyPoints']/(d['sprintDays']-d['totalPtoDays']):.2f}" if d["sprintDays"]-d["totalPtoDays"]>0 else "0"} for d in data[:15]]
-        st.dataframe(pd.DataFrame(tbl), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(tbl), width='stretch', hide_index=True)
 
 # ============== MAIN ==============
 def main():
