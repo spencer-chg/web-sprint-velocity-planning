@@ -292,68 +292,91 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* ======== NUMBER INPUTS - CREAM BACKGROUND ======== */
-    .stNumberInput > div,
-    .stNumberInput > div > div,
+    /* ======== NUMBER INPUTS - CLEAN SINGLE BORDER ======== */
+    .stNumberInput > div {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .stNumberInput > div > div {
+        background: transparent !important;
+        border: none !important;
+    }
+
     .stNumberInput [data-baseweb="input"] {
         background: #faf9f6 !important;
         background-color: #faf9f6 !important;
         border: 1px solid #e5e5e0 !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
         box-shadow: none !important;
     }
 
     .stNumberInput input {
-        background: #faf9f6 !important;
-        background-color: #faf9f6 !important;
+        background: transparent !important;
         color: #4a4a4a !important;
         border: none !important;
         font-size: 0.9rem !important;
     }
 
     .stNumberInput button {
-        background: #faf9f6 !important;
-        background-color: #faf9f6 !important;
-        color: #7a7a7a !important;
+        background: transparent !important;
+        color: #9a9a9a !important;
         border: none !important;
-        border-left: 1px solid #e5e5e0 !important;
+        border-left: 1px solid #e8e8e3 !important;
     }
 
     .stNumberInput button:hover {
         background: #f0efec !important;
-        background-color: #f0efec !important;
         color: #5a5a5a !important;
     }
 
     .stNumberInput button svg {
-        fill: #7a7a7a !important;
-        stroke: #7a7a7a !important;
+        fill: #9a9a9a !important;
+        stroke: #9a9a9a !important;
     }
 
-    /* Remove any dark focus/active states on number inputs */
+    /* Clean focus state */
+    .stNumberInput [data-baseweb="input"]:focus-within {
+        border-color: #4a5d4a !important;
+        box-shadow: 0 0 0 1px #4a5d4a !important;
+    }
+
     .stNumberInput *:focus,
     .stNumberInput *:active {
-        box-shadow: none !important;
         outline: none !important;
     }
 
-    /* ======== SELECT BOXES / DROPDOWNS ======== */
-    .stSelectbox > div > div,
-    .stSelectbox [data-baseweb="select"],
-    .stSelectbox [data-baseweb="select"] > div {
+    /* ======== SELECT BOXES / DROPDOWNS - CLEAN SINGLE BORDER ======== */
+    .stSelectbox > div {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .stSelectbox > div > div {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .stSelectbox [data-baseweb="select"] {
         background: #faf9f6 !important;
         border: 1px solid #e5e5e0 !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
+    }
+
+    .stSelectbox [data-baseweb="select"] > div {
+        background: transparent !important;
+        border: none !important;
         color: #4a4a4a !important;
     }
 
-    .stSelectbox [data-baseweb="select"] > div:focus-within {
+    .stSelectbox [data-baseweb="select"]:focus-within {
         border-color: #4a5d4a !important;
         box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
     .stSelectbox svg {
-        fill: #7a7a7a !important;
+        fill: #9a9a9a !important;
     }
 
     /* ======== DROPDOWN MENUS - AGGRESSIVE LIGHT BACKGROUND ======== */
@@ -423,32 +446,37 @@ st.markdown("""
         background: #faf9f6 !important;
     }
 
-    /* ======== DATE INPUTS - FULL STYLING ======== */
-    .stDateInput > div > div,
+    /* ======== DATE INPUTS - CLEAN SINGLE BORDER ======== */
+    .stDateInput > div {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .stDateInput > div > div {
+        background: transparent !important;
+        border: none !important;
+    }
+
     .stDateInput [data-baseweb="input"],
     .stDateInput [data-baseweb="base-input"] {
         background: #faf9f6 !important;
-        background-color: #faf9f6 !important;
         border: 1px solid #e5e5e0 !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
     }
 
     .stDateInput input {
-        background: #faf9f6 !important;
-        background-color: #faf9f6 !important;
+        background: transparent !important;
         color: #4a4a4a !important;
         border: none !important;
     }
 
-    /* Date input focus state - sage green highlight */
-    .stDateInput [data-baseweb="input"]:focus-within,
-    .stDateInput > div > div:focus-within {
+    .stDateInput [data-baseweb="input"]:focus-within {
         border-color: #4a5d4a !important;
         box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
     .stDateInput svg {
-        fill: #7a7a7a !important;
+        fill: #9a9a9a !important;
     }
 
     /* Date picker calendar popup */
@@ -469,13 +497,23 @@ st.markdown("""
         color: #fff !important;
     }
 
-    /* ======== TEXT INPUTS ======== */
+    /* ======== TEXT INPUTS - CLEAN SINGLE BORDER ======== */
+    .stTextInput > div {
+        background: transparent !important;
+        border: none !important;
+    }
+
+    .stTextInput > div > div {
+        background: transparent !important;
+        border: none !important;
+    }
+
     .stTextInput > div > div > input {
         background: #faf9f6 !important;
         border: 1px solid #e5e5e0 !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important;
         color: #4a4a4a !important;
-        font-size: 0.95rem !important;
+        font-size: 0.9rem !important;
         padding: 10px 14px !important;
     }
 
@@ -954,17 +992,17 @@ def render_forecast():
             ''', unsafe_allow_html=True)
 
             for dev in devs:
-                st.markdown(f'''<div style="padding: 8px 0; border-bottom: 1px solid #f0efec;">
-                    <span style="font-weight: 500; color: #3d3d3d; font-size: 0.9rem;">{dev['name']}</span>
-                </div>''', unsafe_allow_html=True)
-                c1, c2 = st.columns([2, 1])
+                # Developer row with name, PTO input, and move dropdown on same line
+                c1, c2, c3 = st.columns([2.5, 1.5, 2])
                 with c1:
-                    pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
-                    st.session_state.pto_data[dev["id"]] = pto
+                    st.markdown(f'''<div style="padding: 10px 0; font-weight: 500; color: #3d3d3d; font-size: 0.9rem;">{dev['name']}</div>''', unsafe_allow_html=True)
                 with c2:
+                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+                    st.session_state.pto_data[dev["id"]] = pto
+                with c3:
                     others = [t for t in TEAMS if t["id"] != team["id"]]
-                    mv = st.selectbox("Move to", ["Move to..."] + [t["name"] for t in others], key=f"mv_{dev['id']}", label_visibility="collapsed")
-                    if mv and mv != "Move to...":
+                    mv = st.selectbox("Move", ["Move..."] + [t["name"] for t in others], key=f"mv_{dev['id']}", label_visibility="collapsed")
+                    if mv and mv != "Move...":
                         new_team = next(t["id"] for t in others if t["name"] == mv)
                         update_team_assignment(dev["id"], new_team)
                         st.rerun()
@@ -1030,28 +1068,37 @@ def render_add_sprint():
             if hols: st.info(f"Holidays: {', '.join(h['name'] for h in hols)}")
 
         st.markdown("---")
-        st.markdown('<p class="section-label">Developer Points</p>', unsafe_allow_html=True)
+
+        # Column headers - show once
+        hcols = st.columns([3, 1.2, 1.2, 1.6])
+        with hcols[0]:
+            st.markdown('<p class="section-label" style="margin-bottom: 4px;">Developer</p>', unsafe_allow_html=True)
+        with hcols[1]:
+            st.markdown('<p class="section-label" style="margin-bottom: 4px;">Points</p>', unsafe_allow_html=True)
+        with hcols[2]:
+            st.markdown('<p class="section-label" style="margin-bottom: 4px;">PTO Days</p>', unsafe_allow_html=True)
+        with hcols[3]:
+            st.markdown('<p class="section-label" style="margin-bottom: 4px;">Team</p>', unsafe_allow_html=True)
 
         assigns = []
-        for i in range(0, len(DEVELOPERS), 2):
-            cols = st.columns(2)
-            for j, col in enumerate(cols):
-                if i + j < len(DEVELOPERS):
-                    dev = DEVELOPERS[i + j]
-                    with col:
-                        st.markdown(f'''<div style="font-weight: 500; color: #3d3d3d; font-size: 0.9rem; margin-bottom: 4px;">{dev['name']}</div>''', unsafe_allow_html=True)
-                        c1, c2, c3 = st.columns(3)
-                        with c1: pts = st.number_input("PTS", 0.0, step=0.5, key=f"sp_{dev['id']}")
-                        with c2: pto = st.number_input("PTO", 0.0, 10.0, step=0.5, key=f"pto_a_{dev['id']}")
-                        with c3:
-                            teams = [t["name"] for t in TEAMS]
-                            dt = team_assignments.get(dev["id"], "team1")
-                            di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
-                            tm = st.selectbox("TEAM", teams, di, key=f"tm_{dev['id']}")
-                        if pts > 0:
-                            tid = next(t["id"] for t in TEAMS if t["name"] == tm)
-                            assigns.append({"engineerId": dev["id"], "teamId": tid, "storyPoints": pts, "totalPtoDays": pto})
-                        st.markdown('<div style="height: 12px;"></div>', unsafe_allow_html=True)
+        for dev in DEVELOPERS:
+            c1, c2, c3, c4 = st.columns([3, 1.2, 1.2, 1.6])
+            with c1:
+                st.markdown(f'''<div style="padding: 8px 0; font-weight: 500; color: #3d3d3d; font-size: 0.9rem;">{dev['name']}</div>''', unsafe_allow_html=True)
+            with c2:
+                pts = st.number_input("pts", 0.0, step=0.5, key=f"sp_{dev['id']}", label_visibility="collapsed")
+            with c3:
+                pto = st.number_input("pto", 0.0, 10.0, step=0.5, key=f"pto_a_{dev['id']}", label_visibility="collapsed")
+            with c4:
+                teams = [t["name"] for t in TEAMS]
+                dt = team_assignments.get(dev["id"], "team1")
+                di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
+                tm = st.selectbox("team", teams, di, key=f"tm_{dev['id']}", label_visibility="collapsed")
+            if pts > 0:
+                tid = next(t["id"] for t in TEAMS if t["name"] == tm)
+                assigns.append({"engineerId": dev["id"], "teamId": tid, "storyPoints": pts, "totalPtoDays": pto})
+
+        st.markdown('<div style="height: 16px;"></div>', unsafe_allow_html=True)
 
         if st.form_submit_button("Save Sprint", type="primary", use_container_width=True):
             if not name: st.error("Enter sprint name")
