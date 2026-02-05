@@ -86,39 +86,11 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 [data-testid="column"] > div { width: 100%; }
 [data-testid="column"] .stButton { display: flex; justify-content: center; }
 
-/* Selectbox default */
+/* Selectbox */
 .stSelectbox > div > div {
     background: white !important;
     border: 1px solid #e5e5e0 !important;
     border-radius: 8px !important;
-}
-
-/* Move selectbox trigger - minimal three-dot look */
-[data-testid="column"]:last-child .stSelectbox > div > div {
-    background: transparent !important;
-    border: none !important;
-}
-[data-testid="column"]:last-child .stSelectbox svg {
-    display: none !important;
-}
-
-/* Make dropdown popover responsive - not constrained by trigger width */
-[data-baseweb="popover"] {
-    width: fit-content !important;
-    min-width: fit-content !important;
-}
-[data-baseweb="popover"] > div {
-    width: fit-content !important;
-    min-width: fit-content !important;
-}
-ul[role="listbox"] {
-    width: fit-content !important;
-    min-width: fit-content !important;
-    white-space: nowrap !important;
-}
-ul[role="listbox"] li {
-    white-space: nowrap !important;
-    padding-right: 24px !important;
 }
 
 /* Forecast card */
@@ -297,14 +269,13 @@ if "forecast" not in st.session_state: st.session_state.forecast = None
 if "buffer" not in st.session_state: st.session_state.buffer = 0.85
 
 # ============== COMPONENTS ==============
-def render_dev_row(dev, team_id):
-    """Developer row: [Name] [−] [input] [+] [⋮]"""
+def render_dev_row(dev):
+    """Clean developer row: [Name] [−] [value] [+]"""
     dev_id = dev["id"]
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
-    menu_key = f"menu_{dev_id}"
 
-    cols = st.columns([2.5, 1, 2, 1, 1])
+    cols = st.columns([3, 1, 2, 1])
 
     with cols[0]:
         st.markdown(f"**{first}**")
@@ -321,15 +292,6 @@ def render_dev_row(dev, team_id):
     with cols[3]:
         if st.button("＋", key=f"p_{dev_id}"):
             st.session_state.pto[dev_id] = min(10, pto + 0.5)
-
-    with cols[4]:
-        other = [t for t in TEAMS if t["id"] != team_id]
-        opts = ["⋮"] + [t["name"] for t in other]
-        sel = st.selectbox("", opts, key=f"mv_{dev_id}", label_visibility="collapsed")
-        if sel != "⋮":
-            new_id = next(t["id"] for t in other if t["name"] == sel)
-            save_team_assignment(dev_id, new_id)
-            st.rerun()
 
 # ============== PAGES ==============
 def page_forecast():
@@ -365,9 +327,31 @@ def page_forecast():
             # Developer rows
             if devs:
                 for dev in devs:
-                    render_dev_row(dev, team["id"])
+                    render_dev_row(dev)
             else:
                 st.caption("No developers")
+
+    # Team management section
+    with st.expander("Manage Team Assignments"):
+        team_assignments = load_team_assignments()
+        for dev in DEVELOPERS:
+            c1, c2 = st.columns([2, 2])
+            with c1:
+                st.write(dev["name"])
+            with c2:
+                current = team_assignments.get(dev["id"], "team1")
+                current_idx = next((i for i, t in enumerate(TEAMS) if t["id"] == current), 0)
+                new_team = st.selectbox(
+                    "",
+                    [t["name"] for t in TEAMS],
+                    index=current_idx,
+                    key=f"team_assign_{dev['id']}",
+                    label_visibility="collapsed"
+                )
+                new_id = next(t["id"] for t in TEAMS if t["name"] == new_team)
+                if new_id != current:
+                    save_team_assignment(dev["id"], new_id)
+                    st.rerun()
 
     # Calculate
     if calc_btn:
