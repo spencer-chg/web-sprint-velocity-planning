@@ -296,9 +296,12 @@ def render_dev_row(dev, team_id):
 
     with cols[4]:
         other = [t for t in TEAMS if t["id"] != team_id]
-        sel = st.selectbox("", ["⋮"] + [t["name"] for t in other], key=f"mv_{dev_id}", label_visibility="collapsed")
-        if sel != "⋮":
-            save_team_assignment(dev_id, next(t["id"] for t in other if t["name"] == sel))
+        # Short labels: T1, T2, SB
+        labels = {"team1": "T1", "team2": "T2", "storyblok": "SB"}
+        sel = st.selectbox("", ["→"] + [labels[t["id"]] for t in other], key=f"mv_{dev_id}", label_visibility="collapsed")
+        if sel != "→":
+            new_id = next(t["id"] for t in other if labels[t["id"]] == sel)
+            save_team_assignment(dev_id, new_id)
             st.rerun()
 
 # ============== PAGES ==============
