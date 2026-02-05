@@ -116,30 +116,52 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 /* Form inputs */
 .stTextInput input, .stDateInput input { background: white !important; border: 1px solid #e5e5e0 !important; border-radius: 8px !important; }
 
-/* Number input - sage green buttons */
-.stNumberInput input {
-    background: #f5f5f0 !important;
+/* Form container styling */
+[data-testid="stForm"] {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    border: none !important;
+}
+
+/* Number input - sage green buttons everywhere */
+.stNumberInput input,
+[data-testid="stNumberInput"] input {
+    background: white !important;
     border: none !important;
     text-align: center !important;
     font-weight: 600 !important;
+    color: #4a4a4a !important;
 }
-.stNumberInput [data-baseweb="input"] {
-    background: #f5f5f0 !important;
-    border: none !important;
+.stNumberInput [data-baseweb="input"],
+[data-testid="stNumberInput"] [data-baseweb="input"] {
+    background: white !important;
+    border: 1px solid #e5e5e0 !important;
     border-radius: 8px !important;
 }
-.stNumberInput button {
+.stNumberInput button,
+.stNumberInput [data-testid="stNumberInputStepUp"],
+.stNumberInput [data-testid="stNumberInputStepDown"],
+[data-testid="stNumberInput"] button,
+[data-baseweb="input"] button {
     background: #6b7c6b !important;
+    background-color: #6b7c6b !important;
     color: white !important;
     border: none !important;
 }
-.stNumberInput button:hover {
+.stNumberInput button:hover,
+[data-testid="stNumberInput"] button:hover,
+[data-baseweb="input"] button:hover {
     background: #5a6a5a !important;
+    background-color: #5a6a5a !important;
 }
-.stNumberInput button:first-of-type {
+.stNumberInput button:first-of-type,
+[data-testid="stNumberInput"] button:first-of-type {
     border-radius: 8px 0 0 8px !important;
 }
-.stNumberInput button:last-of-type {
+.stNumberInput button:last-of-type,
+[data-testid="stNumberInput"] button:last-of-type {
     border-radius: 0 8px 8px 0 !important;
 }
 
@@ -343,7 +365,7 @@ def page_forecast():
 
     # Team management section
     st.markdown("---")
-    st.markdown("**Manage Team Assignments**")
+    st.markdown("<h4 style='text-align:center; color:#4a4a4a; font-weight:600; margin-bottom:16px;'>Manage Team Assignments</h4>", unsafe_allow_html=True)
 
     for dev in DEVELOPERS:
         c1, c2 = st.columns([2, 2])
@@ -414,7 +436,7 @@ def page_add_sprint():
         if hols: st.info(f"Holidays: {', '.join(h['name'] for h in hols)}")
 
         st.markdown("---")
-        st.markdown("**Developer Points**")
+        st.markdown("<h4 style='text-align:center; color:#4a4a4a; font-weight:600; margin-bottom:16px;'>Developer Points</h4>", unsafe_allow_html=True)
 
         assigns = []
         for i in range(0, len(DEVELOPERS), 2):
