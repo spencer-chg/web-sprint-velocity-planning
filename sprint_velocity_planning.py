@@ -292,31 +292,10 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* ======== NUMBER INPUTS ======== */
-    /* Container - no extra borders */
+    /* ======== NUMBER INPUTS - MINIMAL ======== */
+    /* Just remove double borders, keep defaults otherwise */
     .stNumberInput > div > div {
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    /* Input wrapper */
-    .stNumberInput [data-baseweb="input"] {
-        background: #faf9f6 !important;
-        border: 1px solid #e0e0db !important;
-        border-radius: 8px !important;
-    }
-
-    /* Text field */
-    .stNumberInput input {
-        background: transparent !important;
-        color: #4a4a4a !important;
-        text-align: center !important;
-    }
-
-    /* Focus */
-    .stNumberInput [data-baseweb="input"]:focus-within {
-        border-color: #6b7c6b !important;
-        box-shadow: 0 0 0 2px rgba(107, 124, 107, 0.15) !important;
+        border-color: transparent !important;
     }
 
     /* ======== SELECT BOXES / DROPDOWNS ======== */
@@ -951,14 +930,12 @@ def render_forecast():
 
         if devs:
             for dev in devs:
-                st.markdown(f"**{dev['name']}**")
-                pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}")
-                st.session_state.pto_data[dev["id"]] = pto
-                other_teams = [t for t in TEAMS if t["id"] != team["id"]]
-                mv = st.selectbox("Move to", ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}")
-                if mv != "—":
-                    update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
-                    st.rerun()
+                c1, c2 = st.columns([3, 2])
+                with c1:
+                    st.markdown(f"<span style='font-size:0.85rem;'>{dev['name']}</span>", unsafe_allow_html=True)
+                with c2:
+                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+                    st.session_state.pto_data[dev["id"]] = pto
         else:
             st.markdown("*No developers*")
 
