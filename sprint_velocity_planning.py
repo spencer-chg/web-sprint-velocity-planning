@@ -90,10 +90,16 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     background-color: #5a6a5a !important;
 }
 
-/* Align all column content */
+/* Align all column content - pixel perfect spacing */
 [data-testid="column"] { display: flex; align-items: center; justify-content: center; }
-[data-testid="column"] > div { width: 100%; }
-[data-testid="column"] .stButton { display: flex; justify-content: center; }
+[data-testid="column"] > div { width: 100%; display: flex; justify-content: center; }
+[data-testid="column"] .stButton { display: flex; justify-content: center; width: 100%; }
+[data-testid="column"] .stButton > button { margin: 0 auto; }
+[data-testid="column"] .stNumberInput { width: 100%; }
+[data-testid="column"] .stNumberInput > div { margin: 0 auto; }
+
+/* Equal gaps around value box */
+.stNumberInput [data-baseweb="input"] { margin: 0 4px; }
 
 /* Selectbox */
 .stSelectbox > div > div {
@@ -307,7 +313,7 @@ def render_dev_row(dev):
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
 
-    cols = st.columns([3, 1, 2, 1])
+    cols = st.columns([2.5, 0.8, 1.4, 0.8])
 
     with cols[0]:
         st.markdown(f"**{first}**")
@@ -459,7 +465,7 @@ def page_add_sprint():
                     st.markdown(f"**{dev['name']}**")
 
                     # Pts row: [−] [value] [+] | Team dropdown
-                    c1, c2, c3, c4, c5 = st.columns([1, 2, 1, 0.3, 3])
+                    c1, c2, c3, c4, c5 = st.columns([0.8, 1.4, 0.8, 0.2, 2.5])
                     pts = st.session_state.sprint_pts.get(dev_id, 0.0)
 
                     with c1:
