@@ -933,42 +933,99 @@ def render_forecast():
 
     st.markdown("---")
 
-    # Team cards - each team gets its own section
-    for team in TEAMS:
-        devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
-
-        # Team card header
-        st.markdown(f'''
-        <div class="team-card">
-            <div class="team-header">
-                <div>
-                    <div class="team-name">{team['displayName']}</div>
-                    <div class="team-meta">{team['pmName']}</div>
-                </div>
-                <span class="team-badge">{len(devs)} dev{"s" if len(devs) != 1 else ""}</span>
+    # TEAM 1
+    team1 = TEAMS[0]
+    team1_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team1["id"]]
+    st.markdown(f'''
+    <div style="background:#fff; border-radius:10px; padding:16px; margin-bottom:16px; border-left:4px solid #4a5d4a;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <div style="font-size:1.1rem; font-weight:600; color:#3d3d3d;">{team1['displayName']}</div>
+                <div style="font-size:0.8rem; color:#8a8a8a;">{team1['pmName']}</div>
             </div>
+            <span style="background:#e8efe8; color:#4a5d4a; padding:4px 12px; border-radius:12px; font-size:0.75rem; font-weight:500;">{len(team1_devs)} devs</span>
         </div>
-        ''', unsafe_allow_html=True)
+    </div>
+    ''', unsafe_allow_html=True)
+    for dev in team1_devs:
+        other_teams = [t for t in TEAMS if t["id"] != team1["id"]]
+        c1, c2, c3 = st.columns([3, 2, 2])
+        with c1:
+            st.markdown(f"**{dev['name']}**")
+        with c2:
+            mv = st.selectbox("Move to", ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}", label_visibility="collapsed")
+            if mv != "—":
+                update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
+                st.rerun()
+        with c3:
+            pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+            st.session_state.pto_data[dev["id"]] = pto
+    if not team1_devs:
+        st.markdown("*No developers assigned*")
 
-        if devs:
-            # Developer rows within team
-            for dev in devs:
-                other_teams = [t for t in TEAMS if t["id"] != team["id"]]
-                c1, c2, c3 = st.columns([3, 2, 2])
-                with c1:
-                    st.markdown(f"<div style='padding:8px 0; font-weight:500; color:#3d3d3d;'>{dev['name']}</div>", unsafe_allow_html=True)
-                with c2:
-                    move_opts = ["—"] + [t["name"] for t in other_teams]
-                    mv = st.selectbox("Move", move_opts, key=f"mv_{dev['id']}", label_visibility="collapsed")
-                    if mv != "—":
-                        new_team_id = next(t["id"] for t in other_teams if t["name"] == mv)
-                        update_team_assignment(dev["id"], new_team_id)
-                        st.rerun()
-                with c3:
-                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
-                    st.session_state.pto_data[dev["id"]] = pto
-        else:
-            st.markdown('<p style="color:#9a9a9a; font-size:0.85rem; padding:8px 0;">No developers assigned</p>', unsafe_allow_html=True)
+    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+
+    # TEAM 2
+    team2 = TEAMS[1]
+    team2_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team2["id"]]
+    st.markdown(f'''
+    <div style="background:#fff; border-radius:10px; padding:16px; margin-bottom:16px; border-left:4px solid #4a5d4a;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <div style="font-size:1.1rem; font-weight:600; color:#3d3d3d;">{team2['displayName']}</div>
+                <div style="font-size:0.8rem; color:#8a8a8a;">{team2['pmName']}</div>
+            </div>
+            <span style="background:#e8efe8; color:#4a5d4a; padding:4px 12px; border-radius:12px; font-size:0.75rem; font-weight:500;">{len(team2_devs)} devs</span>
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
+    for dev in team2_devs:
+        other_teams = [t for t in TEAMS if t["id"] != team2["id"]]
+        c1, c2, c3 = st.columns([3, 2, 2])
+        with c1:
+            st.markdown(f"**{dev['name']}**")
+        with c2:
+            mv = st.selectbox("Move to", ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}", label_visibility="collapsed")
+            if mv != "—":
+                update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
+                st.rerun()
+        with c3:
+            pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+            st.session_state.pto_data[dev["id"]] = pto
+    if not team2_devs:
+        st.markdown("*No developers assigned*")
+
+    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+
+    # STORYBLOK
+    team3 = TEAMS[2]
+    team3_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team3["id"]]
+    st.markdown(f'''
+    <div style="background:#fff; border-radius:10px; padding:16px; margin-bottom:16px; border-left:4px solid #4a5d4a;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <div style="font-size:1.1rem; font-weight:600; color:#3d3d3d;">{team3['displayName']}</div>
+                <div style="font-size:0.8rem; color:#8a8a8a;">{team3['pmName']}</div>
+            </div>
+            <span style="background:#e8efe8; color:#4a5d4a; padding:4px 12px; border-radius:12px; font-size:0.75rem; font-weight:500;">{len(team3_devs)} devs</span>
+        </div>
+    </div>
+    ''', unsafe_allow_html=True)
+    for dev in team3_devs:
+        other_teams = [t for t in TEAMS if t["id"] != team3["id"]]
+        c1, c2, c3 = st.columns([3, 2, 2])
+        with c1:
+            st.markdown(f"**{dev['name']}**")
+        with c2:
+            mv = st.selectbox("Move to", ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}", label_visibility="collapsed")
+            if mv != "—":
+                update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
+                st.rerun()
+        with c3:
+            pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+            st.session_state.pto_data[dev["id"]] = pto
+    if not team3_devs:
+        st.markdown("*No developers assigned*")
 
     if calc:
         buf = st.session_state.planning_buffer
