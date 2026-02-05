@@ -90,16 +90,53 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     background-color: #5a6a5a !important;
 }
 
-/* Align all column content - pixel perfect spacing */
-[data-testid="column"] { display: flex; align-items: center; justify-content: center; }
-[data-testid="column"] > div { width: 100%; display: flex; justify-content: center; }
-[data-testid="column"] .stButton { display: flex; justify-content: center; width: 100%; }
-[data-testid="column"] .stButton > button { margin: 0 auto; }
-[data-testid="column"] .stNumberInput { width: 100%; }
-[data-testid="column"] .stNumberInput > div { margin: 0 auto; }
+/* PIXEL PERFECT: Strip all default spacing */
+[data-testid="stHorizontalBlock"] {
+    gap: 8px !important;
+}
+[data-testid="column"] {
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+[data-testid="column"] > div {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+[data-testid="column"] > div > div {
+    width: 100% !important;
+}
 
-/* Equal gaps around value box */
-.stNumberInput [data-baseweb="input"] { margin: 0 4px; }
+/* Buttons: no margin, centered */
+[data-testid="column"] .stButton {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+[data-testid="column"] .stButton > button {
+    margin: 0 !important;
+    width: 36px !important;
+    min-width: 36px !important;
+    max-width: 36px !important;
+}
+
+/* Number input: no margin, centered */
+[data-testid="column"] .stNumberInput {
+    width: 100% !important;
+}
+[data-testid="column"] .stNumberInput > div {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+[data-testid="column"] .stNumberInput [data-baseweb="input"] {
+    margin: 0 !important;
+    width: 70px !important;
+    min-width: 70px !important;
+}
 
 /* Selectbox */
 .stSelectbox > div > div {
@@ -313,7 +350,7 @@ def render_dev_row(dev):
     first = dev["name"].split()[0]
     pto = st.session_state.pto.get(dev_id, 0.0)
 
-    cols = st.columns([2.5, 0.8, 1.4, 0.8])
+    cols = st.columns([3, 1, 1.5, 1], gap="small")
 
     with cols[0]:
         st.markdown(f"**{first}**")
@@ -465,7 +502,7 @@ def page_add_sprint():
                     st.markdown(f"**{dev['name']}**")
 
                     # Pts row: [−] [value] [+] | Team dropdown
-                    c1, c2, c3, c4, c5 = st.columns([0.8, 1.4, 0.8, 0.2, 2.5])
+                    c1, c2, c3, c4, c5 = st.columns([1, 1.5, 1, 0.3, 3], gap="small")
                     pts = st.session_state.sprint_pts.get(dev_id, 0.0)
 
                     with c1:
