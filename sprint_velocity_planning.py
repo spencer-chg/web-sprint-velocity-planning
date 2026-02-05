@@ -65,8 +65,8 @@ st.markdown(f"""
     }}
 
     .block-container {{
-        max-width: 960px !important;
-        padding: 2rem 1rem 4rem 1rem !important;
+        max-width: 900px !important;
+        padding: 1.5rem 1.5rem 4rem 1.5rem !important;
     }}
 
     * {{ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important; }}
@@ -79,121 +79,82 @@ st.markdown(f"""
     /* ===== HEADER ===== */
     .app-header {{
         text-align: center;
-        padding: 32px 0 24px 0;
+        padding: 24px 0 20px 0;
     }}
     .app-title {{
-        font-size: 1.75rem;
-        font-weight: 700;
+        font-size: 1.5rem;
+        font-weight: 600;
         color: {TEXT_PRIMARY};
         margin: 0;
+        letter-spacing: -0.02em;
     }}
     .app-subtitle {{
         color: {TEXT_MUTED};
-        font-size: 0.85rem;
-        margin-top: 8px;
+        font-size: 0.75rem;
+        margin-top: 4px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
     }}
 
     /* ===== TABS ===== */
     .stTabs [data-baseweb="tab-list"] {{
-        gap: 0;
+        gap: 8px;
         background: transparent !important;
-        border-bottom: 1px solid {BORDER};
+        border-bottom: none !important;
         justify-content: center;
+        padding-bottom: 16px;
     }}
     .stTabs [data-baseweb="tab"] {{
         background: transparent !important;
         border: none !important;
-        padding: 12px 24px !important;
+        padding: 8px 16px !important;
         font-weight: 500 !important;
-        color: {TEXT_SECONDARY} !important;
-        border-bottom: 2px solid transparent !important;
-        margin-bottom: -1px;
+        font-size: 0.85rem !important;
+        color: {TEXT_MUTED} !important;
+        border-radius: 8px !important;
+        transition: all 0.15s ease !important;
     }}
     .stTabs [aria-selected="true"] {{
         color: {SAGE} !important;
-        border-bottom: 2px solid {SAGE} !important;
+        background: rgba(107,124,107,0.08) !important;
     }}
-    .stTabs [data-baseweb="tab"]:hover {{ color: {SAGE} !important; }}
+    .stTabs [data-baseweb="tab"]:hover {{
+        color: {TEXT_PRIMARY} !important;
+        background: rgba(0,0,0,0.03) !important;
+    }}
     .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {{ display: none !important; }}
 
     /* ===== TEAM CARD ===== */
     .team-card {{
-        background: {CREAM_LIGHT};
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 16px;
-        border: 1px solid {BORDER};
-        border-left: 4px solid {SAGE};
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }}
     .team-name {{
-        font-size: 1rem;
+        font-size: 0.95rem;
         font-weight: 600;
-        color: {TEXT_PRIMARY};
-        margin: 0 0 4px 0;
+        color: {SAGE};
+        margin: 0 0 2px 0;
+        letter-spacing: -0.01em;
     }}
     .team-meta {{
-        font-size: 0.75rem;
-        color: {TEXT_SECONDARY};
+        font-size: 0.7rem;
+        color: {TEXT_MUTED};
+        font-weight: 500;
     }}
 
     /* ===== DEVELOPER ROW ===== */
     .dev-row {{
-        background: {CREAM_LIGHT};
-        border-radius: 10px;
-        padding: 12px 14px;
-        margin-bottom: 10px;
-        border: 1px solid {BORDER_LIGHT};
+        background: white;
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin-bottom: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
-    }}
-    .dev-name {{
-        font-size: 0.9rem;
-        font-weight: 500;
-        color: {TEXT_PRIMARY};
-        flex: 1;
-    }}
-    .dev-pto {{
-        display: flex;
-        align-items: center;
-        gap: 0;
-    }}
-    .pto-value {{
-        background: white;
-        border-top: 1px solid {BORDER};
-        border-bottom: 1px solid {BORDER};
-        padding: 8px 16px;
-        min-width: 50px;
-        text-align: center;
-        font-weight: 500;
-        font-size: 0.9rem;
-        color: {TEXT_PRIMARY};
-    }}
-
-    /* ===== PTO BUTTONS (custom) ===== */
-    .pto-btn {{
-        background: {SAGE} !important;
-        color: white !important;
-        border: none !important;
-        width: 40px !important;
-        height: 40px !important;
-        font-size: 1.25rem !important;
-        font-weight: 500 !important;
-        cursor: pointer !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        transition: background 0.15s !important;
-    }}
-    .pto-btn:hover {{
-        background: {SAGE_DARK} !important;
-    }}
-    .pto-btn-minus {{
-        border-radius: 8px 0 0 8px !important;
-    }}
-    .pto-btn-plus {{
-        border-radius: 0 8px 8px 0 !important;
     }}
 
     /* ===== MAIN BUTTONS ===== */
@@ -205,17 +166,27 @@ st.markdown(f"""
         padding: 12px 24px !important;
         font-weight: 600 !important;
         font-size: 0.9rem !important;
+        transition: all 0.15s ease !important;
     }}
     .stButton > button:hover {{
         background: {SAGE_DARK} !important;
+        transform: translateY(-1px) !important;
     }}
 
-    /* Small buttons for +/- */
+    /* PTO stepper buttons - pill shaped */
     div[data-testid="column"] .stButton > button {{
         padding: 0 !important;
-        min-height: 40px !important;
-        width: 40px !important;
-        font-size: 1.25rem !important;
+        min-height: 32px !important;
+        height: 32px !important;
+        width: 32px !important;
+        min-width: 32px !important;
+        font-size: 1.1rem !important;
+        font-weight: 400 !important;
+        border-radius: 50% !important;
+        box-shadow: 0 2px 4px rgba(107,124,107,0.2) !important;
+    }}
+    div[data-testid="column"] .stButton > button:hover {{
+        box-shadow: 0 3px 6px rgba(107,124,107,0.3) !important;
     }}
 
     /* ===== SELECT BOXES ===== */
@@ -233,18 +204,44 @@ st.markdown(f"""
         box-shadow: 0 0 0 1px {SAGE} !important;
     }}
 
+    /* ===== MINI MENU (three-dot) ===== */
+    .mini-menu .stSelectbox {{
+        min-width: 36px !important;
+        max-width: 36px !important;
+    }}
+    .mini-menu .stSelectbox [data-baseweb="select"] {{
+        background: transparent !important;
+        border: none !important;
+        padding: 0 !important;
+        min-height: 32px !important;
+    }}
+    .mini-menu .stSelectbox [data-baseweb="select"] > div {{
+        background: transparent !important;
+        padding: 4px 8px !important;
+        min-height: 32px !important;
+    }}
+    .mini-menu .stSelectbox svg {{
+        display: none !important;
+    }}
+    .mini-menu .stSelectbox [data-baseweb="select"]:hover {{
+        background: {BORDER_LIGHT} !important;
+        border-radius: 6px !important;
+    }}
+
     /* ===== DROPDOWN MENUS ===== */
     [data-baseweb="popover"], [data-baseweb="menu"] {{
-        background: {CREAM_LIGHT} !important;
+        background: white !important;
         border: 1px solid {BORDER} !important;
-        border-radius: 8px !important;
+        border-radius: 10px !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
     }}
     [data-baseweb="menu"] li, [role="option"] {{
-        background: {CREAM_LIGHT} !important;
+        background: white !important;
         color: {TEXT_PRIMARY} !important;
+        font-size: 0.85rem !important;
     }}
     [data-baseweb="menu"] li:hover, [role="option"]:hover {{
-        background: {BORDER_LIGHT} !important;
+        background: {CREAM} !important;
     }}
 
     /* ===== METRIC CARDS ===== */
@@ -271,62 +268,95 @@ st.markdown(f"""
 
     /* ===== FORECAST RESULTS ===== */
     .forecast-card {{
-        background: {CREAM_LIGHT};
-        border-radius: 12px;
-        padding: 24px;
+        background: white;
+        border-radius: 16px;
+        padding: 24px 20px;
         text-align: center;
-        border: 1px solid {BORDER};
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }}
     .forecast-team {{
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: {SAGE};
-        margin-bottom: 8px;
+        letter-spacing: 0.08em;
+        color: {TEXT_MUTED};
+        margin-bottom: 4px;
     }}
     .forecast-value {{
-        font-size: 2.5rem;
+        font-size: 2.25rem;
         font-weight: 700;
         color: {SAGE};
+        letter-spacing: -0.02em;
     }}
     .forecast-sub {{
-        font-size: 0.8rem;
-        color: {TEXT_SECONDARY};
-        margin-top: 4px;
+        font-size: 0.7rem;
+        color: {TEXT_MUTED};
+        margin-top: 2px;
     }}
 
     /* ===== BREAKDOWN ===== */
     .breakdown-item {{
         background: {CREAM};
         border-radius: 8px;
-        padding: 10px 12px;
-        margin-top: 8px;
+        padding: 8px 12px;
+        margin-top: 6px;
         display: flex;
         justify-content: space-between;
+        align-items: center;
     }}
     .breakdown-name {{
-        font-size: 0.85rem;
-        color: {TEXT_PRIMARY};
+        font-size: 0.8rem;
+        color: {TEXT_SECONDARY};
     }}
     .breakdown-value {{
         font-weight: 600;
+        font-size: 0.85rem;
         color: {TEXT_PRIMARY};
     }}
 
     /* ===== DIVIDER ===== */
-    hr {{
-        border: none;
-        height: 1px;
-        background: {BORDER};
-        margin: 20px 0;
+    hr, .stMarkdown hr {{
+        border: none !important;
+        height: 1px !important;
+        background: {BORDER_LIGHT} !important;
+        margin: 24px 0 !important;
     }}
 
     /* ===== DATA TABLES ===== */
     .stDataFrame {{ border-radius: 8px; }}
 
-    /* ===== HIDE NUMBER INPUT DEFAULTS ===== */
-    .stNumberInput {{ display: none !important; }}
+    /* ===== FORM INPUTS ===== */
+    .stTextInput input, .stDateInput input, .stNumberInput input {{
+        background: white !important;
+        border: 1px solid {BORDER} !important;
+        border-radius: 10px !important;
+        color: {TEXT_PRIMARY} !important;
+        font-size: 0.9rem !important;
+    }}
+    .stTextInput [data-baseweb="input"], .stDateInput [data-baseweb="input"], .stNumberInput [data-baseweb="input"] {{
+        background: white !important;
+        border-color: {BORDER} !important;
+        border-radius: 10px !important;
+    }}
+    .stTextInput input:focus, .stDateInput input:focus, .stNumberInput input:focus {{
+        border-color: {SAGE} !important;
+        box-shadow: 0 0 0 1px {SAGE} !important;
+    }}
+    .stNumberInput button {{
+        background: {CREAM} !important;
+        border-color: {BORDER} !important;
+        color: {TEXT_PRIMARY} !important;
+    }}
+    .stNumberInput button:hover {{
+        background: {BORDER_LIGHT} !important;
+    }}
+
+    /* Labels */
+    .stTextInput label, .stDateInput label, .stNumberInput label, .stSelectbox label {{
+        color: {TEXT_SECONDARY} !important;
+        font-size: 0.8rem !important;
+        font-weight: 500 !important;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -492,44 +522,51 @@ if "forecast" not in st.session_state: st.session_state.forecast = None
 if "planning_buffer" not in st.session_state: st.session_state.planning_buffer = 0.85
 
 # ============== CUSTOM COMPONENTS ==============
-def pto_stepper(dev_id, dev_name):
-    """Custom PTO stepper with styled +/- buttons"""
+def dev_row(dev_id, dev_name, current_team_id):
+    """Developer row with PTO stepper and inline three-dot menu"""
     key_base = f"pto_{dev_id}"
     current = st.session_state.pto_data.get(dev_id, 0.0)
 
-    col1, col2, col3, col4 = st.columns([3, 1, 1.2, 1])
+    # Layout: [Name] [−] [value] [+] [⋮]
+    cols = st.columns([2.5, 0.6, 0.8, 0.6, 0.5])
 
-    with col1:
-        st.markdown(f"<div style='padding:8px 0; font-weight:500;'>{dev_name}</div>", unsafe_allow_html=True)
+    with cols[0]:
+        st.markdown(f"""
+        <div style='font-size:0.88rem; font-weight:500; color:{TEXT_PRIMARY};
+                    padding:6px 0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;'>
+            {dev_name}
+        </div>
+        """, unsafe_allow_html=True)
 
-    with col2:
+    with cols[1]:
         if st.button("−", key=f"{key_base}_minus", use_container_width=True):
             st.session_state.pto_data[dev_id] = max(0.0, current - 0.5)
             st.rerun()
 
-    with col3:
+    with cols[2]:
         st.markdown(f"""
-        <div style='background:white; border:1px solid {BORDER}; border-radius:0;
-                    padding:8px 0; text-align:center; font-weight:500; height:40px;
-                    display:flex; align-items:center; justify-content:center;'>
+        <div style='background:{CREAM}; border-radius:8px;
+                    padding:6px 0; text-align:center; font-weight:600;
+                    font-size:0.85rem; color:{TEXT_PRIMARY};'>
             {current:.1f}
         </div>
         """, unsafe_allow_html=True)
 
-    with col4:
+    with cols[3]:
         if st.button("+", key=f"{key_base}_plus", use_container_width=True):
             st.session_state.pto_data[dev_id] = min(10.0, current + 0.5)
             st.rerun()
 
-def move_dropdown(dev_id, current_team_id):
-    """Compact move dropdown"""
-    other_teams = [t for t in TEAMS if t["id"] != current_team_id]
-    options = ["Move..."] + [t["name"] for t in other_teams]
-    selected = st.selectbox("", options, key=f"mv_{dev_id}", label_visibility="collapsed")
-    if selected != "Move...":
-        new_team_id = next(t["id"] for t in other_teams if t["name"] == selected)
-        update_team_assignment(dev_id, new_team_id)
-        st.rerun()
+    with cols[4]:
+        # Three-dot menu for move
+        other_teams = [t for t in TEAMS if t["id"] != current_team_id]
+        options = ["⋮"] + [f"→ {t['name']}" for t in other_teams]
+        selected = st.selectbox("", options, key=f"mv_{dev_id}", label_visibility="collapsed")
+        if selected != "⋮":
+            team_name = selected.replace("→ ", "")
+            new_team_id = next(t["id"] for t in other_teams if t["name"] == team_name)
+            update_team_assignment(dev_id, new_team_id)
+            st.rerun()
 
 # ============== VIEWS ==============
 def render_forecast():
@@ -565,11 +602,9 @@ def render_forecast():
 
             if devs:
                 for dev in devs:
-                    pto_stepper(dev["id"], dev["name"])
-                    move_dropdown(dev["id"], team["id"])
-                    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+                    dev_row(dev["id"], dev["name"], team["id"])
             else:
-                st.markdown(f"<p style='color:{TEXT_MUTED}; font-style:italic;'>No developers</p>", unsafe_allow_html=True)
+                st.markdown(f"<p style='color:{TEXT_MUTED}; font-size:0.85rem; padding:8px 0;'>No developers</p>", unsafe_allow_html=True)
 
     # Calculate forecast
     if calc:
