@@ -62,12 +62,15 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 .move-link { font-size: 0.75rem; color: #999; margin-left: 12px; cursor: pointer; }
 .move-link:hover { color: #6b7c6b; }
 
-/* ALL buttons sage green + vertical align */
+/* ALL buttons sage green */
+.stButton button,
 .stButton > button,
-.stButton > button:focus,
-.stButton > button:active,
-.stButton > button[kind="secondary"],
-.stButton > button[kind="primary"] {
+.stButton button[kind],
+.stButton button[data-testid],
+[data-testid="baseButton-secondary"],
+[data-testid="baseButton-primary"],
+[data-testid="stBaseButton-secondary"],
+[data-testid="stBaseButton-primary"] {
     background: #6b7c6b !important;
     background-color: #6b7c6b !important;
     color: white !important;
@@ -79,7 +82,13 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
     min-height: 36px !important;
     line-height: 36px !important;
 }
-.stButton > button:hover { background: #5a6a5a !important; background-color: #5a6a5a !important; }
+.stButton button:hover,
+.stButton > button:hover,
+[data-testid="baseButton-secondary"]:hover,
+[data-testid="baseButton-primary"]:hover {
+    background: #5a6a5a !important;
+    background-color: #5a6a5a !important;
+}
 
 /* Align all column content */
 [data-testid="column"] { display: flex; align-items: center; justify-content: center; }
@@ -137,33 +146,6 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: #f5f5f0 !im
 /* Hide default hr styling issues */
 hr { border: none; height: 1px; background: #e5e5e0; margin: 20px 0; }
 
-/* Expander styling */
-.stExpander {
-    background: white;
-    border-radius: 12px;
-    border: 1px solid #e5e5e0 !important;
-    margin-top: 16px;
-}
-.stExpander [data-testid="stExpanderToggleIcon"] {
-    color: #6b7c6b;
-}
-.stExpander summary {
-    font-weight: 500;
-    color: #4a4a4a;
-    padding: 12px 16px;
-}
-.stExpander summary:hover {
-    color: #6b7c6b;
-}
-.stExpander [data-testid="stExpanderDetails"] {
-    padding: 0 16px 16px;
-}
-
-/* Hide any icon font text that fails to render */
-.stExpander summary span[class*="material"],
-.stExpander summary [class*="icon"] {
-    font-size: 0;
-}
 </style>
 """, unsafe_allow_html=True)
 
@@ -360,26 +342,27 @@ def page_forecast():
                 st.caption("No developers")
 
     # Team management section
-    with st.expander("Manage Team Assignments"):
-        team_assignments = load_team_assignments()
-        for dev in DEVELOPERS:
-            c1, c2 = st.columns([2, 2])
-            with c1:
-                st.write(dev["name"])
-            with c2:
-                current = team_assignments.get(dev["id"], "team1")
-                current_idx = next((i for i, t in enumerate(TEAMS) if t["id"] == current), 0)
-                new_team = st.selectbox(
-                    "",
-                    [t["name"] for t in TEAMS],
-                    index=current_idx,
-                    key=f"team_assign_{dev['id']}",
-                    label_visibility="collapsed"
-                )
-                new_id = next(t["id"] for t in TEAMS if t["name"] == new_team)
-                if new_id != current:
-                    save_team_assignment(dev["id"], new_id)
-                    st.rerun()
+    st.markdown("---")
+    st.markdown("**Manage Team Assignments**")
+
+    for dev in DEVELOPERS:
+        c1, c2 = st.columns([2, 2])
+        with c1:
+            st.write(dev["name"])
+        with c2:
+            current = team_assignments.get(dev["id"], "team1")
+            current_idx = next((i for i, t in enumerate(TEAMS) if t["id"] == current), 0)
+            new_team = st.selectbox(
+                "",
+                [t["name"] for t in TEAMS],
+                index=current_idx,
+                key=f"team_assign_{dev['id']}",
+                label_visibility="collapsed"
+            )
+            new_id = next(t["id"] for t in TEAMS if t["name"] == new_team)
+            if new_id != current:
+                save_team_assignment(dev["id"], new_id)
+                st.rerun()
 
     # Calculate
     if calc_btn:
