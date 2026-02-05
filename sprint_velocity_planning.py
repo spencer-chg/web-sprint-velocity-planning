@@ -113,12 +113,37 @@ button[kind="primary"] {
 [data-testid="column"] {
     padding: 0 !important;
     margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 [data-testid="column"] > div {
     padding: 0 !important;
     margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
 }
 [data-testid="column"] > div > div {
+    padding: 0 !important;
+    margin: 0 !important;
+}
+/* Markdown containers - strip all spacing for alignment */
+[data-testid="column"] [data-testid="stMarkdown"] {
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+}
+[data-testid="column"] [data-testid="stMarkdown"] > div {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+}
+[data-testid="column"] [data-testid="stMarkdown"] p {
     padding: 0 !important;
     margin: 0 !important;
 }
