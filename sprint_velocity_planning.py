@@ -176,23 +176,23 @@ st.markdown("""
         display: none !important;
     }
 
-    /* Cards */
+    /* Cards - cream background, not white */
     .card {
-        background: #fff;
+        background: #faf9f6;
         border-radius: 8px;
         padding: 16px;
         margin-bottom: 12px;
-        border: 1px solid #e5e5e0;
+        border: 1px solid #e8e8e3;
     }
 
     /* Team cards with left border */
     .team-card {
-        background: #fff;
+        background: #faf9f6;
         border-radius: 8px;
         padding: 14px 16px;
         margin-bottom: 12px;
-        border: 1px solid #e5e5e0;
-        border-left: 3px solid #4a5d4a;
+        border: 1px solid #e8e8e3;
+        border-left: 3px solid #6b7c6b;
     }
 
     /* All teams use same sage green accent */
@@ -292,61 +292,94 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* ======== NUMBER INPUTS ======== */
-    /* Container cleanup */
+    /* ======== NUMBER INPUTS - COMPREHENSIVE FIX ======== */
+    /* Remove all container styling */
+    .stNumberInput,
     .stNumberInput > div,
-    .stNumberInput > div > div {
+    .stNumberInput > div > div,
+    .stNumberInput [data-testid] {
         border: none !important;
         box-shadow: none !important;
         background: transparent !important;
     }
 
-    /* The input wrapper with buttons */
+    /* The actual input wrapper */
     .stNumberInput [data-baseweb="input"] {
-        background: #fff !important;
-        border: 1px solid #d8d8d3 !important;
+        background: #faf9f6 !important;
+        border: 1px solid #ddd8d0 !important;
         border-radius: 8px !important;
         box-shadow: none !important;
         overflow: hidden !important;
     }
 
-    /* Input field itself */
-    .stNumberInput input {
-        background: #fff !important;
-        color: #3d3d3d !important;
-        font-size: 0.9rem !important;
+    /* Text input field */
+    .stNumberInput [data-baseweb="input"] input,
+    .stNumberInput input[type="number"] {
+        background: transparent !important;
+        color: #4a4a4a !important;
+        font-family: 'Inter', -apple-system, sans-serif !important;
+        font-size: 0.85rem !important;
         font-weight: 500 !important;
         border: none !important;
         text-align: center !important;
+        -moz-appearance: textfield !important;
     }
 
-    /* Stepper buttons - sage green style */
-    .stNumberInput [data-baseweb="input"] button {
-        background: #4a5d4a !important;
-        color: #fff !important;
+    /* Hide browser default spinners */
+    .stNumberInput input::-webkit-outer-spin-button,
+    .stNumberInput input::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0 !important;
+    }
+
+    /* +/- STEPPER BUTTONS - Target every possible selector */
+    .stNumberInput button,
+    .stNumberInput [data-baseweb="input"] button,
+    .stNumberInput [data-baseweb="input"] > div > button,
+    .stNumberInput [role="button"],
+    [data-testid="stNumberInput"] button,
+    [data-testid="stNumberInputStepUp"],
+    [data-testid="stNumberInputStepDown"],
+    div[data-baseweb="input"] button {
+        background: #6b7c6b !important;
+        background-color: #6b7c6b !important;
+        color: #ffffff !important;
         border: none !important;
-        border-radius: 0 !important;
         box-shadow: none !important;
         min-width: 36px !important;
-        margin: 0 !important;
-        padding: 0 !important;
+        transition: background 0.15s ease !important;
     }
 
+    /* Rounded corners on outer edges */
+    .stNumberInput [data-baseweb="input"] > button:first-child,
+    .stNumberInput button:first-of-type {
+        border-radius: 7px 0 0 7px !important;
+    }
+
+    .stNumberInput [data-baseweb="input"] > button:last-child,
+    .stNumberInput button:last-of-type {
+        border-radius: 0 7px 7px 0 !important;
+    }
+
+    /* Hover state */
+    .stNumberInput button:hover,
     .stNumberInput [data-baseweb="input"] button:hover {
-        background: #3d4d3d !important;
+        background: #4a5d4a !important;
+        background-color: #4a5d4a !important;
     }
 
+    /* SVG icons inside buttons */
+    .stNumberInput button svg,
     .stNumberInput [data-baseweb="input"] button svg {
-        fill: #fff !important;
-        stroke: #fff !important;
-        width: 16px !important;
-        height: 16px !important;
+        fill: #ffffff !important;
+        stroke: #ffffff !important;
+        color: #ffffff !important;
     }
 
-    /* Focus state - sage green ring */
+    /* Focus ring */
     .stNumberInput [data-baseweb="input"]:focus-within {
-        border-color: #4a5d4a !important;
-        box-shadow: 0 0 0 2px rgba(74, 93, 74, 0.2) !important;
+        border-color: #6b7c6b !important;
+        box-shadow: 0 0 0 2px rgba(107, 124, 107, 0.2) !important;
     }
 
     /* ======== SELECT BOXES / DROPDOWNS ======== */
@@ -525,13 +558,13 @@ st.markdown("""
         box-shadow: 0 0 0 1px #4a5d4a !important;
     }
 
-    /* Metric cards */
+    /* Metric cards - cream */
     .metric-card {
-        background: #fff;
+        background: #faf9f6;
         border-radius: 8px;
         padding: 16px;
         text-align: center;
-        border: 1px solid #e5e5e0;
+        border: 1px solid #e8e8e3;
     }
 
     .metric-value {
@@ -560,13 +593,13 @@ st.markdown("""
         color: #8a8a8a !important;
     }
 
-    /* Forecast cards */
+    /* Forecast cards - cream */
     .forecast-card {
-        background: #fff;
+        background: #faf9f6;
         border-radius: 10px;
         padding: 20px;
         text-align: center;
-        border: 1px solid #e5e5e0;
+        border: 1px solid #e8e8e3;
         margin-bottom: 12px;
     }
 
@@ -644,6 +677,39 @@ st.markdown("""
 
     .stAlert > div {
         color: #555 !important;
+    }
+
+    /* Expanders - subtle styling */
+    .streamlit-expanderHeader {
+        background: transparent !important;
+        border: none !important;
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+        color: #7a7a7a !important;
+        padding: 8px 0 !important;
+    }
+
+    .streamlit-expanderHeader:hover {
+        color: #4a5d4a !important;
+    }
+
+    .streamlit-expanderContent {
+        border: none !important;
+        padding: 8px 0 !important;
+    }
+
+    [data-testid="stExpander"] {
+        border: none !important;
+        background: transparent !important;
+    }
+
+    [data-testid="stExpander"] summary {
+        font-size: 0.75rem !important;
+        color: #8a8a8a !important;
+    }
+
+    [data-testid="stExpander"] summary:hover {
+        color: #6b7c6b !important;
     }
 
     /* ======== DATA TABLES ======== */
@@ -933,99 +999,54 @@ def render_forecast():
 
     st.markdown("---")
 
-    # TEAM 1
-    team1 = TEAMS[0]
-    team1_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team1["id"]]
-    st.markdown(f'''
-    <div style="background:#fff; border-radius:10px; padding:16px; margin-bottom:16px; border-left:4px solid #4a5d4a;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-                <div style="font-size:1.1rem; font-weight:600; color:#3d3d3d;">{team1['displayName']}</div>
-                <div style="font-size:0.8rem; color:#8a8a8a;">{team1['pmName']}</div>
-            </div>
-            <span style="background:#e8efe8; color:#4a5d4a; padding:4px 12px; border-radius:12px; font-size:0.75rem; font-weight:500;">{len(team1_devs)} devs</span>
+    # 3-column layout for teams
+    col1, col2, col3 = st.columns(3)
+
+    def render_team_column(team, devs):
+        """Render a team's card and developer list"""
+        # Team header card
+        st.markdown(f'''
+        <div style="background:#faf9f6; border-radius:10px; padding:14px 16px; margin-bottom:14px; border-left:3px solid #6b7c6b; border:1px solid #e8e8e3; border-left:3px solid #6b7c6b;">
+            <div style="font-size:0.9rem; font-weight:600; color:#4a4a4a; margin-bottom:2px;">{team['name']}</div>
+            <div style="font-size:0.7rem; color:#8a8a8a;">{team['pmName']} · {len(devs)} devs</div>
         </div>
-    </div>
-    ''', unsafe_allow_html=True)
-    for dev in team1_devs:
-        other_teams = [t for t in TEAMS if t["id"] != team1["id"]]
-        c1, c2, c3 = st.columns([3, 2, 2])
-        with c1:
-            st.markdown(f"**{dev['name']}**")
-        with c2:
-            mv = st.selectbox("Move to", ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}", label_visibility="collapsed")
-            if mv != "—":
-                update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
-                st.rerun()
-        with c3:
-            pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
-            st.session_state.pto_data[dev["id"]] = pto
-    if not team1_devs:
-        st.markdown("*No developers assigned*")
+        ''', unsafe_allow_html=True)
 
-    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+        if devs:
+            for dev in devs:
+                # Developer row: name left, PTO right
+                c1, c2 = st.columns([2, 1])
+                with c1:
+                    st.markdown(f"<div style='font-size:0.85rem; font-weight:500; color:#4a4a4a; padding:8px 0;'>{dev['name']}</div>", unsafe_allow_html=True)
+                with c2:
+                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
+                    st.session_state.pto_data[dev["id"]] = pto
 
-    # TEAM 2
-    team2 = TEAMS[1]
-    team2_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team2["id"]]
-    st.markdown(f'''
-    <div style="background:#fff; border-radius:10px; padding:16px; margin-bottom:16px; border-left:4px solid #4a5d4a;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-                <div style="font-size:1.1rem; font-weight:600; color:#3d3d3d;">{team2['displayName']}</div>
-                <div style="font-size:0.8rem; color:#8a8a8a;">{team2['pmName']}</div>
-            </div>
-            <span style="background:#e8efe8; color:#4a5d4a; padding:4px 12px; border-radius:12px; font-size:0.75rem; font-weight:500;">{len(team2_devs)} devs</span>
-        </div>
-    </div>
-    ''', unsafe_allow_html=True)
-    for dev in team2_devs:
-        other_teams = [t for t in TEAMS if t["id"] != team2["id"]]
-        c1, c2, c3 = st.columns([3, 2, 2])
-        with c1:
-            st.markdown(f"**{dev['name']}**")
-        with c2:
-            mv = st.selectbox("Move to", ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}", label_visibility="collapsed")
-            if mv != "—":
-                update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
-                st.rerun()
-        with c3:
-            pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
-            st.session_state.pto_data[dev["id"]] = pto
-    if not team2_devs:
-        st.markdown("*No developers assigned*")
+            # Move section - collapsed at bottom
+            with st.expander("Move developers", expanded=False):
+                for dev in devs:
+                    other_teams = [t for t in TEAMS if t["id"] != team["id"]]
+                    mv = st.selectbox(dev['name'], ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}")
+                    if mv != "—":
+                        update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
+                        st.rerun()
+        else:
+            st.markdown("<p style='font-size:0.8rem; color:#9a9a9a; font-style:italic; padding:8px 0;'>No developers</p>", unsafe_allow_html=True)
 
-    st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
+    with col1:
+        team1 = TEAMS[0]
+        team1_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team1["id"]]
+        render_team_column(team1, team1_devs)
 
-    # STORYBLOK
-    team3 = TEAMS[2]
-    team3_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team3["id"]]
-    st.markdown(f'''
-    <div style="background:#fff; border-radius:10px; padding:16px; margin-bottom:16px; border-left:4px solid #4a5d4a;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-                <div style="font-size:1.1rem; font-weight:600; color:#3d3d3d;">{team3['displayName']}</div>
-                <div style="font-size:0.8rem; color:#8a8a8a;">{team3['pmName']}</div>
-            </div>
-            <span style="background:#e8efe8; color:#4a5d4a; padding:4px 12px; border-radius:12px; font-size:0.75rem; font-weight:500;">{len(team3_devs)} devs</span>
-        </div>
-    </div>
-    ''', unsafe_allow_html=True)
-    for dev in team3_devs:
-        other_teams = [t for t in TEAMS if t["id"] != team3["id"]]
-        c1, c2, c3 = st.columns([3, 2, 2])
-        with c1:
-            st.markdown(f"**{dev['name']}**")
-        with c2:
-            mv = st.selectbox("Move to", ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}", label_visibility="collapsed")
-            if mv != "—":
-                update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
-                st.rerun()
-        with c3:
-            pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
-            st.session_state.pto_data[dev["id"]] = pto
-    if not team3_devs:
-        st.markdown("*No developers assigned*")
+    with col2:
+        team2 = TEAMS[1]
+        team2_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team2["id"]]
+        render_team_column(team2, team2_devs)
+
+    with col3:
+        team3 = TEAMS[2]
+        team3_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team3["id"]]
+        render_team_column(team3, team3_devs)
 
     if calc:
         buf = st.session_state.planning_buffer
