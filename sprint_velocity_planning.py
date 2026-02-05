@@ -30,754 +30,307 @@ def get_supabase():
 
 supabase = get_supabase()
 
+# ============== DESIGN SYSTEM ==============
+# Colors
+CREAM = "#f5f5f0"
+CREAM_LIGHT = "#faf9f6"
+SAGE = "#6b7c6b"
+SAGE_DARK = "#5a6a5a"
+SAGE_DARKER = "#4a5a4a"
+TEXT_PRIMARY = "#4a4a4a"
+TEXT_SECONDARY = "#7a7a7a"
+TEXT_MUTED = "#9a9a9a"
+BORDER = "#e5e5e0"
+BORDER_LIGHT = "#eeeeea"
+
 # ============== CUSTOM CSS ==============
-st.markdown("""
+st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-    /* Root overrides */
-    :root {
-        --primary-color: #4a5d4a;
-        --background-color: #f5f5f0;
-        --text-color: #3d3d3d;
-    }
+    /* ===== BASE ===== */
+    :root {{
+        --sage: {SAGE};
+        --cream: {CREAM};
+    }}
 
-    /* Base styling */
-    html, body, .main, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-testid="stToolbar"] {
-        background: #f5f5f0 !important;
-    }
+    html, body, .main, .stApp, [data-testid="stAppViewContainer"], [data-testid="stHeader"] {{
+        background: {CREAM} !important;
+    }}
 
-    .stApp > header {
-        background: transparent !important;
-    }
+    .stApp > header {{ background: transparent !important; }}
 
-    /* Hide Streamlit elements */
-    #MainMenu, footer, header, .stDeployButton, [data-testid="stDecoration"] {
+    #MainMenu, footer, header, .stDeployButton, [data-testid="stDecoration"] {{
         display: none !important;
-        visibility: hidden !important;
-    }
+    }}
 
-    /* Main container - constrain width */
-    .block-container {
-        max-width: 900px !important;
+    .block-container {{
+        max-width: 960px !important;
         padding: 2rem 1rem 4rem 1rem !important;
-    }
+    }}
 
-    /* Typography - no pure black anywhere, soft grays like Pointing Poker */
-    * {
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    }
+    * {{ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important; }}
 
-    /* Main text - soft dark gray, never black */
-    h1, h2, h3, h4, h5, h6 {
-        color: #4a4a4a !important;
-    }
+    /* ===== TYPOGRAPHY ===== */
+    h1, h2, h3, h4, h5, h6 {{ color: {TEXT_PRIMARY} !important; }}
+    p, span, div {{ color: {TEXT_PRIMARY} !important; }}
+    strong, b {{ color: {TEXT_PRIMARY} !important; }}
 
-    p, span, div, .stMarkdown, .stText {
-        color: #5a5a5a !important;
-    }
-
-    /* Bold/strong text - still soft */
-    strong, b {
-        color: #4a4a4a !important;
-    }
-
-    /* Labels and secondary text */
-    label, .stTextInput > label, .stNumberInput > label, .stSelectbox > label, .stDateInput > label {
-        color: #8a8a8a !important;
-        font-size: 0.75rem !important;
-        font-weight: 500 !important;
-        text-transform: uppercase !important;
-        letter-spacing: 0.05em !important;
-    }
-
-    /* Input text - soft gray, not black */
-    input, textarea, select, [data-baseweb="input"] input {
-        color: #4a4a4a !important;
-    }
-
-    /* Header */
-    .app-header {
+    /* ===== HEADER ===== */
+    .app-header {{
         text-align: center;
         padding: 32px 0 24px 0;
-        margin-bottom: 8px;
-    }
-
-    .app-title {
+    }}
+    .app-title {{
         font-size: 1.75rem;
         font-weight: 700;
-        color: #4a4a4a !important;
-        letter-spacing: -0.01em;
+        color: {TEXT_PRIMARY};
         margin: 0;
-    }
-
-    .app-subtitle {
-        color: #9a9a9a !important;
+    }}
+    .app-subtitle {{
+        color: {TEXT_MUTED};
         font-size: 0.85rem;
-        font-weight: 400;
         margin-top: 8px;
-        letter-spacing: 0.02em;
-    }
+    }}
 
-    /* Section labels */
-    .section-label {
-        font-size: 0.7rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: #8a8a8a !important;
-        margin-bottom: 8px;
-    }
-
-    .section-title {
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: #4a4a4a !important;
-        margin: 0 0 16px 0;
-    }
-
-    /* Tabs - minimal underline style */
-    .stTabs {
-        margin-bottom: 24px;
-    }
-
-    .stTabs [data-baseweb="tab-list"] {
+    /* ===== TABS ===== */
+    .stTabs [data-baseweb="tab-list"] {{
         gap: 0;
         background: transparent !important;
-        border-bottom: 1px solid #e0e0db;
+        border-bottom: 1px solid {BORDER};
         justify-content: center;
-        padding: 0;
-    }
-
-    .stTabs [data-baseweb="tab"] {
+    }}
+    .stTabs [data-baseweb="tab"] {{
         background: transparent !important;
         border: none !important;
-        border-radius: 0 !important;
         padding: 12px 24px !important;
         font-weight: 500 !important;
-        font-size: 0.9rem !important;
-        color: #8a8a8a !important;
+        color: {TEXT_SECONDARY} !important;
         border-bottom: 2px solid transparent !important;
         margin-bottom: -1px;
-    }
+    }}
+    .stTabs [aria-selected="true"] {{
+        color: {SAGE} !important;
+        border-bottom: 2px solid {SAGE} !important;
+    }}
+    .stTabs [data-baseweb="tab"]:hover {{ color: {SAGE} !important; }}
+    .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {{ display: none !important; }}
 
-    .stTabs [aria-selected="true"] {
-        color: #4a5d4a !important;
-        border-bottom: 2px solid #4a5d4a !important;
-        background: transparent !important;
-    }
-
-    .stTabs [data-baseweb="tab"]:hover {
-        color: #4a5d4a !important;
-        background: transparent !important;
-    }
-
-    .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {
-        display: none !important;
-    }
-
-    /* Cards - cream background, not white */
-    .card {
-        background: #faf9f6;
-        border-radius: 8px;
-        padding: 16px;
-        margin-bottom: 12px;
-        border: 1px solid #e8e8e3;
-    }
-
-    /* Team cards with left border */
-    .team-card {
-        background: #faf9f6;
-        border-radius: 8px;
-        padding: 14px 16px;
-        margin-bottom: 12px;
-        border: 1px solid #e8e8e3;
-        border-left: 3px solid #6b7c6b;
-    }
-
-    /* All teams use same sage green accent */
-    .team-card.orange { border-left-color: #4a5d4a; }
-    .team-card.green { border-left-color: #4a5d4a; }
-    .team-card.cyan { border-left-color: #4a5d4a; }
-
-    /* Team header */
-    .team-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-    }
-
-    .team-name {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: #3d3d3d !important;
-        margin: 0;
-    }
-
-    /* All team names use same color */
-    .team-name.orange { color: #3d4d3d !important; }
-    .team-name.green { color: #3d4d3d !important; }
-    .team-name.cyan { color: #3d4d3d !important; }
-
-    .team-meta {
-        font-size: 0.75rem;
-        color: #8a8a8a !important;
-        margin-top: 2px;
-    }
-
-    .team-badge {
-        font-size: 0.7rem;
-        font-weight: 500;
-        color: #4a5d4a !important;
-        background: #e8efe8;
-        padding: 4px 10px;
+    /* ===== TEAM CARD ===== */
+    .team-card {{
+        background: {CREAM_LIGHT};
         border-radius: 12px;
-    }
+        padding: 16px;
+        margin-bottom: 16px;
+        border: 1px solid {BORDER};
+        border-left: 4px solid {SAGE};
+    }}
+    .team-name {{
+        font-size: 1rem;
+        font-weight: 600;
+        color: {TEXT_PRIMARY};
+        margin: 0 0 4px 0;
+    }}
+    .team-meta {{
+        font-size: 0.75rem;
+        color: {TEXT_SECONDARY};
+    }}
 
-    /* Developer rows */
-    .dev-row {
+    /* ===== DEVELOPER ROW ===== */
+    .dev-row {{
+        background: {CREAM_LIGHT};
+        border-radius: 10px;
+        padding: 12px 14px;
+        margin-bottom: 10px;
+        border: 1px solid {BORDER_LIGHT};
         display: flex;
-        justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
-        border-bottom: 1px solid #f0f0eb;
-    }
-
-    .dev-row:last-child {
-        border-bottom: none;
-    }
-
-    .dev-name {
-        font-size: 0.85rem;
+        justify-content: space-between;
+        gap: 12px;
+    }}
+    .dev-name {{
+        font-size: 0.9rem;
         font-weight: 500;
-        color: #2d2d2d !important;
-    }
+        color: {TEXT_PRIMARY};
+        flex: 1;
+    }}
+    .dev-pto {{
+        display: flex;
+        align-items: center;
+        gap: 0;
+    }}
+    .pto-value {{
+        background: white;
+        border-top: 1px solid {BORDER};
+        border-bottom: 1px solid {BORDER};
+        padding: 8px 16px;
+        min-width: 50px;
+        text-align: center;
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: {TEXT_PRIMARY};
+    }}
 
-    /* Buttons - dark sage with WHITE text (high contrast, accessible) */
-    .stButton > button,
-    .stFormSubmitButton > button,
-    [data-testid="stFormSubmitButton"] > button,
-    button[kind="primary"],
-    button[kind="primaryFormSubmit"] {
-        background: #4a5d4a !important;
-        background-color: #4a5d4a !important;
-        color: #ffffff !important;
+    /* ===== PTO BUTTONS (custom) ===== */
+    .pto-btn {{
+        background: {SAGE} !important;
+        color: white !important;
         border: none !important;
-        border-radius: 8px !important;
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.25rem !important;
+        font-weight: 500 !important;
+        cursor: pointer !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: background 0.15s !important;
+    }}
+    .pto-btn:hover {{
+        background: {SAGE_DARK} !important;
+    }}
+    .pto-btn-minus {{
+        border-radius: 8px 0 0 8px !important;
+    }}
+    .pto-btn-plus {{
+        border-radius: 0 8px 8px 0 !important;
+    }}
+
+    /* ===== MAIN BUTTONS ===== */
+    .stButton > button {{
+        background: {SAGE} !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 10px !important;
         padding: 12px 24px !important;
         font-weight: 600 !important;
         font-size: 0.9rem !important;
-        transition: background 0.2s !important;
-    }
+    }}
+    .stButton > button:hover {{
+        background: {SAGE_DARK} !important;
+    }}
 
-    .stButton > button:hover,
-    .stFormSubmitButton > button:hover,
-    [data-testid="stFormSubmitButton"] > button:hover {
-        background: #3d4d3d !important;
-        background-color: #3d4d3d !important;
-        color: #ffffff !important;
-    }
+    /* Small buttons for +/- */
+    div[data-testid="column"] .stButton > button {{
+        padding: 0 !important;
+        min-height: 40px !important;
+        width: 40px !important;
+        font-size: 1.25rem !important;
+    }}
 
-    .stButton > button:active, .stButton > button:focus,
-    .stFormSubmitButton > button:active, .stFormSubmitButton > button:focus {
-        background: #3d4d3d !important;
-        background-color: #3d4d3d !important;
-        color: #ffffff !important;
-        box-shadow: none !important;
-    }
-
-    .stButton > button *,
-    .stFormSubmitButton > button * {
-        color: #ffffff !important;
-    }
-
-    /* ======== NUMBER INPUTS ======== */
-    /* Input wrapper */
-    .stNumberInput [data-baseweb="input"] {
-        background-color: #faf9f6 !important;
-        border: 1px solid #e0e0db !important;
-        border-radius: 10px !important;
-        overflow: hidden !important;
-    }
-
-    /* Text field */
-    .stNumberInput input {
-        background-color: #faf9f6 !important;
-        color: #4a4a4a !important;
-        font-weight: 500 !important;
-        text-align: center !important;
-    }
-
-    /* +/- buttons - BIG and PRESSABLE */
-    .stNumberInput [data-baseweb="input"] button {
-        background-color: #6b7c6b !important;
-        border: none !important;
-        min-width: 44px !important;
-        min-height: 44px !important;
-        padding: 12px !important;
-        transition: background-color 0.15s ease !important;
-    }
-
-    .stNumberInput [data-baseweb="input"] button:first-of-type {
-        border-radius: 10px 0 0 10px !important;
-    }
-
-    .stNumberInput [data-baseweb="input"] button:last-of-type {
-        border-radius: 0 10px 10px 0 !important;
-    }
-
-    .stNumberInput [data-baseweb="input"] button:hover {
-        background-color: #5a6a5a !important;
-    }
-
-    .stNumberInput [data-baseweb="input"] button:active {
-        background-color: #4a5a4a !important;
-    }
-
-    .stNumberInput [data-baseweb="input"] button svg {
-        fill: white !important;
-        width: 20px !important;
-        height: 20px !important;
-    }
-
-    /* ======== SELECT BOXES / DROPDOWNS ======== */
-    .stSelectbox > div {
-        border: none !important;
-        box-shadow: none !important;
-    }
-    .stSelectbox > div > div {
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    .stSelectbox [data-baseweb="select"] {
-        background: #faf9f6 !important;
-        border: 1px solid #e5e5e0 !important;
-        border-radius: 6px !important;
-        box-shadow: none !important;
-        min-height: 38px !important;
-    }
-
-    .stSelectbox [data-baseweb="select"] > div {
-        background: #faf9f6 !important;
-        color: #5a5a5a !important;
-        border: none !important;
-        font-size: 0.85rem !important;
-        padding: 6px 10px !important;
-    }
-
-    .stSelectbox [data-baseweb="select"]:focus-within {
-        border-color: #6b7c6b !important;
-        box-shadow: 0 0 0 1px #6b7c6b !important;
-    }
-
-    .stSelectbox svg {
-        fill: #8a8a8a !important;
-        width: 16px !important;
-        height: 16px !important;
-    }
-
-    /* ======== DROPDOWN MENUS - AGGRESSIVE LIGHT BACKGROUND ======== */
-    /* Target ALL popover and menu elements globally */
-    [data-baseweb="popover"],
-    [data-baseweb="popover"] *,
-    [data-baseweb="menu"],
-    [data-baseweb="menu"] *,
-    [data-baseweb="list"],
-    [data-baseweb="list"] *,
-    ul[role="listbox"],
-    ul[role="listbox"] *,
-    div[role="listbox"],
-    div[role="listbox"] * {
-        background: #faf9f6 !important;
-        background-color: #faf9f6 !important;
-    }
-
-    [data-baseweb="popover"],
-    [data-baseweb="menu"],
-    ul[role="listbox"],
-    div[role="listbox"] {
-        border: 1px solid #e5e5e0 !important;
+    /* ===== SELECT BOXES ===== */
+    .stSelectbox [data-baseweb="select"] {{
+        background: {CREAM_LIGHT} !important;
+        border: 1px solid {BORDER} !important;
         border-radius: 8px !important;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
-    }
+    }}
+    .stSelectbox [data-baseweb="select"] > div {{
+        background: {CREAM_LIGHT} !important;
+        color: {TEXT_PRIMARY} !important;
+    }}
+    .stSelectbox [data-baseweb="select"]:focus-within {{
+        border-color: {SAGE} !important;
+        box-shadow: 0 0 0 1px {SAGE} !important;
+    }}
 
-    /* Option items text color */
-    [data-baseweb="menu"] li,
-    ul[role="listbox"] li,
-    div[role="listbox"] div[role="option"],
-    [data-baseweb="menu"] [role="option"],
-    [role="option"],
-    [role="option"] * {
-        background: #faf9f6 !important;
-        background-color: #faf9f6 !important;
-        color: #4a4a4a !important;
-    }
+    /* ===== DROPDOWN MENUS ===== */
+    [data-baseweb="popover"], [data-baseweb="menu"] {{
+        background: {CREAM_LIGHT} !important;
+        border: 1px solid {BORDER} !important;
+        border-radius: 8px !important;
+    }}
+    [data-baseweb="menu"] li, [role="option"] {{
+        background: {CREAM_LIGHT} !important;
+        color: {TEXT_PRIMARY} !important;
+    }}
+    [data-baseweb="menu"] li:hover, [role="option"]:hover {{
+        background: {BORDER_LIGHT} !important;
+    }}
 
-    /* Hover states */
-    [data-baseweb="menu"] li:hover,
-    ul[role="listbox"] li:hover,
-    div[role="listbox"] div[role="option"]:hover,
-    [data-baseweb="menu"] [role="option"]:hover,
-    [role="option"]:hover,
-    [data-highlighted="true"],
-    [data-highlighted="true"] * {
-        background: #f0efec !important;
-        background-color: #f0efec !important;
-    }
-
-    /* Selected option styling */
-    [aria-selected="true"],
-    [aria-selected="true"] *,
-    [data-baseweb="menu"] li[aria-selected="true"] {
-        background: #e8efe8 !important;
-        background-color: #e8efe8 !important;
-        color: #3d4d3d !important;
-    }
-
-    /* Override any inline dark backgrounds on body popover portals */
-    body > div[data-baseweb] {
-        background: transparent !important;
-    }
-
-    body > div[data-baseweb] > div {
-        background: #faf9f6 !important;
-    }
-
-    /* ======== DATE INPUTS ======== */
-    .stDateInput > div {
-        border: none !important;
-        box-shadow: none !important;
-    }
-    .stDateInput > div > div {
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    .stDateInput [data-baseweb="input"] {
-        background: #faf9f6 !important;
-        border: 1px solid #e5e5e0 !important;
-        border-radius: 6px !important;
-        box-shadow: none !important;
-    }
-
-    .stDateInput input {
-        background: #faf9f6 !important;
-        color: #4a4a4a !important;
-        border: none !important;
-    }
-
-    .stDateInput [data-baseweb="input"]:focus-within {
-        border-color: #4a5d4a !important;
-        box-shadow: 0 0 0 1px #4a5d4a !important;
-    }
-
-    .stDateInput svg {
-        fill: #7a7a7a !important;
-    }
-
-    /* Date picker calendar popup */
-    [data-baseweb="calendar"],
-    [data-baseweb="datepicker"] {
-        background: #faf9f6 !important;
-        border: 1px solid #e5e5e0 !important;
-    }
-
-    [data-baseweb="calendar"] * {
-        color: #4a4a4a !important;
-    }
-
-    /* Calendar selected day - sage green */
-    [data-baseweb="calendar"] [aria-selected="true"],
-    [data-baseweb="calendar"] div[aria-selected="true"] {
-        background: #4a5d4a !important;
-        color: #fff !important;
-    }
-
-    /* ======== TEXT INPUTS ======== */
-    .stTextInput > div {
-        border: none !important;
-        box-shadow: none !important;
-    }
-    .stTextInput > div > div {
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    .stTextInput input {
-        background: #faf9f6 !important;
-        border: 1px solid #e5e5e0 !important;
-        border-radius: 6px !important;
-        color: #4a4a4a !important;
-        font-size: 0.9rem !important;
-        padding: 10px 14px !important;
-        box-shadow: none !important;
-    }
-
-    .stTextInput input:focus {
-        border-color: #4a5d4a !important;
-        box-shadow: 0 0 0 1px #4a5d4a !important;
-    }
-
-    /* Metric cards - cream */
-    .metric-card {
-        background: #faf9f6;
-        border-radius: 8px;
-        padding: 16px;
-        text-align: center;
-        border: 1px solid #e8e8e3;
-    }
-
-    .metric-value {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #3d3d3d !important;
-        line-height: 1.2;
-        margin: 4px 0;
-    }
-
-    /* All metric values use consistent sage green */
-    .metric-value.orange { color: #3d4d3d !important; }
-    .metric-value.green { color: #3d4d3d !important; }
-    .metric-value.cyan { color: #3d4d3d !important; }
-
-    .metric-label {
-        font-size: 0.65rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: #7a7a7a !important;
-    }
-
-    .metric-sub {
-        font-size: 0.75rem;
-        color: #8a8a8a !important;
-    }
-
-    /* Forecast cards - cream */
-    .forecast-card {
-        background: #faf9f6;
+    /* ===== METRIC CARDS ===== */
+    .metric-card {{
+        background: {CREAM_LIGHT};
         border-radius: 10px;
         padding: 20px;
         text-align: center;
-        border: 1px solid #e8e8e3;
-        margin-bottom: 12px;
-    }
+        border: 1px solid {BORDER};
+    }}
+    .metric-value {{
+        font-size: 2rem;
+        font-weight: 700;
+        color: {SAGE};
+    }}
+    .metric-label {{
+        font-size: 0.7rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: {TEXT_SECONDARY};
+        margin-bottom: 4px;
+    }}
 
-    .forecast-team {
+    /* ===== FORECAST RESULTS ===== */
+    .forecast-card {{
+        background: {CREAM_LIGHT};
+        border-radius: 12px;
+        padding: 24px;
+        text-align: center;
+        border: 1px solid {BORDER};
+    }}
+    .forecast-team {{
         font-size: 0.7rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-bottom: 4px;
-    }
-
-    .forecast-raw {
-        font-size: 0.8rem;
-        color: #8a8a8a !important;
+        letter-spacing: 0.05em;
+        color: {SAGE};
         margin-bottom: 8px;
-    }
-
-    .forecast-value {
+    }}
+    .forecast-value {{
         font-size: 2.5rem;
         font-weight: 700;
-        line-height: 1;
-        margin-bottom: 4px;
-    }
+        color: {SAGE};
+    }}
+    .forecast-sub {{
+        font-size: 0.8rem;
+        color: {TEXT_SECONDARY};
+        margin-top: 4px;
+    }}
 
-    .forecast-buffer {
-        font-size: 0.7rem;
-        color: #8a8a8a !important;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    /* Breakdown items */
-    .breakdown-item {
-        background: #f8f8f5;
-        border-radius: 6px;
+    /* ===== BREAKDOWN ===== */
+    .breakdown-item {{
+        background: {CREAM};
+        border-radius: 8px;
         padding: 10px 12px;
-        margin-top: 6px;
+        margin-top: 8px;
         display: flex;
         justify-content: space-between;
-        align-items: center;
-    }
-
-    .breakdown-name {
+    }}
+    .breakdown-name {{
         font-size: 0.85rem;
-        font-weight: 500;
-        color: #3d3d3d !important;
-    }
+        color: {TEXT_PRIMARY};
+    }}
+    .breakdown-value {{
+        font-weight: 600;
+        color: {TEXT_PRIMARY};
+    }}
 
-    .breakdown-meta {
-        font-size: 0.7rem;
-        color: #8a8a8a !important;
-        margin-top: 1px;
-    }
-
-    .breakdown-value {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #3d3d3d !important;
-    }
-
-    /* Divider */
-    hr {
+    /* ===== DIVIDER ===== */
+    hr {{
         border: none;
         height: 1px;
-        background: #e5e5e0;
+        background: {BORDER};
         margin: 20px 0;
-    }
+    }}
 
-    /* Info/alert boxes */
-    .stAlert {
-        background: #fafaf8 !important;
-        border: 1px solid #e5e5e0 !important;
-        border-radius: 6px !important;
-    }
+    /* ===== DATA TABLES ===== */
+    .stDataFrame {{ border-radius: 8px; }}
 
-    .stAlert > div {
-        color: #555 !important;
-    }
-
-    /* Expanders - subtle styling */
-    .streamlit-expanderHeader {
-        background: transparent !important;
-        border: none !important;
-        font-size: 0.75rem !important;
-        font-weight: 500 !important;
-        color: #7a7a7a !important;
-        padding: 8px 0 !important;
-    }
-
-    .streamlit-expanderHeader:hover {
-        color: #4a5d4a !important;
-    }
-
-    .streamlit-expanderContent {
-        border: none !important;
-        padding: 8px 0 !important;
-    }
-
-    [data-testid="stExpander"] {
-        border: none !important;
-        background: transparent !important;
-    }
-
-    [data-testid="stExpander"] summary {
-        font-size: 0.75rem !important;
-        color: #8a8a8a !important;
-    }
-
-    [data-testid="stExpander"] summary:hover {
-        color: #6b7c6b !important;
-    }
-
-    /* ======== DATA TABLES ======== */
-    .stDataFrame,
-    [data-testid="stDataFrame"] {
-        border-radius: 8px;
-    }
-
-    /* Column gap fix */
-    [data-testid="column"] {
-        padding: 0 8px;
-    }
-
-    /* ======== BALANCED SPACING ======== */
-    /* Clean but not cramped */
-    .stMarkdown {
-        margin-bottom: 0 !important;
-    }
-
-    /* Dividers - proper breathing room */
-    hr {
-        margin: 16px 0 !important;
-    }
-
-    /* Vertical block spacing - balanced */
-    [data-testid="stVerticalBlock"] > div {
-        padding-top: 0 !important;
-        padding-bottom: 0 !important;
-    }
-
-    [data-testid="stVerticalBlock"] {
-        gap: 0.75rem !important;
-    }
-
-    /* Tab content padding */
-    .stTabs [data-baseweb="tab-panel"] {
-        padding-top: 16px !important;
-    }
-
-    /* Form elements - slight margin */
-    .stSelectbox, .stNumberInput, .stTextInput, .stDateInput {
-        margin-bottom: 6px !important;
-    }
-
-    /* Element containers */
-    [data-testid="element-container"] {
-        margin-bottom: 4px !important;
-    }
-
-    /* Horizontal layouts */
-    [data-testid="stHorizontalBlock"] {
-        gap: 8px !important;
-    }
-
-    /* Column inner spacing */
-    [data-testid="stColumn"] > div {
-        gap: 4px !important;
-    }
-
-    /* Form containers */
-    .stForm {
-        padding: 0 !important;
-    }
-
-    [data-testid="stForm"] > div {
-        gap: 0.75rem !important;
-    }
-
-    /* Developer row styling - add visual separation */
-    .dev-row-container {
-        padding: 10px 0;
-        border-bottom: 1px solid #f0efec;
-    }
-
-    .dev-row-container:last-child {
-        border-bottom: none;
-    }
-
-    /* ======== PLOTLY CHARTS ======== */
-    .js-plotly-plot .plotly .main-svg {
-        background: transparent !important;
-    }
-
-    /* Make chart text readable */
-    .js-plotly-plot .plotly text {
-        fill: #5a5a5a !important;
-    }
-
-    .js-plotly-plot .plotly .gtitle,
-    .js-plotly-plot .plotly .xtitle,
-    .js-plotly-plot .plotly .ytitle {
-        fill: #5a5a5a !important;
-    }
-
-    .js-plotly-plot .plotly .xtick text,
-    .js-plotly-plot .plotly .ytick text {
-        fill: #6a6a6a !important;
-    }
-
-    .js-plotly-plot .plotly .legend text {
-        fill: #5a5a5a !important;
-    }
+    /* ===== HIDE NUMBER INPUT DEFAULTS ===== */
+    .stNumberInput {{ display: none !important; }}
 </style>
 """, unsafe_allow_html=True)
 
-# ============== DATA DEFINITIONS ==============
+# ============== DATA ==============
 DEVELOPERS = [
     {"id": "brady-hession", "name": "Brady Hession", "role": "Software Engineer II"},
     {"id": "cody-worthen", "name": "Cody Worthen", "role": "Software Engineer II"},
@@ -790,13 +343,10 @@ DEVELOPERS = [
 ]
 
 TEAMS = [
-    {"id": "team1", "name": "Team 1", "displayName": "Web Team 1", "pmName": "Jason and Spencer", "color": "orange"},
-    {"id": "team2", "name": "Team 2", "displayName": "Web Team 2", "pmName": "Matt and Matt", "color": "green"},
-    {"id": "storyblok", "name": "Storyblok", "displayName": "Storyblok Team", "pmName": "Storyblok", "color": "cyan"},
+    {"id": "team1", "name": "Team 1", "displayName": "Web Team 1", "pmName": "Jason and Spencer"},
+    {"id": "team2", "name": "Team 2", "displayName": "Web Team 2", "pmName": "Matt and Matt"},
+    {"id": "storyblok", "name": "Storyblok", "displayName": "Storyblok Team", "pmName": "Storyblok"},
 ]
-
-# All teams use consistent sage green
-TEAM_COLORS = {"orange": "#4a5d4a", "green": "#4a5d4a", "cyan": "#4a5d4a"}
 
 HOLIDAYS = [
     {"name": "New Year's Day", "month": 1, "day": 1, "type": "full-day"},
@@ -845,7 +395,6 @@ def save_sprint(sprint_data):
             "end_date": sprint_data["endDate"],
             "sprint_days": sprint_data["sprintDays"]
         }).execute()
-
         for a in sprint_data["assignments"]:
             supabase.table("sprint_assignments").insert({
                 "sprint_id": sprint_data["sprintId"],
@@ -866,7 +415,6 @@ def load_team_assignments():
             return {row["engineer_id"]: row["team_id"] for row in result.data}
     except:
         pass
-    # Default assignments
     return {
         "fredrik-svensson": "team1", "fernando-fernandez": "team1",
         "matthew-callison": "team1", "cody-worthen": "team1",
@@ -876,7 +424,6 @@ def load_team_assignments():
 
 def update_team_assignment(engineer_id, team_id):
     try:
-        # Delete existing assignment first, then insert new one
         supabase.table("team_assignments").delete().eq("engineer_id", engineer_id).execute()
         supabase.table("team_assignments").insert({
             "engineer_id": engineer_id,
@@ -944,12 +491,52 @@ if "pto_data" not in st.session_state: st.session_state.pto_data = {}
 if "forecast" not in st.session_state: st.session_state.forecast = None
 if "planning_buffer" not in st.session_state: st.session_state.planning_buffer = 0.85
 
+# ============== CUSTOM COMPONENTS ==============
+def pto_stepper(dev_id, dev_name):
+    """Custom PTO stepper with styled +/- buttons"""
+    key_base = f"pto_{dev_id}"
+    current = st.session_state.pto_data.get(dev_id, 0.0)
+
+    col1, col2, col3, col4 = st.columns([3, 1, 1.2, 1])
+
+    with col1:
+        st.markdown(f"<div style='padding:8px 0; font-weight:500;'>{dev_name}</div>", unsafe_allow_html=True)
+
+    with col2:
+        if st.button("−", key=f"{key_base}_minus", use_container_width=True):
+            st.session_state.pto_data[dev_id] = max(0.0, current - 0.5)
+            st.rerun()
+
+    with col3:
+        st.markdown(f"""
+        <div style='background:white; border:1px solid {BORDER}; border-radius:0;
+                    padding:8px 0; text-align:center; font-weight:500; height:40px;
+                    display:flex; align-items:center; justify-content:center;'>
+            {current:.1f}
+        </div>
+        """, unsafe_allow_html=True)
+
+    with col4:
+        if st.button("+", key=f"{key_base}_plus", use_container_width=True):
+            st.session_state.pto_data[dev_id] = min(10.0, current + 0.5)
+            st.rerun()
+
+def move_dropdown(dev_id, current_team_id):
+    """Compact move dropdown"""
+    other_teams = [t for t in TEAMS if t["id"] != current_team_id]
+    options = ["Move..."] + [t["name"] for t in other_teams]
+    selected = st.selectbox("", options, key=f"mv_{dev_id}", label_visibility="collapsed")
+    if selected != "Move...":
+        new_team_id = next(t["id"] for t in other_teams if t["name"] == selected)
+        update_team_assignment(dev_id, new_team_id)
+        st.rerun()
+
 # ============== VIEWS ==============
 def render_forecast():
     team_assignments = load_team_assignments()
     sprints = load_sprints()
 
-    # Buffer + Calculate row
+    # Buffer + Calculate
     col1, col2 = st.columns([3, 1])
     with col1:
         buffer_opts = {"85% (Standard)": 0.85, "70% (Conservative)": 0.70, "100% (Aggressive)": 1.00}
@@ -961,53 +548,30 @@ def render_forecast():
 
     st.markdown("---")
 
-    # 3-column layout for teams
-    col1, col2, col3 = st.columns(3)
+    # 3-column team layout
+    cols = st.columns(3)
 
-    def render_team_column(team, devs):
-        """Render a team's card and developer list"""
-        # Team header card
-        st.markdown(f'''
-        <div style="background:#faf9f6; border-radius:10px; padding:14px 16px; margin-bottom:12px; border:1px solid #e5e5e0; border-left:3px solid #6b7c6b;">
-            <div style="font-size:0.9rem; font-weight:600; color:#4a4a4a; margin-bottom:2px;">{team['name']}</div>
-            <div style="font-size:0.7rem; color:#8a8a8a;">{team['pmName']} · {len(devs)} devs</div>
-        </div>
-        ''', unsafe_allow_html=True)
+    for idx, team in enumerate(TEAMS):
+        with cols[idx]:
+            devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team["id"]]
 
-        if devs:
-            for dev in devs:
-                st.markdown(f"**{dev['name']}**")
-                pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}")
-                st.session_state.pto_data[dev["id"]] = pto
+            # Team card
+            st.markdown(f"""
+            <div class="team-card">
+                <div class="team-name">{team['name']}</div>
+                <div class="team-meta">{team['pmName']} · {len(devs)} devs</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-                # Move dropdown - compact, below PTO
-                other_teams = [t for t in TEAMS if t["id"] != team["id"]]
-                move_options = ["Move to..."] + [t["name"] for t in other_teams]
-                mv = st.selectbox("Move", move_options, key=f"mv_{dev['id']}", label_visibility="collapsed")
-                if mv != "Move to...":
-                    new_team_id = next(t["id"] for t in other_teams if t["name"] == mv)
-                    update_team_assignment(dev["id"], new_team_id)
-                    st.rerun()
+            if devs:
+                for dev in devs:
+                    pto_stepper(dev["id"], dev["name"])
+                    move_dropdown(dev["id"], team["id"])
+                    st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"<p style='color:{TEXT_MUTED}; font-style:italic;'>No developers</p>", unsafe_allow_html=True)
 
-                st.markdown("<div style='height:8px'></div>", unsafe_allow_html=True)
-        else:
-            st.markdown("*No developers*")
-
-    with col1:
-        team1 = TEAMS[0]
-        team1_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team1["id"]]
-        render_team_column(team1, team1_devs)
-
-    with col2:
-        team2 = TEAMS[1]
-        team2_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team2["id"]]
-        render_team_column(team2, team2_devs)
-
-    with col3:
-        team3 = TEAMS[2]
-        team3_devs = [d for d in DEVELOPERS if team_assignments.get(d["id"]) == team3["id"]]
-        render_team_column(team3, team3_devs)
-
+    # Calculate forecast
     if calc:
         buf = st.session_state.planning_buffer
         results = {}
@@ -1021,39 +585,35 @@ def render_forecast():
                 pto = st.session_state.pto_data.get(dev["id"], 0)
                 raw = vel * (10 - pto)
                 assigns.append({"name": dev["name"], "vel": vel, "pto": pto, "wd": 10-pto, "raw": raw, "buf": round_to_half(raw * buf)})
-            results[team["id"]] = {"name": team["displayName"], "color": team["color"], "assigns": assigns,
+            results[team["id"]] = {"name": team["displayName"], "assigns": assigns,
                                    "raw": sum(a["raw"] for a in assigns), "buf": round_to_half(sum(a["buf"] for a in assigns))}
         st.session_state.forecast = {"buffer": buf, "teams": results}
 
+    # Display forecast results
     if st.session_state.forecast:
         st.markdown("---")
-        st.markdown('<p class="section-label">Forecast Results</p>', unsafe_allow_html=True)
+        st.markdown(f"<p style='font-size:0.7rem; font-weight:500; text-transform:uppercase; letter-spacing:0.05em; color:{TEXT_SECONDARY};'>Forecast Results</p>", unsafe_allow_html=True)
 
         f = st.session_state.forecast
         cols = st.columns(3)
         for idx, team in enumerate(TEAMS):
             r = f["teams"].get(team["id"], {})
-            color = TEAM_COLORS.get(r.get("color", "green"), "#5d6b5d")
             with cols[idx]:
-                st.markdown(f'''
+                st.markdown(f"""
                 <div class="forecast-card">
-                    <div class="forecast-team" style="color:{color};">{r.get('name', team['name'])}</div>
-                    <div class="forecast-raw">Raw: {r.get('raw', 0):.1f} pts</div>
-                    <div class="forecast-value" style="color:{color};">{r.get('buf', 0):.1f}</div>
-                    <div class="forecast-buffer">{int(f['buffer']*100)}% buffer</div>
+                    <div class="forecast-team">{r.get('name', team['name'])}</div>
+                    <div class="forecast-value">{r.get('buf', 0):.1f}</div>
+                    <div class="forecast-sub">Raw: {r.get('raw', 0):.1f} · {int(f['buffer']*100)}% buffer</div>
                 </div>
-                ''', unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 
                 for a in r.get("assigns", []):
-                    st.markdown(f'''
+                    st.markdown(f"""
                     <div class="breakdown-item">
-                        <div>
-                            <div class="breakdown-name">{a['name']}</div>
-                            <div class="breakdown-meta">{a['vel']:.2f} pts/day · {a['wd']:.0f} days</div>
-                        </div>
-                        <div class="breakdown-value">{a['buf']:.1f}</div>
+                        <span class="breakdown-name">{a['name']}</span>
+                        <span class="breakdown-value">{a['buf']:.1f}</span>
                     </div>
-                    ''', unsafe_allow_html=True)
+                    """, unsafe_allow_html=True)
 
 def render_add_sprint():
     team_assignments = load_team_assignments()
@@ -1069,7 +629,7 @@ def render_add_sprint():
             if hols: st.info(f"Holidays: {', '.join(h['name'] for h in hols)}")
 
         st.markdown("---")
-        st.markdown('<p class="section-label">Developer Points</p>', unsafe_allow_html=True)
+        st.markdown(f"<p style='font-size:0.7rem; font-weight:500; text-transform:uppercase; color:{TEXT_SECONDARY};'>Developer Points</p>", unsafe_allow_html=True)
 
         assigns = []
         for i in range(0, len(DEVELOPERS), 2):
@@ -1121,16 +681,17 @@ def render_team_analytics():
     overall = sum(sum(a["storyPoints"] for a in s.get("assignments", [])) for s in recent) / len(recent) if recent else 0
 
     with cols[0]:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Overall</div><div class="metric-value">{overall:.1f}</div><div class="metric-sub">pts/sprint</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Overall</div><div class="metric-value">{overall:.1f}</div></div>', unsafe_allow_html=True)
     with cols[1]:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Team 1</div><div class="metric-value orange">{avg("team1"):.1f}</div><div class="metric-sub">pts/sprint</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Team 1</div><div class="metric-value">{avg("team1"):.1f}</div></div>', unsafe_allow_html=True)
     with cols[2]:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Team 2</div><div class="metric-value green">{avg("team2"):.1f}</div><div class="metric-sub">pts/sprint</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Team 2</div><div class="metric-value">{avg("team2"):.1f}</div></div>', unsafe_allow_html=True)
     with cols[3]:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Storyblok</div><div class="metric-value cyan">{avg("storyblok"):.1f}</div><div class="metric-sub">pts/sprint</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Storyblok</div><div class="metric-value">{avg("storyblok"):.1f}</div></div>', unsafe_allow_html=True)
 
-    st.markdown("<div style='height:20px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height:24px'></div>", unsafe_allow_html=True)
 
+    # Chart
     data = [{"Sprint": s["sprintName"],
              "Team 1": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team1"),
              "Team 2": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team2"),
@@ -1139,22 +700,21 @@ def render_team_analytics():
     df = pd.DataFrame(data)
 
     fig = go.Figure()
-    # Using sage green variations for chart differentiation
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 1"], mode="lines+markers", name="Team 1", line=dict(color="#4a5d4a", width=2), marker=dict(size=6)))
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 2"], mode="lines+markers", name="Team 2", line=dict(color="#6b8c6b", width=2), marker=dict(size=6)))
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Storyblok"], mode="lines+markers", name="Storyblok", line=dict(color="#8aaa8a", width=2, dash="dot"), marker=dict(size=6)))
+    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 1"], mode="lines+markers", name="Team 1", line=dict(color=SAGE, width=2)))
+    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 2"], mode="lines+markers", name="Team 2", line=dict(color=SAGE_DARK, width=2)))
+    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Storyblok"], mode="lines+markers", name="Storyblok", line=dict(color=TEXT_SECONDARY, width=2, dash="dot")))
     fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#5a5a5a", size=11),
-        height=300, margin=dict(t=40, b=60, l=50, r=20),
-        xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10, color="#6a6a6a"), tickangle=-45),
-        yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title=dict(text="Points", font=dict(color="#6a6a6a")), tickfont=dict(size=10, color="#6a6a6a")),
-        legend=dict(orientation="h", y=1.25, x=0.5, xanchor="center", bgcolor="rgba(0,0,0,0)", font=dict(size=11, color="#5a5a5a")),
-        hovermode="x unified"
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor=CREAM_LIGHT,
+        font=dict(color=TEXT_PRIMARY, size=11), height=300,
+        margin=dict(t=40, b=60, l=50, r=20),
+        xaxis=dict(gridcolor=BORDER, tickangle=-45),
+        yaxis=dict(gridcolor=BORDER, title="Points"),
+        legend=dict(orientation="h", y=1.15, x=0.5, xanchor="center")
     )
-    st.plotly_chart(fig, width='stretch')
+    st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("---")
-    st.markdown('<p class="section-label">Recent Sprints</p>', unsafe_allow_html=True)
+    st.markdown(f"<p style='font-size:0.7rem; font-weight:500; text-transform:uppercase; color:{TEXT_SECONDARY};'>Recent Sprints</p>", unsafe_allow_html=True)
     tbl = [{"Sprint": s["sprintName"], "Period": f"{s['startDate']} → {s['endDate']}",
             "T1": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team1"),
             "T2": sum(a["storyPoints"] for a in s.get("assignments", []) if a["teamId"] == "team2"),
@@ -1168,9 +728,9 @@ def render_individual():
         st.info("No sprint data yet.")
         return
 
-    sel = st.selectbox("Select Developer", ["Select a developer..."] + [d["name"] for d in DEVELOPERS])
-    if sel == "Select a developer...":
-        st.markdown('<p style="color: #8a8a8a; font-size: 0.9rem;">Select a developer above to view their performance metrics.</p>', unsafe_allow_html=True)
+    sel = st.selectbox("Select Developer", ["Select..."] + [d["name"] for d in DEVELOPERS])
+    if sel == "Select...":
+        st.markdown(f"<p style='color:{TEXT_MUTED};'>Select a developer to view their metrics.</p>", unsafe_allow_html=True)
         return
 
     dev = next((d for d in DEVELOPERS if d["name"] == sel), None)
@@ -1186,52 +746,48 @@ def render_individual():
                 if s["sprintId"] not in agg:
                     agg[s["sprintId"]] = {"sprintId": s["sprintId"], "sprintName": s["sprintName"],
                                           "startDate": s["startDate"], "endDate": s["endDate"],
-                                          "sprintDays": s["sprintDays"], "storyPoints": 0,
-                                          "totalPtoDays": 0, "teams": []}
+                                          "sprintDays": s["sprintDays"], "storyPoints": 0, "totalPtoDays": 0}
                 agg[s["sprintId"]]["storyPoints"] += a["storyPoints"]
                 agg[s["sprintId"]]["totalPtoDays"] = max(agg[s["sprintId"]]["totalPtoDays"], a.get("totalPtoDays", 0))
-                agg[s["sprintId"]]["teams"].append(a["teamId"])
 
     data = sorted(agg.values(), key=lambda x: x["startDate"], reverse=True)
     vel = calculate_velocity(data)
 
     cols = st.columns(3)
     with cols[0]:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Velocity</div><div class="metric-value green">{vel:.2f}</div><div class="metric-sub">pts/day</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Velocity</div><div class="metric-value">{vel:.2f}</div></div>', unsafe_allow_html=True)
     with cols[1]:
         recent_pts = sum(d["storyPoints"] for d in data[:10])
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Recent Total</div><div class="metric-value">{recent_pts:.1f}</div><div class="metric-sub">last 10 sprints</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Last 10</div><div class="metric-value">{recent_pts:.1f}</div></div>', unsafe_allow_html=True)
     with cols[2]:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Sprints</div><div class="metric-value">{len(data)}</div><div class="metric-sub">tracked</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Sprints</div><div class="metric-value">{len(data)}</div></div>', unsafe_allow_html=True)
 
     if data:
-        st.markdown("<div style='height:16px;'></div>", unsafe_allow_html=True)
+        st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
         chart = [{"Sprint": d["sprintName"], "Velocity": d["storyPoints"] / (d["sprintDays"] - d["totalPtoDays"]) if d["sprintDays"] - d["totalPtoDays"] > 0 else 0} for d in reversed(data[:10])]
         df = pd.DataFrame(chart)
 
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Velocity"], mode="lines+markers", line=dict(color="#5d6b5d", width=2), marker=dict(size=6), fill="tozeroy", fillcolor="rgba(93,107,93,0.1)"))
+        fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Velocity"], mode="lines+markers", line=dict(color=SAGE, width=2), fill="tozeroy", fillcolor=f"rgba(107,124,107,0.1)"))
         fig.update_layout(
-            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fafaf8", font=dict(color="#5a5a5a", size=11),
-            height=220, margin=dict(t=10, b=60, l=50, r=20), showlegend=False,
-            xaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", tickfont=dict(size=10, color="#6a6a6a"), tickangle=-45),
-            yaxis=dict(gridcolor="#e5e5e0", linecolor="#e5e5e0", title=dict(text="pts/day", font=dict(color="#6a6a6a")), tickfont=dict(size=10, color="#6a6a6a"))
+            paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor=CREAM_LIGHT,
+            font=dict(color=TEXT_PRIMARY), height=220, margin=dict(t=10, b=60, l=50, r=20),
+            showlegend=False, xaxis=dict(gridcolor=BORDER, tickangle=-45), yaxis=dict(gridcolor=BORDER, title="pts/day")
         )
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
 
         st.markdown("---")
-        tbl = [{"Sprint": d["sprintName"], "Date": d["startDate"][:10], "Pts": d["storyPoints"], "PTO": d["totalPtoDays"],
-                "Vel": f"{d['storyPoints']/(d['sprintDays']-d['totalPtoDays']):.2f}" if d["sprintDays"]-d["totalPtoDays"]>0 else "0"} for d in data[:15]]
+        tbl = [{"Sprint": d["sprintName"], "Date": d["startDate"][:10], "Pts": d["storyPoints"], "PTO": d["totalPtoDays"]} for d in data[:15]]
         st.dataframe(pd.DataFrame(tbl), use_container_width=True, hide_index=True)
 
 # ============== MAIN ==============
 def main():
-    st.markdown('''
+    st.markdown("""
     <div class="app-header">
         <h1 class="app-title">✦ Sprint Velocity ✦</h1>
         <p class="app-subtitle">CHG Web Product Team</p>
     </div>
-    ''', unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
     t1, t2, t3, t4 = st.tabs(["Forecast", "Add Sprint", "Team Analytics", "Individual"])
     with t1: render_forecast()
