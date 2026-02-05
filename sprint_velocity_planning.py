@@ -292,94 +292,31 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* ======== NUMBER INPUTS - COMPREHENSIVE FIX ======== */
-    /* Remove all container styling */
-    .stNumberInput,
-    .stNumberInput > div,
-    .stNumberInput > div > div,
-    .stNumberInput [data-testid] {
+    /* ======== NUMBER INPUTS ======== */
+    /* Container - no extra borders */
+    .stNumberInput > div > div {
         border: none !important;
         box-shadow: none !important;
-        background: transparent !important;
     }
 
-    /* The actual input wrapper */
+    /* Input wrapper */
     .stNumberInput [data-baseweb="input"] {
         background: #faf9f6 !important;
-        border: 1px solid #ddd8d0 !important;
+        border: 1px solid #e0e0db !important;
         border-radius: 8px !important;
-        box-shadow: none !important;
-        overflow: hidden !important;
     }
 
-    /* Text input field */
-    .stNumberInput [data-baseweb="input"] input,
-    .stNumberInput input[type="number"] {
+    /* Text field */
+    .stNumberInput input {
         background: transparent !important;
         color: #4a4a4a !important;
-        font-family: 'Inter', -apple-system, sans-serif !important;
-        font-size: 0.85rem !important;
-        font-weight: 500 !important;
-        border: none !important;
         text-align: center !important;
-        -moz-appearance: textfield !important;
     }
 
-    /* Hide browser default spinners */
-    .stNumberInput input::-webkit-outer-spin-button,
-    .stNumberInput input::-webkit-inner-spin-button {
-        -webkit-appearance: none !important;
-        margin: 0 !important;
-    }
-
-    /* +/- STEPPER BUTTONS - Target every possible selector */
-    .stNumberInput button,
-    .stNumberInput [data-baseweb="input"] button,
-    .stNumberInput [data-baseweb="input"] > div > button,
-    .stNumberInput [role="button"],
-    [data-testid="stNumberInput"] button,
-    [data-testid="stNumberInputStepUp"],
-    [data-testid="stNumberInputStepDown"],
-    div[data-baseweb="input"] button {
-        background: #6b7c6b !important;
-        background-color: #6b7c6b !important;
-        color: #ffffff !important;
-        border: none !important;
-        box-shadow: none !important;
-        min-width: 36px !important;
-        transition: background 0.15s ease !important;
-    }
-
-    /* Rounded corners on outer edges */
-    .stNumberInput [data-baseweb="input"] > button:first-child,
-    .stNumberInput button:first-of-type {
-        border-radius: 7px 0 0 7px !important;
-    }
-
-    .stNumberInput [data-baseweb="input"] > button:last-child,
-    .stNumberInput button:last-of-type {
-        border-radius: 0 7px 7px 0 !important;
-    }
-
-    /* Hover state */
-    .stNumberInput button:hover,
-    .stNumberInput [data-baseweb="input"] button:hover {
-        background: #4a5d4a !important;
-        background-color: #4a5d4a !important;
-    }
-
-    /* SVG icons inside buttons */
-    .stNumberInput button svg,
-    .stNumberInput [data-baseweb="input"] button svg {
-        fill: #ffffff !important;
-        stroke: #ffffff !important;
-        color: #ffffff !important;
-    }
-
-    /* Focus ring */
+    /* Focus */
     .stNumberInput [data-baseweb="input"]:focus-within {
         border-color: #6b7c6b !important;
-        box-shadow: 0 0 0 2px rgba(107, 124, 107, 0.2) !important;
+        box-shadow: 0 0 0 2px rgba(107, 124, 107, 0.15) !important;
     }
 
     /* ======== SELECT BOXES / DROPDOWNS ======== */
@@ -1006,7 +943,7 @@ def render_forecast():
         """Render a team's card and developer list"""
         # Team header card
         st.markdown(f'''
-        <div style="background:#faf9f6; border-radius:10px; padding:14px 16px; margin-bottom:14px; border-left:3px solid #6b7c6b; border:1px solid #e8e8e3; border-left:3px solid #6b7c6b;">
+        <div style="background:#faf9f6; border-radius:10px; padding:14px 16px; margin-bottom:12px; border:1px solid #e5e5e0; border-left:3px solid #6b7c6b;">
             <div style="font-size:0.9rem; font-weight:600; color:#4a4a4a; margin-bottom:2px;">{team['name']}</div>
             <div style="font-size:0.7rem; color:#8a8a8a;">{team['pmName']} · {len(devs)} devs</div>
         </div>
@@ -1014,24 +951,16 @@ def render_forecast():
 
         if devs:
             for dev in devs:
-                # Developer row: name left, PTO right
-                c1, c2 = st.columns([2, 1])
-                with c1:
-                    st.markdown(f"<div style='font-size:0.85rem; font-weight:500; color:#4a4a4a; padding:8px 0;'>{dev['name']}</div>", unsafe_allow_html=True)
-                with c2:
-                    pto = st.number_input("PTO", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}", label_visibility="collapsed")
-                    st.session_state.pto_data[dev["id"]] = pto
-
-            # Move section - collapsed at bottom
-            with st.expander("Move developers", expanded=False):
-                for dev in devs:
-                    other_teams = [t for t in TEAMS if t["id"] != team["id"]]
-                    mv = st.selectbox(dev['name'], ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}")
-                    if mv != "—":
-                        update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
-                        st.rerun()
+                st.markdown(f"**{dev['name']}**")
+                pto = st.number_input("PTO Days", 0.0, 10.0, st.session_state.pto_data.get(dev["id"], 0.0), 0.5, key=f"pto_{dev['id']}")
+                st.session_state.pto_data[dev["id"]] = pto
+                other_teams = [t for t in TEAMS if t["id"] != team["id"]]
+                mv = st.selectbox("Move to", ["—"] + [t["name"] for t in other_teams], key=f"mv_{dev['id']}")
+                if mv != "—":
+                    update_team_assignment(dev["id"], next(t["id"] for t in other_teams if t["name"] == mv))
+                    st.rerun()
         else:
-            st.markdown("<p style='font-size:0.8rem; color:#9a9a9a; font-style:italic; padding:8px 0;'>No developers</p>", unsafe_allow_html=True)
+            st.markdown("*No developers*")
 
     with col1:
         team1 = TEAMS[0]
