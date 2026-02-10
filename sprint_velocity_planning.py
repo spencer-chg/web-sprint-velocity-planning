@@ -483,11 +483,10 @@ def page_add_sprint():
     header_cols = st.columns([1, 0.1, 1])
     for col_idx in [0, 2]:
         with header_cols[col_idx]:
-            h1, h2, h3, h4 = st.columns([1, 1, 1, 1])
-            with h1: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em;'></div>", unsafe_allow_html=True)
-            with h2: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>Pts</div>", unsafe_allow_html=True)
-            with h3: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>PTO</div>", unsafe_allow_html=True)
-            with h4: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>Team</div>", unsafe_allow_html=True)
+            h1, h2, h3 = st.columns([1, 1, 1])
+            with h1: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>Pts</div>", unsafe_allow_html=True)
+            with h2: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>PTO</div>", unsafe_allow_html=True)
+            with h3: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>Team</div>", unsafe_allow_html=True)
 
     # Developer rows - 2 columns with gap
     for i in range(0, len(DEVELOPERS), 2):
