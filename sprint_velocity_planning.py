@@ -227,11 +227,32 @@ def load_sprints():
 
 def save_sprint(data):
     try:
-        supabase.table("sprints").insert({"sprint_id": data["sprintId"], "sprint_name": data["sprintName"],
-            "start_date": data["startDate"], "end_date": data["endDate"], "sprint_days": data["sprintDays"]}).execute()
+        # Check if a sprint with this name already exists
+        existing = supabase.table("sprints").select("*").eq("sprint_name", data["sprintName"]).execute()
+
+        if existing.data:
+            # Sprint exists — use its existing sprint_id
+            sprint_id = existing.data[0]["sprint_id"]
+        else:
+            # New sprint — insert it
+            sprint_id = data["sprintId"]
+            supabase.table("sprints").insert({"sprint_id": sprint_id, "sprint_name": data["sprintName"],
+                "start_date": data["startDate"], "end_date": data["endDate"], "sprint_days": data["sprintDays"]}).execute()
+
+        # Upsert assignments: update if engineer already has a record, otherwise insert
         for a in data["assignments"]:
-            supabase.table("sprint_assignments").insert({"sprint_id": data["sprintId"], "engineer_id": a["engineerId"],
-                "team_id": a["teamId"], "story_points": a["storyPoints"], "pto_days": a["totalPtoDays"]}).execute()
+            existing_assign = supabase.table("sprint_assignments").select("*").eq(
+                "sprint_id", sprint_id).eq("engineer_id", a["engineerId"]).eq("team_id", a["teamId"]).execute()
+
+            if existing_assign.data:
+                # Update existing assignment
+                supabase.table("sprint_assignments").update({
+                    "story_points": a["storyPoints"], "pto_days": a["totalPtoDays"]
+                }).eq("id", existing_assign.data[0]["id"]).execute()
+            else:
+                # Insert new assignment
+                supabase.table("sprint_assignments").insert({"sprint_id": sprint_id, "engineer_id": a["engineerId"],
+                    "team_id": a["teamId"], "story_points": a["storyPoints"], "pto_days": a["totalPtoDays"]}).execute()
         return True
     except: return False
 
@@ -547,8 +568,11 @@ def page_add_sprint():
             bd = sum(1 for d in range((end - start).days + 1) if (start + timedelta(days=d)).weekday() < 5)
             sprint = {"sprintId": f"{start.year}-S{start.month:02d}-{start.day:02d}", "sprintName": name,
                       "startDate": start.isoformat(), "endDate": end.isoformat(), "sprintDays": bd, "assignments": assigns}
+            # Check if this sprint already exists (for user feedback)
+            existing_check = supabase.table("sprints").select("sprint_id").eq("sprint_name", name).execute()
+            is_update = bool(existing_check.data)
             if save_sprint(sprint):
-                st.success(f"'{name}' saved!")
+                st.success(f"'{name}' {'updated' if is_update else 'saved'}!")
                 # Invalidate cache and reset form
                 st.session_state.sprints_cache = None
                 st.session_state.sprint_pts = {d["id"]: 0.0 for d in DEVELOPERS}
