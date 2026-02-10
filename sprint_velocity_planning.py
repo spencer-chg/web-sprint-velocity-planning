@@ -479,6 +479,16 @@ def page_add_sprint():
     st.markdown("---")
     st.markdown("<h4 style='text-align:center; color:#4a4a4a; font-weight:600; margin-bottom:16px;'>Developer Points</h4>", unsafe_allow_html=True)
 
+    # Column headers
+    header_cols = st.columns([1, 0.1, 1])
+    for col_idx in [0, 2]:
+        with header_cols[col_idx]:
+            h1, h2, h3, h4 = st.columns([1, 1, 1, 1])
+            with h1: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em;'></div>", unsafe_allow_html=True)
+            with h2: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>Pts</div>", unsafe_allow_html=True)
+            with h3: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>PTO</div>", unsafe_allow_html=True)
+            with h4: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>Team</div>", unsafe_allow_html=True)
+
     # Developer rows - 2 columns with gap
     for i in range(0, len(DEVELOPERS), 2):
         row_cols = st.columns([1, 0.1, 1])
@@ -491,7 +501,8 @@ def page_add_sprint():
                     st.markdown(f"**{dev['name']}**")
 
                     pts = st.session_state.sprint_pts.get(dev_id, 0.0)
-                    left, right = st.columns([1, 1])
+                    pto = st.session_state.sprint_pto.get(dev_id, 0.0)
+                    left, mid, right = st.columns([1, 1, 1])
                     with left:
                         new_pts = st.number_input(
                             "Points", value=pts, min_value=0.0, step=0.5,
@@ -499,6 +510,14 @@ def page_add_sprint():
                         )
                         if new_pts != pts:
                             st.session_state.sprint_pts[dev_id] = new_pts
+                            st.rerun()
+                    with mid:
+                        new_pto = st.number_input(
+                            "PTO", value=pto, min_value=0.0, max_value=10.0, step=0.5,
+                            format="%.1f", key=f"pto_sprint_{dev_id}", label_visibility="collapsed"
+                        )
+                        if new_pto != pto:
+                            st.session_state.sprint_pto[dev_id] = new_pto
                             st.rerun()
                     with right:
                         dt = team_assignments.get(dev_id, "team1")
