@@ -512,7 +512,7 @@ def page_add_sprint():
     st.markdown("<h4 style='text-align:center; color:#4a4a4a; font-weight:600; margin-bottom:16px;'>Developer Points</h4>", unsafe_allow_html=True)
 
     # Column headers
-    header_cols = st.columns([1, 0.1, 1])
+    header_cols = st.columns([1, 0.3, 1])
     for col_idx in [0, 2]:
         with header_cols[col_idx]:
             _, h1, h2, h3 = st.columns([2, 1, 1, 1])
@@ -522,7 +522,7 @@ def page_add_sprint():
 
     # Developer rows - 2 columns with gap
     for i in range(0, len(DEVELOPERS), 2):
-        row_cols = st.columns([1, 0.1, 1])
+        row_cols = st.columns([1, 0.3, 1])
         col_indices = [0, 2]  # Skip spacer column
         for j, col_idx in enumerate(col_indices):
             if i + j < len(DEVELOPERS):
