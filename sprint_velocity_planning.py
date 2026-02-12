@@ -228,6 +228,21 @@ def load_sprints():
         return sprints
     except: return []
 
+MAX_SPRINTS = 10
+
+def prune_old_sprints():
+    """Delete oldest sprints if more than MAX_SPRINTS exist."""
+    try:
+        all_sprints = supabase.table("sprints").select("sprint_id").order("start_date", desc=True).execute()
+        if len(all_sprints.data) > MAX_SPRINTS:
+            old = all_sprints.data[MAX_SPRINTS:]
+            for s in old:
+                # CASCADE will handle sprint_assignments via foreign key
+                supabase.table("sprint_assignments").delete().eq("sprint_id", s["sprint_id"]).execute()
+                supabase.table("sprints").delete().eq("sprint_id", s["sprint_id"]).execute()
+    except:
+        pass
+
 def save_sprint(data):
     try:
         # Check if a sprint with this name already exists
@@ -256,6 +271,9 @@ def save_sprint(data):
                 # Insert new assignment
                 supabase.table("sprint_assignments").insert({"sprint_id": sprint_id, "engineer_id": a["engineerId"],
                     "team_id": a["teamId"], "story_points": a["storyPoints"], "pto_days": a["totalPtoDays"]}).execute()
+
+        # Prune old sprints after saving
+        prune_old_sprints()
         return True
     except: return False
 
@@ -328,6 +346,12 @@ def calc_velocity(assignments, lookback=10):
         tv += v * w
         tw += w
     return tv / tw if tw > 0 else 0
+
+# ============== STARTUP CLEANUP ==============
+# Prune old sprints on first load of each session
+if "startup_cleanup_done" not in st.session_state:
+    prune_old_sprints()
+    st.session_state.startup_cleanup_done = True
 
 # ============== STATE ==============
 if "pto" not in st.session_state: st.session_state.pto = {}
