@@ -391,6 +391,14 @@ def page_forecast():
         with card_cols[i * 2]:
             st.markdown(f"<div class='team-header'>{team['name']}</div>", unsafe_allow_html=True)
 
+    # Column headers for PTO
+    hdr_cols = st.columns([1, 0.15, 1])
+    for i, team in enumerate(TEAMS):
+        with hdr_cols[i * 2]:
+            h1, h2 = st.columns([2, 1])
+            with h2:
+                st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>PTO Days</div>", unsafe_allow_html=True)
+
     # Developer rows - 2 columns with spacer
     dev_cols = st.columns([1, 0.15, 1])
     for i, team in enumerate(TEAMS):
@@ -401,39 +409,6 @@ def page_forecast():
                     render_dev_row(dev)
             else:
                 st.markdown("<p style='color:#999; font-size:0.85rem; text-align:center; margin-top:8px;'>No developers</p>", unsafe_allow_html=True)
-
-    # Team management section - toggle with button
-    st.markdown("---")
-    if "show_team_mgmt" not in st.session_state:
-        st.session_state.show_team_mgmt = False
-
-    _, btn_col, _ = st.columns([1, 2, 1])
-    with btn_col:
-        label = "Hide Team Assignments" if st.session_state.show_team_mgmt else "Manage Team Assignments"
-        if st.button(label, use_container_width=True):
-            st.session_state.show_team_mgmt = not st.session_state.show_team_mgmt
-            st.rerun()
-
-    if st.session_state.show_team_mgmt:
-        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
-        for dev in DEVELOPERS:
-            c1, c2 = st.columns([2, 2])
-            with c1:
-                st.write(dev["name"])
-            with c2:
-                current = team_assignments.get(dev["id"], "team1")
-                current_idx = next((i for i, t in enumerate(TEAMS) if t["id"] == current), 0)
-                new_team = st.selectbox(
-                    "",
-                    [t["name"] for t in TEAMS],
-                    index=current_idx,
-                    key=f"team_assign_{dev['id']}",
-                    label_visibility="collapsed"
-                )
-                new_id = next(t["id"] for t in TEAMS if t["name"] == new_team)
-                if new_id != current:
-                    save_team_assignment(dev["id"], new_id)
-                    st.rerun()
 
     # Calculate - only load sprints from DB when button is clicked
     if calc_btn:
@@ -473,6 +448,39 @@ def page_forecast():
 
                 for a in r.get("assigns", []):
                     st.markdown(f"<div style='display:flex; justify-content:space-between; padding:6px 8px; margin-top:4px; background:#f5f5f0; border-radius:6px; font-size:0.8rem;'><span>{a['name']}</span><strong>{a['buf']:.1f}</strong></div>", unsafe_allow_html=True)
+
+    # Team management section - toggle with button
+    st.markdown("---")
+    if "show_team_mgmt" not in st.session_state:
+        st.session_state.show_team_mgmt = False
+
+    _, btn_col, _ = st.columns([1, 2, 1])
+    with btn_col:
+        label = "Hide Team Assignments" if st.session_state.show_team_mgmt else "Manage Team Assignments"
+        if st.button(label, use_container_width=True):
+            st.session_state.show_team_mgmt = not st.session_state.show_team_mgmt
+            st.rerun()
+
+    if st.session_state.show_team_mgmt:
+        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+        for dev in DEVELOPERS:
+            c1, c2 = st.columns([2, 2])
+            with c1:
+                st.write(dev["name"])
+            with c2:
+                current = team_assignments.get(dev["id"], "team1")
+                current_idx = next((i for i, t in enumerate(TEAMS) if t["id"] == current), 0)
+                new_team = st.selectbox(
+                    "",
+                    [t["name"] for t in TEAMS],
+                    index=current_idx,
+                    key=f"team_assign_{dev['id']}",
+                    label_visibility="collapsed"
+                )
+                new_id = next(t["id"] for t in TEAMS if t["name"] == new_team)
+                if new_id != current:
+                    save_team_assignment(dev["id"], new_id)
+                    st.rerun()
 
 def page_add_sprint():
     # Use cached data - no DB calls on +/- clicks
@@ -619,7 +627,7 @@ def page_analytics():
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 1"], mode="lines+markers", name="Team 1", line=dict(color="#6b7c6b", width=2)))
-    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 2"], mode="lines+markers", name="Team 2", line=dict(color="#5a6a5a", width=2)))
+    fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Team 2"], mode="lines+markers", name="Team 2", line=dict(color="#c17a5a", width=2)))
     fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#faf9f6", font=dict(color="#4a4a4a", size=11), height=280,
                       margin=dict(t=30, b=50, l=40, r=20), xaxis=dict(gridcolor="#e5e5e0", tickangle=-45), yaxis=dict(gridcolor="#e5e5e0", title="Pts"),
                       legend=dict(orientation="h", y=1.12, x=0.5, xanchor="center"))
