@@ -512,7 +512,7 @@ def page_add_sprint():
     header_cols = st.columns([1, 0.1, 1])
     for col_idx in [0, 2]:
         with header_cols[col_idx]:
-            h1, h2, h3 = st.columns([1, 1, 1])
+            _, h1, h2, h3 = st.columns([2, 1, 1, 1])
             with h1: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>Pts</div>", unsafe_allow_html=True)
             with h2: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>PTO</div>", unsafe_allow_html=True)
             with h3: st.markdown("<div style='font-size:0.7rem; color:#aaa; text-transform:uppercase; letter-spacing:0.05em; text-align:center;'>Team</div>", unsafe_allow_html=True)
@@ -526,11 +526,11 @@ def page_add_sprint():
                 dev = DEVELOPERS[i + j]
                 dev_id = dev["id"]
                 with row_cols[col_idx]:
-                    st.markdown(f"**{dev['name']}**")
-
                     pts = st.session_state.sprint_pts.get(dev_id, 0.0)
                     pto = st.session_state.sprint_pto.get(dev_id, 0.0)
-                    left, mid, right = st.columns([1, 1, 1])
+                    name_col, left, mid, right = st.columns([2, 1, 1, 1])
+                    with name_col:
+                        st.markdown(f"**{dev['name'].split()[0]}**")
                     with left:
                         new_pts = st.number_input(
                             "Points", value=pts, min_value=0.0, step=0.5,
