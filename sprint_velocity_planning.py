@@ -169,6 +169,9 @@ html, body, .stApp, [data-testid="stAppViewContainer"] { background: var(--cream
 /* === MISC === */
 hr { border: none; height: 1px; background: linear-gradient(to right, transparent, #e0e0db, transparent); margin: 28px 0; }
 
+/* Hide anchor/jump links on headings */
+h1 a, h2 a, h3 a, h4 a { display: none !important; }
+
 /* Info box styling */
 .stAlert { border-radius: 12px !important; border: none !important; }
 [data-baseweb="notification"] { border-radius: 12px !important; }
@@ -552,8 +555,8 @@ def page_add_sprint():
                         di = next((idx for idx, t in enumerate(TEAMS) if t["id"] == dt), 0)
                         st.selectbox("Team", [t["name"] for t in TEAMS], di, key=f"tm_{dev_id}", label_visibility="collapsed")
 
-        # Add spacing between developer rows
-        st.markdown("<div style='height:12px'></div>", unsafe_allow_html=True)
+        # Divider between developer rows
+        st.markdown("<div style='border-top:1px solid #e8e8e3; margin:10px 0 8px;'></div>", unsafe_allow_html=True)
 
     st.markdown("---")
 
