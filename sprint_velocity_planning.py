@@ -669,21 +669,22 @@ def page_individual():
                 agg[s["sprintId"]]["totalPtoDays"] = max(agg[s["sprintId"]]["totalPtoDays"], a.get("totalPtoDays", 0))
 
     data = sorted(agg.values(), key=lambda x: x["startDate"], reverse=True)
-    vel = calc_velocity(data)
+    recent = data[:10]
+    avg_pts = sum(d["storyPoints"] for d in recent) / len(recent) if recent else 0
 
     cols = st.columns(3)
-    with cols[0]: st.markdown(f'<div class="metric"><div class="label">Velocity</div><div class="value">{vel:.2f}</div></div>', unsafe_allow_html=True)
-    with cols[1]: st.markdown(f'<div class="metric"><div class="label">Last 10</div><div class="value">{sum(d["storyPoints"] for d in data[:10]):.1f}</div></div>', unsafe_allow_html=True)
+    with cols[0]: st.markdown(f'<div class="metric"><div class="label">Avg Pts/Sprint</div><div class="value">{avg_pts:.1f}</div></div>', unsafe_allow_html=True)
+    with cols[1]: st.markdown(f'<div class="metric"><div class="label">Last 10</div><div class="value">{sum(d["storyPoints"] for d in recent):.1f}</div></div>', unsafe_allow_html=True)
     with cols[2]: st.markdown(f'<div class="metric"><div class="label">Sprints</div><div class="value">{len(data)}</div></div>', unsafe_allow_html=True)
 
     if data:
         st.markdown("<div style='height:16px'></div>", unsafe_allow_html=True)
-        chart = [{"Sprint": d["sprintName"], "Vel": d["storyPoints"] / (d["sprintDays"] - d["totalPtoDays"]) if d["sprintDays"] - d["totalPtoDays"] > 0 else 0} for d in reversed(data[:10])]
+        chart = [{"Sprint": d["sprintName"], "Pts": d["storyPoints"]} for d in reversed(data[:10])]
         df = pd.DataFrame(chart)
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Vel"], mode="lines+markers", line=dict(color="#6b7c6b", width=2), fill="tozeroy", fillcolor="rgba(107,124,107,0.1)"))
+        fig.add_trace(go.Scatter(x=df["Sprint"], y=df["Pts"], mode="lines+markers", line=dict(color="#6b7c6b", width=2), fill="tozeroy", fillcolor="rgba(107,124,107,0.1)"))
         fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#faf9f6", font=dict(color="#4a4a4a"), height=200,
-                          margin=dict(t=10, b=50, l=40, r=20), showlegend=False, xaxis=dict(gridcolor="#e5e5e0", tickangle=-45), yaxis=dict(gridcolor="#e5e5e0", title="pts/day"))
+                          margin=dict(t=10, b=50, l=40, r=20), showlegend=False, xaxis=dict(gridcolor="#e5e5e0", tickangle=-45), yaxis=dict(gridcolor="#e5e5e0", title="Pts"))
         st.plotly_chart(fig, use_container_width=True)
 
         st.markdown("---")
